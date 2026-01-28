@@ -15,11 +15,60 @@ namespace CalorieTrackerApp.Controllers
         }
 
         // GET: Recipes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+    string searchString,
+    string filter,
+    string sortOrder)
         {
-            var recipes = await _context.Recipes.ToListAsync();
-            return View(recipes);
+            var recipes = _context.Recipes.AsQueryable();
+
+            // SEARCH
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                recipes = recipes.Where(r => r.Title.Contains(searchString));
+            }
+
+            // FILTER
+            switch (filter)
+            {
+                case "low":
+                    recipes = recipes.Where(r => r.Calories <= 400);
+                    break;
+                case "high":
+                    recipes = recipes.Where(r => r.Calories > 400);
+                    break;
+            }
+
+            // SORT
+            ViewData["CaloriesSort"] = sortOrder == "cal_asc" ? "cal_desc" : "cal_asc";
+
+            recipes = sortOrder switch
+            {
+                "cal_desc" => recipes.OrderByDescending(r => r.Calories),
+                _ => recipes.OrderBy(r => r.Calories),
+            };
+
+            return View(await recipes.ToListAsync());
         }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var recipe = await _context.Recipes
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
+            return View(recipe);
+        }
+
 
         // GET: Recipes/Create
         public IActionResult Create()

@@ -146,6 +146,51 @@ body {
     max-height: 400px;
     opacity: 0.9;
 }
+.recipe-img {
+    width: 120px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.recipe-card {
+    border-radius: 14px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .recipe-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
+.recipe-card-img {
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+}
+form input[type="text"] {
+    min-width: 220px;
+}
+.recipe-details-card {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.recipe-details-img {
+    height: 300px;
+    object-fit: cover;
+}
+.btn-group .btn {
+    min-width: 120px;
+}
+.recipe-card-img:hover {
+    transform: scale(1.03);
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+
 
 
 

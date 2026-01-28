@@ -4,6 +4,7 @@ using CalorieTrackerApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CalorieTrackerApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260128145928_AddMoreSeedRecipes")]
+    partial class AddMoreSeedRecipes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,15 +237,6 @@ namespace CalorieTrackerApp.Migrations
                             Img = "",
                             IsHealthy = true,
                             Title = "Dark Chocolate Oats"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            Calories = 260,
-                            Description = "Oven-baked sweet potatoes with olive oil and herbs.",
-                            Img = "",
-                            IsHealthy = true,
-                            Title = "Baked Sweet Potatoes"
                         });
                 });
 

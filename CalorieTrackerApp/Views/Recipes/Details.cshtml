@@ -1,0 +1,56 @@
+﻿@model CalorieTrackerApp.Models.Recipe
+
+<div class="container mt-4">
+
+    <a asp-action="Index" class="btn btn-secondary mb-3">
+        ← Back to Recipes
+    </a>
+
+    <div class="card shadow-sm recipe-details-card">
+
+        @if (!string.IsNullOrEmpty(Model.Img))
+        {
+            <img src="@Model.Img"
+                 class="card-img-top recipe-details-img"
+                 alt="@Model.Title" />
+        }
+
+        <div class="card-body">
+            <h2 class="card-title mb-3">@Model.Title</h2>
+
+            <p class="text-muted">
+                @Model.Description
+            </p>
+
+            <p>
+                <strong>Calories:</strong> @Model.Calories
+            </p>
+
+            <p>
+                @if (Model.IsHealthy)
+                {
+                    <span class="badge bg-success">Low-calorie</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">High-calorie</span>
+                }
+            </p>
+
+            <hr />
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-outline-secondary">
+                Edit
+            </a>
+
+            <a asp-action="Delete"
+               asp-route-id="@Model.Id"
+               class="btn btn-outline-danger">
+                Delete
+            </a>
+        </div>
+    </div>
+</div>
+

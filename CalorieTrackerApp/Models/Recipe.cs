@@ -17,5 +17,9 @@ namespace CalorieTrackerApp.Models
         public int Calories { get; set; }
 
         public bool IsHealthy { get; set; }
+
+        [StringLength(200)]
+        public string Img { get; set; } = string.Empty;
     }
 }
+
