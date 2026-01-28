@@ -5,6 +5,14 @@
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
 
+    <select asp-for="UserProfileId"
+            asp-items="ViewBag.UserProfileId"
+            class="form-control">
+        <option value="">Select User</option>
+    </select>
+
+    <span asp-validation-for="UserProfileId" class="text-danger"></span>
+
     <div class="form-group">
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" />

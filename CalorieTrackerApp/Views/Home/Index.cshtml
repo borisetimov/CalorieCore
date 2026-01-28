@@ -1,8 +1,69 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="dashboard-title">Calorie Tracker Dashboard</h1>
+        <p class="dashboard-subtitle">
+            Track activities, manage users, and discover healthy recipes.
+        </p>
+    </div>
+
+    <div class="row text-center">
+        <!-- Activities -->
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="dashboard-icon">🔥</div>
+                    <h5 class="card-title">Activities</h5>
+                    <p class="card-text">
+                        Log workouts and track calories burned.
+                    </p>
+                    <a asp-controller="UserActivities"
+                       asp-action="Index"
+                       class="btn btn-dashboard">
+                        View Activities
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recipes -->
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="dashboard-icon">🥗</div>
+                    <h5 class="card-title">Recipes</h5>
+                    <p class="card-text">
+                        Browse healthy and delicious meal ideas.
+                    </p>
+                    <a asp-controller="Recipes"
+                       asp-action="Index"
+                       class="btn btn-dashboard">
+                        Browse Recipes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users -->
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="dashboard-icon">👤</div>
+                    <h5 class="card-title">Users</h5>
+                    <p class="card-text">
+                        Manage user profiles and personalization.
+                    </p>
+                    <a asp-controller="UserProfiles"
+                       asp-action="Index"
+                       class="btn btn-dashboard">
+                        View Users
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+

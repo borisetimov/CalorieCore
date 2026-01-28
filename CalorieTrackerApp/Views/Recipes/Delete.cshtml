@@ -1,0 +1,13 @@
+﻿@model CalorieTrackerApp.Models.Recipe
+
+<h2>Delete Recipe</h2>
+
+<h4>Are you sure you want to delete this recipe?</h4>
+
+<p><strong>@Model.Title</strong></p>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-dark">Delete</button>
+    <a asp-action="Index" class="btn btn-danger">Cancel</a>
+</form>

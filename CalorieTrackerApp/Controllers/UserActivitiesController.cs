@@ -25,8 +25,13 @@ namespace CalorieTrackerApp.Controllers
         // GET: UserActivities/Create
         public IActionResult Create()
         {
-            ViewBag.UserProfiles = new SelectList(_context.UserProfiles, "Id", "Name");
-            return View();
+            ViewData["UserProfileId"] = new SelectList(
+            _context.UserProfiles,
+            "Id",
+            "Name"
+        );
+        return View();
+
         }
 
         // POST: UserActivities/Create
@@ -40,19 +45,34 @@ namespace CalorieTrackerApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.UserProfiles = new SelectList(_context.UserProfiles, "Id", "Name", userActivity.UserProfileId);
+            ViewData["UserProfileId"] = new SelectList(
+                _context.UserProfiles,
+                "Id",
+                "Name",
+                userActivity.UserProfileId
+            );
+
             return View(userActivity);
         }
 
         // GET: UserActivities/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+                return NotFound();
 
-            var activity = await _context.Activities.FindAsync(id);
-            if (activity == null) return NotFound();
+            var userActivity = await _context.Activities.FindAsync(id);
+            if (userActivity == null)
+                return NotFound();
 
-            return View(activity);
+            ViewData["UserProfileId"] = new SelectList(
+                _context.UserProfiles,
+                "Id",
+                "Name",
+                userActivity.UserProfileId  
+            );
+
+            return View(userActivity);
         }
 
         // POST: UserActivities/Edit/5
@@ -68,6 +88,13 @@ namespace CalorieTrackerApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["UserProfileId"] = new SelectList(
+            _context.UserProfiles,
+            "Id",
+            "Name",
+            userActivity.UserProfileId
+            );
             return View(userActivity);
         }
 

@@ -33,9 +33,9 @@ namespace CalorieTrackerApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(userProfile);
+                _context.UserProfiles.Add(userProfile);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "UserActivities");
             }
             return View(userProfile);
         }

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<CalorieTrackerApp.Models.Recipe>
+
+<h2>Recipes</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-dark">Add Recipe</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Calories</th>
+            <th>Healthy</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Calories</td>
+                <td>@(item.IsHealthy ? "Yes" : "No")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

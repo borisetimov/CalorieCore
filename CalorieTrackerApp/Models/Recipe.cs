@@ -8,13 +8,14 @@ namespace CalorieTrackerApp.Models
 
         [Required]
         [StringLength(100)]
-        public string Title { get; set; } = null!;
+        public string Title { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(500)]
-        public string Description { get; set; } = null!;
+        public string Description { get; set; } = string.Empty;
 
-        [Range(0, 2000)]
+        [Range(1, 2000)]
         public int Calories { get; set; }
+
+        public bool IsHealthy { get; set; }
     }
 }
