@@ -1,0 +1,14 @@
+﻿@model UserAccount
+
+<div class="container mt-5 text-center">
+    <h2>Settings</h2>
+
+    <p>Username: @Model.Username</p>
+
+    <form asp-action="DeleteAccount" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">
+            Delete Account
+        </button>
+    </form>
+</div>

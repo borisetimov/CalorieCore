@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "Welcome";
+}
+
+<div class="container mt-5">
+
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Track Your Calories</h1>
+        <p class="lead text-muted mt-3">
+            Log your meals, monitor your daily intake, and stay aware of your eating habits.
+        </p>
+
+        <div class="mt-4">
+            <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg me-2">
+                Start Tracking
+            </a>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg">
+                Log In
+            </a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8 text-center">
+            <h2 class="mb-3">What is this app?</h2>
+            <p class="text-muted">
+                This calorie tracker helps you log the food you eat, calculate your daily calorie intake,
+                and keep everything organized in one personal account.
+            </p>
+        </div>
+    </div>
+
+    <div class="row text-center mb-5">
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">🍎 Log Food</h5>
+                    <p class="card-text text-muted">
+                        Add foods you eat and record their calorie values.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">📊 Daily Totals</h5>
+                    <p class="card-text text-muted">
+                        Automatically see your total calories for the day.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">📅 Track Progress</h5>
+                    <p class="card-text text-muted">
+                        Review past days and understand your eating habits.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">🔐 Personal Account</h5>
+                    <p class="card-text text-muted">
+                        Your data is stored securely and only visible to you.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <h2 class="text-center mb-4">How it works</h2>
+            <ol class="list-group list-group-numbered">
+                <li class="list-group-item">Create a free account</li>
+                <li class="list-group-item">Log the foods you eat & activities</li>
+                <li class="list-group-item">Track your daily calorie intake</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="text-center mb-5">
+        <h3 class="mb-3">Ready to start tracking?</h3>
+        <a asp-controller="Account" asp-action="Register" class="btn btn-success btn-lg">
+            Create an Account
+        </a>
+    </div>
+
+</div>

@@ -12,6 +12,11 @@ namespace CalorieTrackerApp.Controllers
         {
             _logger = logger;
         }
+        public IActionResult Landing()
+        {
+            return View();
+        }
+
 
         public IActionResult Index()
         {
@@ -27,6 +32,7 @@ namespace CalorieTrackerApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        } 
+
     }
 }

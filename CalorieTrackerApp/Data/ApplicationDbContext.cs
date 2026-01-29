@@ -1,9 +1,11 @@
 ﻿using CalorieTrackerApp.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CalorieTrackerApp.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -13,11 +15,13 @@ namespace CalorieTrackerApp.Data
         public DbSet<UserProfile> UserProfiles { get; set; } = null!;
         public DbSet<UserActivity> Activities { get; set; } = null!;
         public DbSet<Recipe> Recipes { get; set; } = null!;
+        public DbSet<UserAccount> UserAccounts { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Recipe>().HasData(
+          modelBuilder.Entity<Recipe>().HasData(
                 new Recipe
                 {
                     Id = 1,

@@ -40,6 +40,42 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                      
+                        <ul class="navbar-nav ms-auto d-flex align-items-center">
+
+                            @if (Context.Session.GetString("Username") != null)
+                            {
+                                <li class="nav-item me-2">
+                                    <a class="nav-link" asp-controller="Account" asp-action="Settings" title="Account Settings">
+                                        <img src="~/images/settings-icon.png" style="height:24px; width:24px;" alt="Settings" />
+                                    </a>
+
+                                </li>
+                                <li class="nav-item me-2">
+                                    <span class="nav-link">Hello @Context.Session.GetString("Username")</span>
+                                </li>
+
+                                <li class="nav-item">
+                                    <form method="post" asp-controller="Account" asp-action="Logout">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       asp-controller="Account"
+                                       asp-action="Register">
+                                        Register
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+
                     </ul>
                 </div>
             </div>
