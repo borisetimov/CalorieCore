@@ -11,11 +11,11 @@ namespace CalorieTrackerApp.Data
             : base(options)
         {
         }
-
-        public DbSet<UserProfile> UserProfiles { get; set; } = null!;
         public DbSet<UserActivity> Activities { get; set; } = null!;
         public DbSet<Recipe> Recipes { get; set; } = null!;
         public DbSet<UserAccount> UserAccounts { get; set; }
+        public DbSet<Meal> Meals { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

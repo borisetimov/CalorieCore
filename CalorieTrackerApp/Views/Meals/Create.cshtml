@@ -1,0 +1,11 @@
+﻿@model Meal
+
+<h2>Log Meal</h2>
+
+<form method="post">
+    <input asp-for="Name" class="form-control mb-2" placeholder="Meal name" />
+    <input asp-for="Calories" class="form-control mb-2" placeholder="Calories" />
+
+    <button class="btn btn-success">Save</button>
+    <a asp-action="Index" class="btn btn-danger">Cancel</a>
+</form>

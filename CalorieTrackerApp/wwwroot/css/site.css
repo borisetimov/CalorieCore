@@ -189,6 +189,21 @@ form input[type="text"] {
     transition: transform 0.2s;
     cursor: pointer;
 }
+.dashboard-calorie-card {
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ffffff, #f7f7f7);
+}
+.calorie-progress {
+    height: 26px;
+    border: 2px solid #000;
+    border-radius: 12px;
+    background-color: #f1f1f1;
+}
+
+    .calorie-progress .progress-bar {
+        font-weight: bold;
+        font-size: 14px;
+    }
 
 
 

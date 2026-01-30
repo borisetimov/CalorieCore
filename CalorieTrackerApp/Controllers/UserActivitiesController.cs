@@ -18,21 +18,23 @@ namespace CalorieTrackerApp.Controllers
         // GET: UserActivities
         public async Task<IActionResult> Index()
         {
-            var activities = await _context.Activities.ToListAsync();
+            var username = HttpContext.Session.GetString("Username");
+
+            var activities = _context.Activities
+                .Where(a => a.Username == username)
+                .OrderByDescending(a => a.Date)
+                .ToList();
+
             return View(activities);
         }
+
 
         // GET: UserActivities/Create
         public IActionResult Create()
         {
-            ViewData["UserProfileId"] = new SelectList(
-            _context.UserProfiles,
-            "Id",
-            "Name"
-        );
-        return View();
-
+            return View();
         }
+
 
         // POST: UserActivities/Create
         [HttpPost]
@@ -41,19 +43,19 @@ namespace CalorieTrackerApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                userActivity.Username = HttpContext.Session.GetString("Username")!;
+                userActivity.Date = DateTime.Now;
+
                 _context.Activities.Add(userActivity);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserProfileId"] = new SelectList(
-                _context.UserProfiles,
-                "Id",
-                "Name",
-                userActivity.UserProfileId
-            );
 
             return View(userActivity);
         }
+
+
 
         // GET: UserActivities/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -64,13 +66,6 @@ namespace CalorieTrackerApp.Controllers
             var userActivity = await _context.Activities.FindAsync(id);
             if (userActivity == null)
                 return NotFound();
-
-            ViewData["UserProfileId"] = new SelectList(
-                _context.UserProfiles,
-                "Id",
-                "Name",
-                userActivity.UserProfileId  
-            );
 
             return View(userActivity);
         }
@@ -87,14 +82,7 @@ namespace CalorieTrackerApp.Controllers
                 _context.Update(userActivity);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-
-            ViewData["UserProfileId"] = new SelectList(
-            _context.UserProfiles,
-            "Id",
-            "Name",
-            userActivity.UserProfileId
-            );
+            }   
             return View(userActivity);
         }
 

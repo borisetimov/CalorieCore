@@ -32,15 +32,18 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Recipes" asp-action="Index">Recipes</a>
+                            <a class="nav-link" asp-controller="Meals" asp-action="Index">
+                                Meals
+                            </a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="UserProfiles" asp-action="Index">Users</a>
+                            <a class="nav-link" asp-controller="Recipes" asp-action="Index">Recipes</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                      
+                    </ul>
                         <ul class="navbar-nav ms-auto d-flex align-items-center">
 
                             @if (Context.Session.GetString("Username") != null)
@@ -75,8 +78,6 @@
                                 </li>
                             }
                         </ul>
-
-                    </ul>
                 </div>
             </div>
         </nav>

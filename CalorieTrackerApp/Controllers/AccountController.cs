@@ -82,12 +82,24 @@ public class AccountController : Controller
             return View(model);
         }
 
+        var dailyCalories = CalorieCalculator.Calculate(
+          model.Weight,
+          model.Height,
+          model.Age,
+          model.Goal
+);
+
         var user = new UserAccount
         {
             Username = model.Username,
-            Password = PasswordHelper.HashPassword(model.Password)
-
+            Password = PasswordHelper.HashPassword(model.Password),
+            Age = model.Age,
+            Weight = model.Weight,
+            Height = model.Height,
+            Goal = model.Goal,
+            DailyCalorieGoal = dailyCalories
         };
+
 
         _context.UserAccounts.Add(user);
         await _context.SaveChangesAsync();

@@ -11,11 +11,11 @@
     </div>
 
     <div class="row text-center">
-        <!-- Activities -->
+
         <div class="col-md-4 mb-4">
             <div class="card dashboard-card h-100 shadow-sm">
                 <div class="card-body">
-                    <div class="dashboard-icon">🔥</div>
+                    <div class="dashboard-icon">🏃</div>
                     <h5 class="card-title">Activities</h5>
                     <p class="card-text">
                         Log workouts and track calories burned.
@@ -29,7 +29,22 @@
             </div>
         </div>
 
-        <!-- Recipes -->
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="dashboard-icon">🍽</div>
+                    <h5 class="card-title">Meals</h5>
+                    <p class="card-text">
+                        Log food and track calories eaten.
+                    </p>
+                    <a asp-controller="Meals" asp-action="Index"
+                       class="btn btn-dashboard">
+                        View Meals
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <div class="col-md-4 mb-4">
             <div class="card dashboard-card h-100 shadow-sm">
                 <div class="card-body">
@@ -46,24 +61,53 @@
                 </div>
             </div>
         </div>
+        @if (ViewBag.Goal != null)
+        {
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card shadow-lg p-4 dashboard-calorie-card">
 
-        <!-- Users -->
-        <div class="col-md-4 mb-4">
-            <div class="card dashboard-card h-100 shadow-sm">
-                <div class="card-body">
-                    <div class="dashboard-icon">👤</div>
-                    <h5 class="card-title">Users</h5>
-                    <p class="card-text">
-                        Manage user profiles and personalization.
-                    </p>
-                    <a asp-controller="UserProfiles"
-                       asp-action="Index"
-                       class="btn btn-dashboard">
-                        View Users
-                    </a>
+                        <h4 class="mb-2">🔥 Daily Calorie Tracker</h4>
+
+                        <p>
+                            Goal: <strong>@ViewBag.Goal kcal</strong> |
+                            Consumed: <strong>@ViewBag.Consumed kcal</strong> |
+                            Burned: <strong>@ViewBag.Burned kcal</strong>
+                        </p>
+
+                        <h5 class="mt-2">
+                            Remaining Today:
+                            <strong>@ViewBag.Remaining kcal</strong>
+                        </h5>
+
+                        @{
+                            int goal = ViewBag.Goal;
+                            int remaining = ViewBag.Remaining;
+                            int used = goal - remaining;
+                            int percent = goal == 0 ? 0 : (used * 100 / goal);
+                            percent = percent < 0 ? 0 : percent > 100 ? 100 : percent;
+                        }
+
+                        <div class="progress mt-3 calorie-progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                 role="progressbar"
+                                 style="width: @percent%;">
+                                @percent%
+                            </div>
+                        </div>
+
+
+                        @if (ViewBag.Remaining <= 0)
+                        {
+                            <div class="alert alert-success mt-3">
+                                🎉 You are done for today! Great job!
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+
     </div>
 </div>
 

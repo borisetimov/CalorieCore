@@ -21,6 +21,30 @@
         <input asp-for="ConfirmPassword" class="form-control" />
         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
     </div>
+    <div class="mb-2">
+        <label>Age</label>
+        <input asp-for="Age" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label>Weight (kg)</label>
+        <input asp-for="Weight" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label>Height (cm)</label>
+        <input asp-for="Height" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Goal</label>
+        <select asp-for="Goal" class="form-control">
+            <option>Lose</option>
+            <option>Maintain</option>
+            <option>Gain</option>
+        </select>
+    </div>
+
 
     <button class="btn btn-dark">Register</button>
 </form>
