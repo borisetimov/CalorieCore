@@ -14,8 +14,6 @@ namespace CalorieTrackerApp.Controllers
         {
             _context = context;
         }
-
-        // GET: UserActivities
         public async Task<IActionResult> Index()
         {
             var username = HttpContext.Session.GetString("Username");
@@ -27,16 +25,10 @@ namespace CalorieTrackerApp.Controllers
 
             return View(activities);
         }
-
-
-        // GET: UserActivities/Create
         public IActionResult Create()
         {
             return View();
         }
-
-
-        // POST: UserActivities/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UserActivity userActivity)
@@ -55,9 +47,6 @@ namespace CalorieTrackerApp.Controllers
             return View(userActivity);
         }
 
-
-
-        // GET: UserActivities/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -70,7 +59,6 @@ namespace CalorieTrackerApp.Controllers
             return View(userActivity);
         }
 
-        // POST: UserActivities/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, UserActivity userActivity)
@@ -86,7 +74,6 @@ namespace CalorieTrackerApp.Controllers
             return View(userActivity);
         }
 
-        // GET: UserActivities/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -99,7 +86,6 @@ namespace CalorieTrackerApp.Controllers
             return View(activity);
         }
 
-        // POST: UserActivities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

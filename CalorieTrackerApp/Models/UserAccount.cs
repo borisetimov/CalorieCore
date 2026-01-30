@@ -15,5 +15,7 @@ public class UserAccount
     public double Height { get; set; }
     public string Goal { get; set; } = "Maintain"; 
     public int DailyCalorieGoal { get; set; }
+    public string Gender { get; set; } = "Male";
+
 
 }

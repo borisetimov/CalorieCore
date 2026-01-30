@@ -4,6 +4,7 @@ using CalorieTrackerApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CalorieTrackerApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260130110821_AddGenderToUserAccount")]
+    partial class AddGenderToUserAccount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,29 +72,13 @@ namespace CalorieTrackerApp.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("Ingredients")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Instructions")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsHealthy")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Tags")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -102,27 +89,190 @@ namespace CalorieTrackerApp.Migrations
                         {
                             Id = 1,
                             Calories = 350,
-                            Description = "",
-                            Img = "/images/caesar_salad.png",
-                            Ingredients = "Romaine lettuce, Parmesan, Croutons, Caesar dressing",
-                            Instructions = "1. Chop lettuce. 2. Add dressing and croutons. 3. Sprinkle parmesan and serve.",
-                            IsHealthy = false,
-                            Tags = "Easy to make, Quick, Low-calorie",
-                            Title = "Caesar Salad",
-                            Type = "Salad"
+                            Description = "Healthy salad with grilled chicken, fresh greens, and light dressing.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Grilled Chicken Salad"
                         },
                         new
                         {
                             Id = 2,
-                            Calories = 550,
-                            Description = "",
-                            Img = "/images/chocolate_cake.png",
-                            Ingredients = "Flour, Sugar, Cocoa powder, Eggs, Butter",
-                            Instructions = "1. Mix ingredients. 2. Bake at 180°C for 30 mins. 3. Cool and serve.",
+                            Calories = 250,
+                            Description = "Whole-grain toast topped with avocado and cherry tomatoes.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Avocado Toast"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Calories = 650,
+                            Description = "Classic Italian pasta with creamy sauce and pancetta.",
+                            Img = "",
                             IsHealthy = false,
-                            Tags = "Sweet, High-calorie, Easy to make",
-                            Title = "Chocolate Cake",
-                            Type = "Dessert"
+                            Title = "Pasta Carbonara"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Calories = 300,
+                            Description = "Fruit smoothie bowl with granola and berries.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Smoothie Bowl"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Calories = 280,
+                            Description = "Warm oatmeal topped with banana, berries, and honey.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Oatmeal with Fruits"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Calories = 220,
+                            Description = "Greek yogurt layered with granola and fresh fruits.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Greek Yogurt Parfait"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Calories = 550,
+                            Description = "Beef strips stir-fried with vegetables and soy sauce.",
+                            Img = "",
+                            IsHealthy = false,
+                            Title = "Beef Stir Fry"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Calories = 320,
+                            Description = "Egg omelette with peppers, onions, and mushrooms.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Vegetable Omelette"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Calories = 420,
+                            Description = "Whole-wheat wrap with grilled chicken and veggies.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Chicken Wrap"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Calories = 700,
+                            Description = "Classic beef cheeseburger with bun and cheese.",
+                            Img = "",
+                            IsHealthy = false,
+                            Title = "Cheeseburger"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Calories = 480,
+                            Description = "Grilled salmon served with rice and vegetables.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Salmon with Rice"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Calories = 340,
+                            Description = "Quinoa mixed with cucumber, tomato, and olive oil.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Quinoa Salad"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Calories = 360,
+                            Description = "Protein-rich pancakes topped with berries.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Protein Pancakes"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Calories = 720,
+                            Description = "Pasta with creamy Alfredo sauce and chicken.",
+                            Img = "",
+                            IsHealthy = false,
+                            Title = "Chicken Alfredo"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Calories = 310,
+                            Description = "Tuna mixed with light mayo and vegetables.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Tuna Salad"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Calories = 180,
+                            Description = "Light soup with seasonal vegetables.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Vegetable Soup"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Calories = 600,
+                            Description = "Oven-baked chicken wings with BBQ sauce.",
+                            Img = "",
+                            IsHealthy = false,
+                            Title = "BBQ Chicken Wings"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Calories = 520,
+                            Description = "Pasta with shrimp, garlic, and olive oil.",
+                            Img = "",
+                            IsHealthy = false,
+                            Title = "Shrimp Pasta"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Calories = 200,
+                            Description = "Mixed fresh fruits with citrus dressing.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Fruit Salad"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Calories = 390,
+                            Description = "Oatmeal with dark chocolate and nuts.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Dark Chocolate Oats"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Calories = 260,
+                            Description = "Oven-baked sweet potatoes with olive oil and herbs.",
+                            Img = "",
+                            IsHealthy = true,
+                            Title = "Baked Sweet Potatoes"
                         });
                 });
 

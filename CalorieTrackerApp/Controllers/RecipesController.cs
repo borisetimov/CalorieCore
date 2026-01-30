@@ -13,8 +13,6 @@ namespace CalorieTrackerApp.Controllers
         {
             _context = context;
         }
-
-        // GET: Recipes
         public async Task<IActionResult> Index(
     string searchString,
     string filter,
@@ -22,13 +20,11 @@ namespace CalorieTrackerApp.Controllers
         {
             var recipes = _context.Recipes.AsQueryable();
 
-            // SEARCH
             if (!string.IsNullOrEmpty(searchString))
             {
                 recipes = recipes.Where(r => r.Title.Contains(searchString));
             }
 
-            // FILTER
             switch (filter)
             {
                 case "low":
@@ -39,7 +35,6 @@ namespace CalorieTrackerApp.Controllers
                     break;
             }
 
-            // SORT
             ViewData["CaloriesSort"] = sortOrder == "cal_asc" ? "cal_desc" : "cal_asc";
 
             recipes = sortOrder switch
@@ -69,14 +64,10 @@ namespace CalorieTrackerApp.Controllers
             return View(recipe);
         }
 
-
-        // GET: Recipes/Create
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: Recipes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Recipe recipe)
@@ -91,7 +82,6 @@ namespace CalorieTrackerApp.Controllers
             return View(recipe);
         }
 
-        // GET: Recipes/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var recipe = await _context.Recipes.FindAsync(id);
@@ -103,7 +93,6 @@ namespace CalorieTrackerApp.Controllers
             return View(recipe);
         }
 
-        // POST: Recipes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Recipe recipe)
@@ -122,8 +111,6 @@ namespace CalorieTrackerApp.Controllers
 
             return View(recipe);
         }
-
-        // GET: Recipes/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             var recipe = await _context.Recipes.FindAsync(id);
@@ -134,8 +121,6 @@ namespace CalorieTrackerApp.Controllers
 
             return View(recipe);
         }
-
-        // POST: Recipes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

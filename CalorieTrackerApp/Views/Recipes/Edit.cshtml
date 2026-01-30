@@ -18,14 +18,41 @@
     </div>
 
     <div class="mb-2">
+        <label asp-for="Ingredients">Ingredients</label>
+        <textarea asp-for="Ingredients" class="form-control" rows="4" placeholder="List ingredients here"></textarea>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="Instructions">Instructions</label>
+        <textarea asp-for="Instructions" class="form-control" rows="5" placeholder="Step by step instructions"></textarea>
+    </div>
+
+
+    <div class="mb-2">
         <label asp-for="Calories"></label>
         <input asp-for="Calories" class="form-control" />
         <span asp-validation-for="Calories" class="text-danger"></span>
     </div>
 
-    <div class="form-check mb-3">
-        <input asp-for="IsHealthy" class="form-check-input" />
-        <label asp-for="IsHealthy" class="form-check-label">Healthy</label>
+    <div class="mb-2">
+        <label asp-for="Type">Type of Food</label>
+        <select asp-for="Type" class="form-control">
+            <option>Main</option>
+            <option>Dessert</option>
+            <option>Salad</option>
+            <option>Soup</option>
+            <option>Snack</option>
+            <option>Beverage</option>
+            <option>Breakfast</option>
+            <option>Side</option>
+            <option>Appetizer</option>
+            <option>Other</option>
+        </select>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="Tags">Tags (comma-separated)</label>
+        <input asp-for="Tags" class="form-control" placeholder="Easy to make, Quick, Vegan" />
     </div>
 
     <button type="submit" class="btn btn-success">Save</button>

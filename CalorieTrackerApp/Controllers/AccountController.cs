@@ -83,10 +83,11 @@ public class AccountController : Controller
         }
 
         var dailyCalories = CalorieCalculator.Calculate(
-          model.Weight,
-          model.Height,
-          model.Age,
-          model.Goal
+    model.Weight,
+    model.Height,
+    model.Age,
+    model.Gender,
+    model.Goal
 );
 
         var user = new UserAccount
@@ -96,9 +97,11 @@ public class AccountController : Controller
             Age = model.Age,
             Weight = model.Weight,
             Height = model.Height,
+            Gender = model.Gender,
             Goal = model.Goal,
             DailyCalorieGoal = dailyCalories
         };
+
 
 
         _context.UserAccounts.Add(user);

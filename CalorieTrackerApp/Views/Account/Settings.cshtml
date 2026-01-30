@@ -7,8 +7,10 @@
 
     <form asp-action="DeleteAccount" method="post">
         <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger">
+        <button type="submit" class="btn btn-danger"
+                onclick="return confirm('Are you sure you want to delete your account?');">
             Delete Account
         </button>
+
     </form>
 </div>

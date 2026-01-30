@@ -20,6 +20,13 @@ namespace CalorieTrackerApp.Models
 
         [StringLength(200)]
         public string Img { get; set; } = string.Empty;
+        public string Type { get; set; } = "Main";
+        public string Tags { get; set; } = "";
+        public string Ingredients { get; set; } = "";
+        public string Instructions { get; set; } = "";
+
+
+
     }
 }
 

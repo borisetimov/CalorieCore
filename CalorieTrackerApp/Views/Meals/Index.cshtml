@@ -1,11 +1,11 @@
-﻿@model IEnumerable<Meal>
+﻿@model IEnumerable<CalorieTrackerApp.Models.Meal>
 
 <div class="container mt-4">
     <h2>🍽 Meals</h2>
 
-    <a asp-action="Create" class="btn btn-dark mb-3">
-        Log Meal
-    </a>
+    <p>
+        <a asp-action="Create" class="btn btn-dark">Log Meal</a>
+    </p>
 
     <table class="table table-striped">
         <thead>
@@ -13,6 +13,7 @@
                 <th>Meal</th>
                 <th>Calories</th>
                 <th>Date</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -22,8 +23,17 @@
                     <td>@meal.Name</td>
                     <td>@meal.Calories kcal</td>
                     <td>@meal.Date.ToShortDateString()</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@meal.Id" class="btn btn-outline-secondary btn-sm">
+                            Edit
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@meal.Id" class="btn btn-outline-danger btn-sm">
+                            Delete
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+

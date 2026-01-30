@@ -2,6 +2,17 @@
 
 <h2>Create Account</h2>
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+
+
 <form method="post">
 
     <div class="mb-2">
@@ -35,6 +46,14 @@
         <label>Height (cm)</label>
         <input asp-for="Height" class="form-control" />
     </div>
+    <div class="mb-3">
+        <label>Gender</label>
+        <select asp-for="Gender" class="form-control">
+            <option>Male</option>
+            <option>Female</option>
+        </select>
+    </div>
+
 
     <div class="mb-3">
         <label>Goal</label>
