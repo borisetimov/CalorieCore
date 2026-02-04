@@ -105,5 +105,26 @@ namespace CalorieTrackerApp.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> AddFromRecipe(int recipeId)
+        {
+            var recipe = await _context.Recipes.FindAsync(recipeId);
+            if (recipe == null) return NotFound();
+
+            var username = HttpContext.Session.GetString("Username");
+
+            var meal = new Meal
+            {
+                Name = recipe.Title,
+                Calories = recipe.Calories,
+                Username = username!,
+                Date = DateTime.Now
+            };
+
+            _context.Meals.Add(meal);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

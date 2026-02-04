@@ -53,26 +53,45 @@
                         <p class="mb-3">
                             @if (item.Calories <= 400)
                             {
-                                <span class="badge bg-success me-1">Low-calorie</span>
+                                <span class="badge bg-success">Low-calorie</span>
                             }
                             else
                             {
-                                <span class="badge bg-danger me-1">High-calorie</span>
+                                <span class="badge bg-danger">High-calorie</span>
                             }
-                            @foreach (var tag in item.Tags.Split(',').Select(t => t.Trim()))
+
+                            <span class="badge bg-info">@item.Difficulty</span>
+
+                            @if (item.IsFavorite)
                             {
-                                <span class="badge bg-info me-1">@tag</span>
+                                <span class="badge bg-warning">❤️ Favorite</span>
                             }
                         </p>
 
-                        <div class="mt-auto d-flex gap-1">
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm">
+
+                        <div class="mt-auto d-flex flex-wrap gap-2">
+
+                            <a asp-controller="Meals"
+                               asp-action="AddFromRecipe"
+                               asp-route-recipeId="@item.Id"
+                               class="btn btn-outline-success btn-sm">
+                                Cook & Log Meal 🍽
+                            </a>
+
+                            <a asp-action="Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-outline-secondary btn-sm">
                                 Edit
                             </a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">
+
+                            <a asp-action="Delete"
+                               asp-route-id="@item.Id"
+                               class="btn btn-outline-danger btn-sm">
                                 Delete
                             </a>
+
                         </div>
+
                     </div>
 
                 </div>

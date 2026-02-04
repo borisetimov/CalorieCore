@@ -25,6 +25,9 @@ namespace CalorieTrackerApp.Models
         public string Ingredients { get; set; } = "";
         public string Instructions { get; set; } = "";
 
+        public string Difficulty { get; set; } = "Easy"; // Easy, Medium, Hard
+        public bool IsFavorite { get; set; }
+
 
 
     }
