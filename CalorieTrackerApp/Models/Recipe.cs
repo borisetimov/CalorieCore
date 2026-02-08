@@ -7,10 +7,11 @@ namespace CalorieTrackerApp.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(100)]
+        [StringLength(100, MinimumLength = 3)]
         public string Title { get; set; } = string.Empty;
 
         [Required]
+        [StringLength(1000, MinimumLength = 10)]
         public string Description { get; set; } = string.Empty;
 
         [Range(1, 2000)]
@@ -20,16 +21,28 @@ namespace CalorieTrackerApp.Models
 
         [StringLength(200)]
         public string Img { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(30)]
         public string Type { get; set; } = "Main";
-        public string Tags { get; set; } = "";
-        public string Ingredients { get; set; } = "";
-        public string Instructions { get; set; } = "";
 
+        [StringLength(200)]
+        public string Tags { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(2000, MinimumLength = 5)]
+        public string Ingredients { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(4000, MinimumLength = 10)]
+        public string Instructions { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(20)]
         public string Difficulty { get; set; } = "Easy"; // Easy, Medium, Hard
+
         public bool IsFavorite { get; set; }
-
-
-
     }
 }
+
 

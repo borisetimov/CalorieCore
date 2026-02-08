@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using CalorieTrackerApp.Data;
 
-
 namespace CalorieTrackerApp.Controllers
 {
     public class HomeController : Controller
@@ -23,22 +22,28 @@ namespace CalorieTrackerApp.Controllers
             return View();
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var username = HttpContext.Session.GetString("Username");
 
-            if (username == null)
+            if (string.IsNullOrEmpty(username))
                 return RedirectToAction("Landing");
 
-            var user = _context.UserAccounts.First(u => u.Username == username);
+            var user = await _context.UserAccounts
+                .FirstOrDefaultAsync(u => u.Username == username);
 
-            var meals = _context.Meals
-                .Where(m => m.Username == username && m.Date.Date == DateTime.Today)
-                .Sum(m => m.Calories);
+            if (user == null)
+                return RedirectToAction("Landing");
 
-            var burned = _context.Activities
-                .Where(a => a.Date.Date == DateTime.Today)
-                .Sum(a => a.CaloriesBurned);
+            var today = DateTime.Today;
+
+            var meals = await _context.Meals
+                .Where(m => m.UserAccountId == user.Id && m.Date.Date == today)
+                .SumAsync(m => m.Calories);
+
+            var burned = await _context.Activities
+                .Where(a => a.UserAccountId == user.Id && a.Date.Date == today)
+                .SumAsync(a => a.CaloriesBurned);
 
             int remaining = user.DailyCalorieGoal - meals + burned;
 
@@ -50,7 +55,6 @@ namespace CalorieTrackerApp.Controllers
             return View();
         }
 
-
         public IActionResult Privacy()
         {
             return View();
@@ -59,8 +63,10 @@ namespace CalorieTrackerApp.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            });
         }
-
     }
 }

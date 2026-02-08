@@ -214,6 +214,62 @@ form input[type="text"] {
     margin-top: 20px;
     font-weight: 600;
 }
+/* GLOBAL DARK THEME */
+body {
+    background-color: #121212;
+    color: #e5e5e5;
+}
+
+.card {
+    background-color: #1a1a1a !important;
+    border-color: #333;
+}
+
+.navbar, footer {
+    background-color: #101010 !important;
+}
+
+
+.table {
+    color: #e5e7eb;
+}
+
+    .table thead {
+        background-color: #1e293b;
+    }
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #0f172a;
+}
+
+.form-control {
+    background-color: #020617;
+    color: #e5e7eb;
+    border-color: #334155;
+}
+
+    .form-control::placeholder {
+        color: #94a3b8;
+    }
+
+.btn-outline-secondary {
+    color: #cbd5f5;
+    border-color: #475569;
+}
+
+a {
+    color: #93c5fd;
+}
+.navbar .nav-link {
+    color: white !important;
+    font-weight: 500;
+}
+    .navbar .nav-link:hover {
+        color: #ff9900 !important;
+        text-decoration: none;
+    }
+
+
 
 
 

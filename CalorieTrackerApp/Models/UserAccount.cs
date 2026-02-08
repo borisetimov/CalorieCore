@@ -1,21 +1,42 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CalorieTrackerApp.Models;
+using System.ComponentModel.DataAnnotations;
 
 public class UserAccount
 {
     public int Id { get; set; }
 
     [Required]
-    public string Username { get; set; } = "";
+    [StringLength(30, MinimumLength = 3)]
+    public string Username { get; set; } = string.Empty;
+
 
     [Required]
-    public string Password { get; set; } = "";
+    public string PasswordHash { get; set; } = string.Empty;
 
+
+    [Range(10, 120)]
     public int Age { get; set; }
-    public double Weight { get; set; } 
+
+    [Range(30, 300)]
+    public double Weight { get; set; }
+
+    [Range(100, 250)]
     public double Height { get; set; }
-    public string Goal { get; set; } = "Maintain"; 
-    public int DailyCalorieGoal { get; set; }
+
+    [Required]
+    [StringLength(20)]
+    public string Goal { get; set; } = "Maintain";
+    [Required]
+    [StringLength(10)]
     public string Gender { get; set; } = "Male";
+
+    [Range(1000, 6000)]
+    public int DailyCalorieGoal { get; set; }
+    public ICollection<Meal> Meals { get; set; } = new List<Meal>();
+    public ICollection<UserActivity> Activities { get; set; } = new List<UserActivity>();
+
+
+
 
 
 }

@@ -46,7 +46,7 @@ public class AccountController : Controller
         var user = await _context.UserAccounts
            .FirstOrDefaultAsync(u => u.Username == username);
 
-        if (user != null && PasswordHelper.VerifyPassword(password, user.Password))
+        if (user != null && PasswordHelper.VerifyPassword(password, user.PasswordHash))
         {
             HttpContext.Session.SetString("Username", user.Username);
             return RedirectToAction("Index", "Home");
@@ -93,7 +93,7 @@ public class AccountController : Controller
         var user = new UserAccount
         {
             Username = model.Username,
-            Password = PasswordHelper.HashPassword(model.Password),
+            PasswordHash = PasswordHelper.HashPassword(model.Password),
             Age = model.Age,
             Weight = model.Weight,
             Height = model.Height,
