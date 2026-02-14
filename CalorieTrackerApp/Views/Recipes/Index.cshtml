@@ -1,8 +1,6 @@
 ﻿@model IEnumerable<CalorieTrackerApp.Models.Recipe>
 
 <div class="container mt-5">
-
-    <!-- HEADER -->
     <div class="d-flex align-items-center justify-content-between mb-4">
         <div class="d-flex align-items-center gap-2">
             <h2 class="text-light mb-0">Recipes</h2>
@@ -14,7 +12,6 @@
         </a>
     </div>
 
-    <!-- SEARCH + FILTER BAR -->
     <div class="card bg-dark text-light p-3 mb-4 shadow-sm">
         <div class="row g-2">
 
@@ -52,7 +49,6 @@
         </div>
     </div>
 
-    <!-- RECIPE GRID -->
     <div class="row">
         @foreach (var item in Model)
         {
@@ -84,7 +80,6 @@
                             🔥 @item.Calories kcal
                         </p>
 
-                        <!-- TAGS -->
                         <div class="mb-3 d-flex flex-wrap gap-2">
 
                             @if (item.Calories <= 400)
@@ -106,7 +101,6 @@
                             }
                         </div>
 
-                        <!-- ACTION BUTTONS -->
                         <div class="mt-auto d-flex flex-wrap gap-2">
 
                             <a asp-controller="Meals"

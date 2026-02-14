@@ -5,13 +5,6 @@ html {
     min-height: 100%;
 }
 
-body {
-    background-color: #e6e0d4; 
-    color: #333;
-    margin-bottom: 60px;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
 .navbar {
     background-color: #ffffff; 
 }
@@ -95,10 +88,6 @@ label {
 textarea {
     resize: vertical;
     min-height: 120px;
-}
-body {
-    background-color: #f4f1ec; 
-    color: #1f1f1f;
 }
 .dashboard-title {
     font-weight: 700;
@@ -268,6 +257,35 @@ a {
         color: #ff9900 !important;
         text-decoration: none;
     }
+.landing-page .card {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+    .landing-page .card .card-text,
+    .landing-page .card .card-title {
+        color: #000000 !important;
+    }
+.home-page .card {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+    .home-page .card .card-title,
+    .home-page .card .card-text {
+        color: #000000 !important;
+    }
+.navbar .nav-link img {
+    filter: none !important;
+}
+
+
+
+
+
+
+
+
 
 
 

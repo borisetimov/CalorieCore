@@ -4,6 +4,9 @@ using CalorieTrackerApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using System.Linq;
+using System;
 
 namespace CalorieTrackerApp.Controllers
 {
@@ -20,7 +23,6 @@ namespace CalorieTrackerApp.Controllers
         private async Task<UserAccount?> GetCurrentUserAsync()
         {
             var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             return await _context.UserAccounts
                 .FirstOrDefaultAsync(u => u.IdentityUserId == identityUserId);
         }
@@ -86,6 +88,7 @@ namespace CalorieTrackerApp.Controllers
 
             meal.Name = updatedMeal.Name;
             meal.Calories = updatedMeal.Calories;
+            meal.Date = updatedMeal.Date;
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -119,6 +122,29 @@ namespace CalorieTrackerApp.Controllers
                 _context.Meals.Remove(meal);
                 await _context.SaveChangesAsync();
             }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddFromRecipe(int recipeId)
+        {
+            var user = await GetCurrentUserAsync();
+            if (user == null) return Unauthorized();
+
+            var recipe = await _context.Recipes.FindAsync(recipeId);
+            if (recipe == null) return NotFound();
+
+            var meal = new Meal
+            {
+                UserAccountId = user.Id,
+                Name = recipe.Title,
+                Calories = recipe.Calories,
+                Date = DateTime.Now
+            };
+
+            _context.Meals.Add(meal);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }

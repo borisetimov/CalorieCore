@@ -19,8 +19,17 @@ public class CompleteProfileController : Controller
     }
 
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
+        var identityUser = await _userManager.GetUserAsync(User);
+        var existingAccount = await _context.UserAccounts
+            .FirstOrDefaultAsync(u => u.IdentityUserId == identityUser.Id);
+
+        if (existingAccount != null && existingAccount.IsProfileComplete)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
         return View(new CompleteProfileViewModel());
     }
 
@@ -34,25 +43,36 @@ public class CompleteProfileController : Controller
         var existingAccount = await _context.UserAccounts
             .FirstOrDefaultAsync(u => u.IdentityUserId == identityUser.Id);
 
-        if (existingAccount != null)
-            return RedirectToAction("Index", "Home");
-
         var dailyCalories = CalorieCalculator.Calculate(
             model.Weight, model.Height, model.Age, model.Gender, model.Goal
         );
 
-        var userAccount = new UserAccount
+        if (existingAccount == null)
         {
-            IdentityUserId = identityUser.Id,
-            Age = model.Age,
-            Weight = model.Weight,
-            Height = model.Height,
-            Gender = model.Gender,
-            Goal = model.Goal,
-            DailyCalorieGoal = dailyCalories
-        };
+            existingAccount = new UserAccount
+            {
+                IdentityUserId = identityUser.Id,
+                IsProfileComplete = true,
+                Age = model.Age,
+                Weight = model.Weight,
+                Height = model.Height,
+                Gender = model.Gender,
+                Goal = model.Goal,
+                DailyCalorieGoal = dailyCalories
+            };
+            _context.UserAccounts.Add(existingAccount);
+        }
+        else
+        {
+            existingAccount.Age = model.Age;
+            existingAccount.Weight = model.Weight;
+            existingAccount.Height = model.Height;
+            existingAccount.Gender = model.Gender;
+            existingAccount.Goal = model.Goal;
+            existingAccount.DailyCalorieGoal = dailyCalories;
+            existingAccount.IsProfileComplete = true;
+        }
 
-        _context.UserAccounts.Add(userAccount);
         await _context.SaveChangesAsync();
 
         return RedirectToAction("Index", "Home");

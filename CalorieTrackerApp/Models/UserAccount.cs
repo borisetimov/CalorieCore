@@ -27,6 +27,8 @@ namespace CalorieTrackerApp.Models
         [Range(1000, 6000)]
         public int DailyCalorieGoal { get; set; }
 
+        public bool IsProfileComplete { get; set; } = false;
+
         public ICollection<Meal> Meals { get; set; } = new List<Meal>();
         public ICollection<UserActivity> Activities { get; set; } = new List<UserActivity>();
     }
