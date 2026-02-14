@@ -1,42 +1,33 @@
-﻿using CalorieTrackerApp.Models;
+﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-public class UserAccount
+namespace CalorieTrackerApp.Models
 {
-    public int Id { get; set; }
+    public class UserAccount
+    {
+        public int Id { get; set; }
+        public string IdentityUserId { get; set; } = string.Empty;
+        public IdentityUser? IdentityUser { get; set; }
 
-    [Required]
-    [StringLength(30, MinimumLength = 3)]
-    public string Username { get; set; } = string.Empty;
+        [Range(10, 120)]
+        public int Age { get; set; }
 
+        [Range(30, 300)]
+        public double Weight { get; set; }
 
-    [Required]
-    public string PasswordHash { get; set; } = string.Empty;
+        [Range(100, 250)]
+        public double Height { get; set; }
 
+        [Required, StringLength(20)]
+        public string Goal { get; set; } = "Maintain";
 
-    [Range(10, 120)]
-    public int Age { get; set; }
+        [Required, StringLength(10)]
+        public string Gender { get; set; } = "Male";
 
-    [Range(30, 300)]
-    public double Weight { get; set; }
+        [Range(1000, 6000)]
+        public int DailyCalorieGoal { get; set; }
 
-    [Range(100, 250)]
-    public double Height { get; set; }
-
-    [Required]
-    [StringLength(20)]
-    public string Goal { get; set; } = "Maintain";
-    [Required]
-    [StringLength(10)]
-    public string Gender { get; set; } = "Male";
-
-    [Range(1000, 6000)]
-    public int DailyCalorieGoal { get; set; }
-    public ICollection<Meal> Meals { get; set; } = new List<Meal>();
-    public ICollection<UserActivity> Activities { get; set; } = new List<UserActivity>();
-
-
-
-
-
+        public ICollection<Meal> Meals { get; set; } = new List<Meal>();
+        public ICollection<UserActivity> Activities { get; set; } = new List<UserActivity>();
+    }
 }

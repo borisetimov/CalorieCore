@@ -1,16 +1,15 @@
-﻿@model UserAccount
+﻿@model CalorieTrackerApp.ViewModels.SettingsViewModel
 
 <div class="container mt-5 text-center">
-    <h2>Settings</h2>
+    <h2>Account Settings</h2>
 
     <p>Username: @Model.Username</p>
+    <p>Email: @Model.Email</p>
 
-    <form asp-action="DeleteAccount" method="post">
+    <form asp-action="DeleteAccount" method="post" onsubmit="return confirm('Are you sure you want to delete your account?');">
         <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger"
-                onclick="return confirm('Are you sure you want to delete your account?');">
+        <button type="submit" class="btn btn-danger mt-3">
             Delete Account
         </button>
-
     </form>
 </div>

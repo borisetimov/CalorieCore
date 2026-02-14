@@ -39,10 +39,14 @@ namespace CalorieTrackerApp.Models
 
         [Required]
         [StringLength(20)]
-        public string Difficulty { get; set; } = "Easy"; // Easy, Medium, Hard
+        public string Difficulty { get; set; } = "Easy";
 
         public bool IsFavorite { get; set; }
+
+        public int? UserAccountId { get; set; }
+
+        public UserAccount? UserAccount { get; set; }
+
+        public bool IsGlobal { get; set; } = false;
     }
 }
-
-

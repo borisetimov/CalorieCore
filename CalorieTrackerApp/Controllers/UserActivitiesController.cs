@@ -1,10 +1,13 @@
-﻿using CalorieTrackerApp.Data;
+﻿using System.Security.Claims;
+using CalorieTrackerApp.Data;
 using CalorieTrackerApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CalorieTrackerApp.Controllers
 {
+    [Authorize]
     public class UserActivitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -16,20 +19,16 @@ namespace CalorieTrackerApp.Controllers
 
         private async Task<UserAccount?> GetCurrentUserAsync()
         {
-            var username = HttpContext.Session.GetString("Username");
-
-            if (string.IsNullOrEmpty(username))
-                return null;
+            var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return await _context.UserAccounts
-                .FirstOrDefaultAsync(u => u.Username == username);
+                .FirstOrDefaultAsync(u => u.IdentityUserId == identityUserId);
         }
 
         public async Task<IActionResult> Index()
         {
             var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            if (user == null) return Unauthorized();
 
             var activities = await _context.Activities
                 .Where(a => a.UserAccountId == user.Id)
@@ -39,87 +38,31 @@ namespace CalorieTrackerApp.Controllers
             return View(activities);
         }
 
-        public async Task<IActionResult> Create()
-        {
-            var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
-
-            return View();
-        }
+        public IActionResult Create() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,CaloriesBurned")] UserActivity userActivity)
+        public async Task<IActionResult> Create(UserActivity activity)
         {
             var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
-
-            if (ModelState.IsValid)
-            {
-                userActivity.UserAccountId = user.Id;
-                userActivity.Date = DateTime.Now;
-
-                _context.Activities.Add(userActivity);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(userActivity);
-        }
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null) return NotFound();
-
-            var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
-
-            var activity = await _context.Activities
-                .FirstOrDefaultAsync(a => a.Id == id && a.UserAccountId == user.Id);
-
-            if (activity == null) return NotFound();
-
-            return View(activity);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, UserActivity updatedActivity)
-        {
-            if (id != updatedActivity.Id) return NotFound();
-
-            var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            if (user == null) return Unauthorized();
 
             if (!ModelState.IsValid)
-                return View(updatedActivity);
+                return View(activity);
 
-            var activity = await _context.Activities
-                .FirstOrDefaultAsync(a => a.Id == id && a.UserAccountId == user.Id);
+            activity.UserAccountId = user.Id;
+            activity.Date = DateTime.Now;
 
-            if (activity == null) return NotFound();
-
-            activity.Name = updatedActivity.Name;
-            activity.CaloriesBurned = updatedActivity.CaloriesBurned;
-            activity.Date = updatedActivity.Date;
-
+            _context.Activities.Add(activity);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null) return NotFound();
-
             var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            if (user == null) return Unauthorized();
 
             var activity = await _context.Activities
                 .FirstOrDefaultAsync(a => a.Id == id && a.UserAccountId == user.Id);
@@ -134,8 +77,7 @@ namespace CalorieTrackerApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            if (user == null) return Unauthorized();
 
             var activity = await _context.Activities
                 .FirstOrDefaultAsync(a => a.Id == id && a.UserAccountId == user.Id);

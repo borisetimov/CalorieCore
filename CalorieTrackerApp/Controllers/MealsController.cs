@@ -1,10 +1,13 @@
-﻿using CalorieTrackerApp.Data;
+﻿using System.Security.Claims;
+using CalorieTrackerApp.Data;
 using CalorieTrackerApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CalorieTrackerApp.Controllers
 {
+    [Authorize]
     public class MealsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -16,20 +19,16 @@ namespace CalorieTrackerApp.Controllers
 
         private async Task<UserAccount?> GetCurrentUserAsync()
         {
-            var username = HttpContext.Session.GetString("Username");
-
-            if (string.IsNullOrEmpty(username))
-                return null;
+            var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return await _context.UserAccounts
-                .FirstOrDefaultAsync(u => u.Username == username);
+                .FirstOrDefaultAsync(u => u.IdentityUserId == identityUserId);
         }
 
         public async Task<IActionResult> Index()
         {
             var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            if (user == null) return Unauthorized();
 
             var meals = await _context.Meals
                 .Where(m => m.UserAccountId == user.Id)
@@ -39,43 +38,31 @@ namespace CalorieTrackerApp.Controllers
             return View(meals);
         }
 
-        public async Task<IActionResult> Create()
-        {
-            var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
-
-            return View();
-        }
+        public IActionResult Create() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Calories")] Meal meal)
+        public async Task<IActionResult> Create(Meal meal)
         {
             var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            if (user == null) return Unauthorized();
 
-            if (ModelState.IsValid)
-            {
-                meal.UserAccountId = user.Id;
-                meal.Date = DateTime.Now;
+            if (!ModelState.IsValid)
+                return View(meal);
 
-                _context.Meals.Add(meal);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            meal.UserAccountId = user.Id;
+            meal.Date = DateTime.Now;
 
-            return View(meal);
+            _context.Meals.Add(meal);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
-
             var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            if (user == null) return Unauthorized();
 
             var meal = await _context.Meals
                 .FirstOrDefaultAsync(m => m.Id == id && m.UserAccountId == user.Id);
@@ -90,13 +77,7 @@ namespace CalorieTrackerApp.Controllers
         public async Task<IActionResult> Edit(int id, Meal updatedMeal)
         {
             var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
-
-            if (id != updatedMeal.Id) return NotFound();
-
-            if (!ModelState.IsValid)
-                return View(updatedMeal);
+            if (user == null) return Unauthorized();
 
             var meal = await _context.Meals
                 .FirstOrDefaultAsync(m => m.Id == id && m.UserAccountId == user.Id);
@@ -105,20 +86,15 @@ namespace CalorieTrackerApp.Controllers
 
             meal.Name = updatedMeal.Name;
             meal.Calories = updatedMeal.Calories;
-            meal.Date = updatedMeal.Date;
 
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null) return NotFound();
-
             var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            if (user == null) return Unauthorized();
 
             var meal = await _context.Meals
                 .FirstOrDefaultAsync(m => m.Id == id && m.UserAccountId == user.Id);
@@ -133,8 +109,7 @@ namespace CalorieTrackerApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            if (user == null) return Unauthorized();
 
             var meal = await _context.Meals
                 .FirstOrDefaultAsync(m => m.Id == id && m.UserAccountId == user.Id);
@@ -144,29 +119,6 @@ namespace CalorieTrackerApp.Controllers
                 _context.Meals.Remove(meal);
                 await _context.SaveChangesAsync();
             }
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        public async Task<IActionResult> AddFromRecipe(int recipeId)
-        {
-            var user = await GetCurrentUserAsync();
-            if (user == null)
-                return RedirectToAction("Login", "Account");
-
-            var recipe = await _context.Recipes.FindAsync(recipeId);
-            if (recipe == null) return NotFound();
-
-            var meal = new Meal
-            {
-                Name = recipe.Title,
-                Calories = recipe.Calories,
-                UserAccountId = user.Id,
-                Date = DateTime.Now
-            };
-
-            _context.Meals.Add(meal);
-            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }

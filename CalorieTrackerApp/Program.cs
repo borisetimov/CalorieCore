@@ -1,6 +1,8 @@
 using CalorieTrackerApp.Data;
+using CalorieTrackerApp.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace CalorieTrackerApp
 {
@@ -10,19 +12,8 @@ namespace CalorieTrackerApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
-            builder.Services.AddControllersWithViews(options =>
-            {
-                options.Filters.Add<AuthFilter>();
-            });
-
-
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
@@ -31,39 +22,37 @@ namespace CalorieTrackerApp
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredLength = 6;
             })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/Login";
-                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.AccessDeniedPath = "/Account/Login";
             });
-            builder.Services.AddSession();
+
+            builder.Services.AddSingleton<IEmailSender, EmailSender>();
+            builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
-            
+            // Middleware order is critical
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRouting();
-
-            app.UseSession();
-
-            app.UseAuthorization();
-
+            app.UseRouting();          
+            app.UseAuthentication();  
+            app.UseAuthorization();   
             app.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Home}/{action=Landing}/{id?}");
+                name: "default",
+                pattern: "{controller=Home}/{action=Landing}/{id?}");
 
+            
 
             app.Run();
         }

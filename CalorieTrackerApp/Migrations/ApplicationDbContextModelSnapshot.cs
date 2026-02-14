@@ -90,6 +90,9 @@ namespace CalorieTrackerApp.Migrations
                     b.Property<bool>("IsFavorite")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsGlobal")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsHealthy")
                         .HasColumnType("bit");
 
@@ -108,7 +111,12 @@ namespace CalorieTrackerApp.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<int?>("UserAccountId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserAccountId");
 
                     b.ToTable("Recipes");
 
@@ -117,31 +125,657 @@ namespace CalorieTrackerApp.Migrations
                         {
                             Id = 1,
                             Calories = 350,
-                            Description = "",
+                            Description = "Fresh mixed greens topped with grilled chicken breast and light vinaigrette.",
                             Difficulty = "Easy",
-                            Img = "/images/caesar_salad.png",
-                            Ingredients = "Romaine lettuce, Parmesan, Croutons, Caesar dressing",
-                            Instructions = "1. Chop lettuce. 2. Add dressing and croutons. 3. Sprinkle parmesan and serve.",
+                            Img = "",
+                            Ingredients = "Chicken breast, Mixed greens, Cherry tomatoes, Cucumber, Olive oil, Lemon juice",
+                            Instructions = "1. Grill chicken and slice. 2. Chop vegetables. 3. Toss with olive oil and lemon dressing.",
                             IsFavorite = false,
-                            IsHealthy = false,
-                            Tags = "Easy to make, Quick, Low-calorie",
-                            Title = "Caesar Salad",
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Low-carb, Light",
+                            Title = "Grilled Chicken Salad",
                             Type = "Salad"
                         },
                         new
                         {
                             Id = 2,
-                            Calories = 550,
-                            Description = "",
+                            Calories = 280,
+                            Description = "Classic oatmeal topped with fresh berries and honey.",
                             Difficulty = "Easy",
-                            Img = "/images/chocolate_cake.png",
-                            Ingredients = "Flour, Sugar, Cocoa powder, Eggs, Butter",
-                            Instructions = "1. Mix ingredients. 2. Bake at 180°C for 30 mins. 3. Cool and serve.",
+                            Img = "",
+                            Ingredients = "Oats, Milk, Blueberries, Strawberries, Honey",
+                            Instructions = "1. Cook oats with milk. 2. Top with berries. 3. Drizzle honey.",
                             IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-fiber, Quick, Healthy",
+                            Title = "Oatmeal with Berries",
+                            Type = "Breakfast"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Calories = 400,
+                            Description = "Nutritious quinoa bowl with roasted vegetables.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Quinoa, Zucchini, Bell peppers, Carrots, Olive oil",
+                            Instructions = "1. Cook quinoa. 2. Roast vegetables. 3. Combine and drizzle olive oil.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, High-fiber, Balanced",
+                            Title = "Quinoa Vegetable Bowl",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Calories = 300,
+                            Description = "Layered Greek yogurt with granola and fresh fruit.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Greek yogurt, Granola, Mixed berries, Honey",
+                            Instructions = "1. Layer yogurt and granola. 2. Add berries. 3. Drizzle honey.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Quick, Healthy",
+                            Title = "Greek Yogurt Parfait",
+                            Type = "Snack"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Calories = 450,
+                            Description = "Oven-baked salmon served with roasted asparagus.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Salmon fillet, Asparagus, Olive oil, Lemon, Garlic",
+                            Instructions = "1. Season salmon. 2. Bake at 200°C for 15 minutes. 3. Roast asparagus alongside.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Omega-3, Low-carb",
+                            Title = "Baked Salmon with Asparagus",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Calories = 420,
+                            Description = "Quick stir fry with chicken and colorful vegetables.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Chicken breast, Broccoli, Carrots, Bell peppers, Soy sauce",
+                            Instructions = "1. Cook chicken strips. 2. Add vegetables. 3. Stir in soy sauce and cook until tender.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Quick, Balanced",
+                            Title = "Chicken Stir Fry",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Calories = 380,
+                            Description = "Whole grain sandwich with turkey and fresh avocado.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Whole grain bread, Turkey slices, Avocado, Lettuce, Tomato",
+                            Instructions = "1. Toast bread. 2. Add turkey and sliced avocado. 3. Top with lettuce and tomato.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Quick, Balanced",
+                            Title = "Turkey Avocado Sandwich",
+                            Type = "Lunch"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Calories = 290,
+                            Description = "Egg omelette filled with fresh vegetables.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Eggs, Spinach, Mushrooms, Bell peppers, Olive oil",
+                            Instructions = "1. Whisk eggs. 2. Sauté vegetables. 3. Pour eggs over vegetables and cook until set.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Low-carb, High-protein, Quick",
+                            Title = "Veggie Omelette",
+                            Type = "Breakfast"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Calories = 330,
+                            Description = "Hearty lentil soup packed with fiber and nutrients.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Red lentils, Onion, Carrots, Garlic, Vegetable broth",
+                            Instructions = "1. Sauté onion and garlic. 2. Add lentils and broth. 3. Simmer 25 minutes.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, High-fiber, Meal prep",
+                            Title = "Lentil Soup",
+                            Type = "Soup"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Calories = 320,
+                            Description = "Simple Italian salad with mozzarella and tomatoes.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Mozzarella, Tomatoes, Fresh basil, Olive oil, Balsamic glaze",
+                            Instructions = "1. Slice mozzarella and tomatoes. 2. Layer with basil. 3. Drizzle olive oil and balsamic.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, Fresh, Light",
+                            Title = "Caprese Salad",
+                            Type = "Salad"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Calories = 350,
+                            Description = "Creamy smoothie with banana and peanut butter.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Banana, Peanut butter, Milk, Ice",
+                            Instructions = "1. Add all ingredients to blender. 2. Blend until smooth.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Energy boost, Quick, Protein",
+                            Title = "Peanut Butter Banana Smoothie",
+                            Type = "Breakfast"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Calories = 430,
+                            Description = "Grilled chicken served with brown rice and fresh Mediterranean vegetables.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Chicken breast, Brown rice, Cucumber, Cherry tomatoes, Feta cheese, Olive oil, Lemon juice, Oregano",
+                            Instructions = "1. Grill seasoned chicken breast and slice. 2. Cook brown rice. 3. Chop vegetables. 4. Assemble bowl and drizzle with olive oil and lemon.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Balanced, Meal prep",
+                            Title = "Mediterranean Chicken Bowl",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Calories = 360,
+                            Description = "A vegetarian wrap packed with fiber-rich chickpeas and fresh vegetables.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Whole wheat tortilla, Chickpeas, Paprika, Cumin, Lettuce, Tomato, Greek yogurt",
+                            Instructions = "1. Sauté chickpeas with paprika and cumin. 2. Warm tortilla. 3. Add vegetables and yogurt. 4. Wrap tightly and serve.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, Quick, High-fiber",
+                            Title = "Spicy Chickpea Wrap",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Calories = 340,
+                            Description = "High-protein oatmeal topped with berries and almond butter.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Oats, Milk, Protein powder, Blueberries, Almond butter",
+                            Instructions = "1. Cook oats with milk. 2. Stir in protein powder. 3. Top with blueberries and almond butter.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Energy boost, Healthy",
+                            Title = "Protein Oat Breakfast Bowl",
+                            Type = "Breakfast"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Calories = 390,
+                            Description = "Lean turkey patties grilled and seasoned with herbs.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Lean ground turkey, Garlic, Onion, Parsley, Salt, Pepper",
+                            Instructions = "1. Mix turkey with seasonings. 2. Form patties. 3. Grill 5-6 minutes per side until fully cooked.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Low-fat, Dinner",
+                            Title = "Grilled Turkey Patties",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Calories = 310,
+                            Description = "Low-carb zucchini noodles tossed in fresh basil pesto.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Zucchini, Basil pesto, Cherry tomatoes, Parmesan",
+                            Instructions = "1. Spiralize zucchini. 2. Lightly sauté for 2-3 minutes. 3. Stir in pesto and top with tomatoes and parmesan.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Low-carb, Vegetarian, Light",
+                            Title = "Zucchini Noodles with Pesto",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Calories = 350,
+                            Description = "Oven-baked cod fillet flavored with lemon zest and fresh herbs.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Cod fillet, Olive oil, Lemon zest, Garlic, Parsley, Salt, Pepper",
+                            Instructions = "1. Preheat oven to 200°C. 2. Season cod with herbs and lemon. 3. Bake 12-15 minutes until flaky.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Low-fat, Omega-3",
+                            Title = "Baked Cod with Lemon Herbs",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Calories = 290,
+                            Description = "Whole grain toast topped with mashed avocado and a perfectly cooked egg.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Whole grain bread, Avocado, Egg, Chili flakes, Salt",
+                            Instructions = "1. Toast bread. 2. Mash avocado on top. 3. Add fried or poached egg. 4. Sprinkle chili flakes.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Quick, Balanced, Healthy fats",
+                            Title = "Avocado Egg Toast",
+                            Type = "Breakfast"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Calories = 280,
+                            Description = "Light homemade soup with lean chicken and fresh vegetables.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Chicken breast, Carrots, Celery, Onion, Garlic, Chicken broth",
+                            Instructions = "1. Sauté vegetables. 2. Add diced chicken and broth. 3. Simmer 20 minutes until chicken is cooked.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Light, High-protein, Meal prep",
+                            Title = "Chicken and Vegetable Soup",
+                            Type = "Soup"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Calories = 260,
+                            Description = "Protein-rich cottage cheese topped with fresh fruit.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Cottage cheese, Pineapple, Strawberries, Chia seeds",
+                            Instructions = "1. Add cottage cheese to bowl. 2. Top with fruit and chia seeds.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Quick, Healthy",
+                            Title = "Cottage Cheese Fruit Bowl",
+                            Type = "Snack"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Calories = 440,
+                            Description = "Lean beef stir fried with colorful vegetables.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Lean beef strips, Bell peppers, Broccoli, Soy sauce, Garlic, Olive oil",
+                            Instructions = "1. Cook beef strips in olive oil. 2. Add vegetables and stir fry 5 minutes. 3. Add soy sauce and cook 2 more minutes.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Dinner, Balanced",
+                            Title = "Healthy Beef Stir Fry",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Calories = 310,
+                            Description = "Fluffy omelette filled with spinach and feta cheese.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Eggs, Fresh spinach, Feta cheese, Olive oil, Salt, Pepper",
+                            Instructions = "1. Whisk eggs. 2. Sauté spinach. 3. Add eggs and feta. 4. Cook until set.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Low-carb, Quick",
+                            Title = "Spinach and Feta Omelette",
+                            Type = "Breakfast"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Calories = 420,
+                            Description = "Grilled shrimp served over quinoa with avocado and tomatoes.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Shrimp, Quinoa, Avocado, Cherry tomatoes, Lime juice, Olive oil",
+                            Instructions = "1. Grill shrimp. 2. Cook quinoa. 3. Assemble bowl and drizzle lime juice.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Omega-3, Balanced",
+                            Title = "Grilled Shrimp Quinoa Bowl",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            Calories = 400,
+                            Description = "Bell peppers stuffed with lean turkey and brown rice.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Bell peppers, Lean ground turkey, Spinach, Brown rice, Garlic, Tomato sauce",
+                            Instructions = "1. Cook turkey with spinach. 2. Mix with rice. 3. Stuff peppers and bake 25 minutes.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Meal prep, Healthy",
+                            Title = "Turkey and Spinach Stuffed Peppers",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            Calories = 330,
+                            Description = "Fresh salad combining chickpeas and creamy avocado.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Chickpeas, Avocado, Red onion, Lemon juice, Olive oil, Parsley",
+                            Instructions = "1. Combine ingredients. 2. Toss with lemon and olive oil.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, High-fiber, Light",
+                            Title = "Avocado Chickpea Salad",
+                            Type = "Salad"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            Calories = 360,
+                            Description = "Roasted sweet potato topped with garlic yogurt sauce.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Sweet potato, Greek yogurt, Garlic, Paprika, Olive oil",
+                            Instructions = "1. Bake sweet potato. 2. Prepare yogurt sauce. 3. Top and serve.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, High-fiber, Comfort food",
+                            Title = "Baked Sweet Potato with Yogurt Sauce",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            Calories = 390,
+                            Description = "Light whole wheat wrap filled with grilled chicken and Caesar-style salad.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Grilled chicken, Whole wheat tortilla, Romaine lettuce, Light Caesar dressing, Parmesan",
+                            Instructions = "1. Slice grilled chicken. 2. Add to tortilla with lettuce and dressing. 3. Sprinkle parmesan and wrap tightly.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Quick, Lunch",
+                            Title = "Chicken Caesar Wrap Light",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            Calories = 410,
+                            Description = "Fresh Greek salad topped with seasoned grilled chicken breast.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Chicken breast, Cucumber, Tomato, Olives, Feta, Olive oil, Oregano",
+                            Instructions = "1. Grill chicken and slice. 2. Chop vegetables. 3. Toss with olive oil and oregano. 4. Top with feta.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Mediterranean, Balanced",
+                            Title = "Greek Salad with Grilled Chicken",
+                            Type = "Salad"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            Calories = 300,
+                            Description = "Thick smoothie bowl blended with berries and protein powder.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Banana, Frozen berries, Protein powder, Almond milk, Chia seeds",
+                            Instructions = "1. Blend banana, berries, protein powder and milk. 2. Pour into bowl. 3. Top with chia seeds.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Energy boost, Healthy",
+                            Title = "Protein Smoothie Bowl",
+                            Type = "Breakfast"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            Calories = 340,
+                            Description = "Oven-baked tilapia infused with lemon and garlic flavors.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Tilapia fillet, Lemon juice, Garlic, Olive oil, Parsley, Salt",
+                            Instructions = "1. Season tilapia with garlic and lemon. 2. Bake 12-15 minutes at 200°C. 3. Garnish with parsley.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Low-fat, High-protein, Dinner",
+                            Title = "Lemon Garlic Tilapia",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            Calories = 370,
+                            Description = "Plant-based stir fry with tofu and colorful vegetables.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Firm tofu, Broccoli, Carrots, Bell peppers, Soy sauce, Sesame oil",
+                            Instructions = "1. Cook tofu cubes until golden. 2. Add vegetables and stir fry 5 minutes. 3. Add soy sauce and sesame oil.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, High-protein, Balanced",
+                            Title = "Vegetable Stir Fry with Tofu",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 32,
+                            Calories = 390,
+                            Description = "Healthy brown rice fried with eggs and vegetables.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Brown rice, Eggs, Green peas, Carrots, Soy sauce, Green onion",
+                            Instructions = "1. Scramble eggs in pan. 2. Add cooked rice and vegetables. 3. Stir in soy sauce and green onions.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Balanced, Quick, Comfort food",
+                            Title = "Egg Fried Brown Rice",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 33,
+                            Calories = 420,
+                            Description = "Low-carb salad with grilled chicken and creamy avocado.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Chicken breast, Avocado, Mixed greens, Cherry tomatoes, Olive oil, Lemon",
+                            Instructions = "1. Grill chicken and slice. 2. Combine with greens and vegetables. 3. Drizzle olive oil and lemon.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Low-carb, Healthy fats",
+                            Title = "Grilled Chicken Avocado Salad",
+                            Type = "Salad"
+                        },
+                        new
+                        {
+                            Id = 34,
+                            Calories = 430,
+                            Description = "Whole wheat pasta mixed with tuna and sautéed spinach.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Whole wheat pasta, Canned tuna, Spinach, Olive oil, Garlic",
+                            Instructions = "1. Cook pasta. 2. Sauté garlic and spinach. 3. Mix with tuna and pasta.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Balanced, Quick",
+                            Title = "Healthy Tuna Pasta",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 35,
+                            Calories = 310,
+                            Description = "Protein-rich pancakes made with cottage cheese and oats.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Cottage cheese, Eggs, Oats, Baking powder",
+                            Instructions = "1. Blend all ingredients. 2. Cook small pancakes on medium heat 2-3 minutes per side.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Healthy, Quick",
+                            Title = "Cottage Cheese Pancakes",
+                            Type = "Breakfast"
+                        },
+                        new
+                        {
+                            Id = 36,
+                            Calories = 380,
+                            Description = "Roasted seasonal vegetables served over quinoa.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Zucchini, Eggplant, Bell peppers, Olive oil, Quinoa",
+                            Instructions = "1. Roast chopped vegetables 25 minutes at 200°C. 2. Serve over cooked quinoa.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, High-fiber, Balanced",
+                            Title = "Roasted Vegetable Bowl",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 37,
+                            Calories = 450,
+                            Description = "Crispy whole wheat quesadilla filled with chicken and avocado.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Whole wheat tortilla, Grilled chicken, Avocado, Light cheese",
+                            Instructions = "1. Fill tortilla with chicken, avocado and cheese. 2. Cook in pan until crispy on both sides.",
+                            IsFavorite = false,
+                            IsGlobal = true,
                             IsHealthy = false,
-                            Tags = "Sweet, High-calorie, Easy to make",
-                            Title = "Chocolate Cake",
-                            Type = "Dessert"
+                            Tags = "High-protein, Quick, Comfort food",
+                            Title = "Chicken and Avocado Quesadilla",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 38,
+                            Calories = 290,
+                            Description = "Healthy baked oatmeal cut into portable squares.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Oats, Milk, Eggs, Honey, Blueberries",
+                            Instructions = "1. Mix ingredients. 2. Pour into baking dish. 3. Bake 25 minutes at 180°C and slice.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-fiber, Meal prep, Breakfast",
+                            Title = "Baked Oatmeal Squares",
+                            Type = "Snack"
+                        },
+                        new
+                        {
+                            Id = 39,
+                            Calories = 410,
+                            Description = "Soft tacos filled with grilled chicken and fresh vegetables.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Chicken breast, Corn tortillas, Lettuce, Tomato, Greek yogurt",
+                            Instructions = "1. Grill chicken and slice. 2. Fill tortillas with chicken and vegetables. 3. Top with yogurt.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Quick, Dinner",
+                            Title = "Grilled Chicken Tacos",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 40,
+                            Calories = 420,
+                            Description = "Hearty vegetarian curry with red lentils and spinach.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Red lentils, Spinach, Onion, Garlic, Coconut milk, Curry powder",
+                            Instructions = "1. Cook onion and garlic. 2. Add lentils, coconut milk and curry powder. 3. Simmer 20 minutes. 4. Stir in spinach.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, High-fiber, Meal prep",
+                            Title = "Lentil and Spinach Curry",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 41,
+                            Calories = 270,
+                            Description = "Greek yogurt bowl with apple slices, cinnamon and honey.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Greek yogurt, Apple, Cinnamon, Honey, Walnuts",
+                            Instructions = "1. Add yogurt to bowl. 2. Top with apple and walnuts. 3. Sprinkle cinnamon and drizzle honey.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Quick, Healthy, Light",
+                            Title = "Apple Cinnamon Yogurt Bowl",
+                            Type = "Snack"
                         });
                 });
 
@@ -399,19 +1033,16 @@ namespace CalorieTrackerApp.Migrations
                     b.Property<double>("Height")
                         .HasColumnType("float");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("IdentityUserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdentityUserId");
 
                     b.ToTable("UserAccounts");
                 });
@@ -423,6 +1054,15 @@ namespace CalorieTrackerApp.Migrations
                         .HasForeignKey("UserAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("UserAccount");
+                });
+
+            modelBuilder.Entity("CalorieTrackerApp.Models.Recipe", b =>
+                {
+                    b.HasOne("UserAccount", "UserAccount")
+                        .WithMany("Recipes")
+                        .HasForeignKey("UserAccountId");
 
                     b.Navigation("UserAccount");
                 });
@@ -491,9 +1131,22 @@ namespace CalorieTrackerApp.Migrations
 
             modelBuilder.Entity("UserAccount", b =>
                 {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
+                        .WithMany()
+                        .HasForeignKey("IdentityUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IdentityUser");
+                });
+
+            modelBuilder.Entity("UserAccount", b =>
+                {
                     b.Navigation("Activities");
 
                     b.Navigation("Meals");
+
+                    b.Navigation("Recipes");
                 });
 #pragma warning restore 612, 618
         }

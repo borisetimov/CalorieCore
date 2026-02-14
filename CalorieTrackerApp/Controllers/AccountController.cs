@@ -1,121 +1,108 @@
 ﻿using CalorieTrackerApp.Data;
+using CalorieTrackerApp.Models;
+using CalorieTrackerApp.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-public class AccountController : Controller
+namespace CalorieTrackerApp.Controllers
 {
-    private readonly ApplicationDbContext _context;
-
-    [HttpGet]
-    public IActionResult Settings()
+    public class AccountController : Controller
     {
-        var username = HttpContext.Session.GetString("Username");
-        if (username == null)
-            return RedirectToAction("Login");
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
-        var user = _context.UserAccounts.FirstOrDefault(u => u.Username == username);
-        return View(user);
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteAccount(int id)
-    {
-        var user = await _context.UserAccounts.FindAsync(id);
-        if (user != null)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
-            _context.UserAccounts.Remove(user);
-            await _context.SaveChangesAsync();
-            HttpContext.Session.Clear();
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
-        return RedirectToAction("Landing", "Home");
-    }
-    public AccountController(ApplicationDbContext context)
-    {
-        _context = context;
-    }
-
-    public IActionResult Login()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Login(string username, string password)
-    {
-        var user = await _context.UserAccounts
-           .FirstOrDefaultAsync(u => u.Username == username);
-
-        if (user != null && PasswordHelper.VerifyPassword(password, user.PasswordHash))
+        [HttpGet]
+        public async Task<IActionResult> Settings()
         {
-            HttpContext.Session.SetString("Username", user.Username);
-            return RedirectToAction("Index", "Home");
-        }
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("Login");
 
+            var model = new SettingsViewModel
+            {
+                Id = user.Id,
+                Username = user.UserName ?? "",
+                Email = user.Email ?? ""
+            };
 
-        if (user != null)
-        {
-            HttpContext.Session.SetString("Username", user.Username);
-            return RedirectToAction("Index", "Home");
-        }
-
-        ViewBag.Error = "Invalid login";
-        return View();
-    }
-    public IActionResult Register()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Register(RegisterViewModel model)
-    {
-        if (!ModelState.IsValid)
-            return View(model);
-
-        var exists = await _context.UserAccounts
-            .AnyAsync(u => u.Username == model.Username);
-
-        if (exists)
-        {
-            ModelState.AddModelError("", "Username already exists");
             return View(model);
         }
 
-        var dailyCalories = CalorieCalculator.Calculate(
-    model.Weight,
-    model.Height,
-    model.Age,
-    model.Gender,
-    model.Goal
-);
-
-        var user = new UserAccount
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAccount(string id)
         {
-            Username = model.Username,
-            PasswordHash = PasswordHelper.HashPassword(model.Password),
-            Age = model.Age,
-            Weight = model.Weight,
-            Height = model.Height,
-            Gender = model.Gender,
-            Goal = model.Goal,
-            DailyCalorieGoal = dailyCalories
-        };
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                await _signInManager.SignOutAsync();
+                var result = await _userManager.DeleteAsync(user);
 
+                if (result.Succeeded)
+                    return RedirectToAction("Landing", "Home");
 
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
+            }
 
-        _context.UserAccounts.Add(user);
-        await _context.SaveChangesAsync();
+            return RedirectToAction("Settings");
+        }
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
 
-        HttpContext.Session.SetString("Username", user.Username);
-        return RedirectToAction("Index", "Home");
-    }
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
 
+            var user = new IdentityUser { UserName = model.Username, Email = model.Email };
+            var result = await _userManager.CreateAsync(user, model.Password);
 
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, isPersistent: false);
 
-    public IActionResult Logout()
-    {
-        HttpContext.Session.Clear();
-        return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "CompleteProfile");
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(string username, string password)
+        {
+            var result = await _signInManager.PasswordSignInAsync(username, password, false, false);
+
+            if (result.Succeeded)
+                return RedirectToAction("Index", "Home");
+
+            ModelState.AddModelError("", "Invalid login");
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Landing", "Home");
+        }
     }
 }

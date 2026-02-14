@@ -1,22 +1,26 @@
-﻿using CalorieTrackerApp.Models;
+﻿using System.Security.Claims;
+using CalorieTrackerApp.Data;
+using CalorieTrackerApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using CalorieTrackerApp.Data;
 
 namespace CalorieTrackerApp.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context, ILogger<HomeController> logger)
         {
-            _logger = logger;
             _context = context;
+            _logger = logger;
         }
 
+        [AllowAnonymous]
         public IActionResult Landing()
         {
             return View();
@@ -24,20 +28,17 @@ namespace CalorieTrackerApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var username = HttpContext.Session.GetString("Username");
-
-            if (string.IsNullOrEmpty(username))
-                return RedirectToAction("Landing");
+            var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var user = await _context.UserAccounts
-                .FirstOrDefaultAsync(u => u.Username == username);
+                .FirstOrDefaultAsync(u => u.IdentityUserId == identityUserId);
 
             if (user == null)
                 return RedirectToAction("Landing");
 
             var today = DateTime.Today;
 
-            var meals = await _context.Meals
+            var consumed = await _context.Meals
                 .Where(m => m.UserAccountId == user.Id && m.Date.Date == today)
                 .SumAsync(m => m.Calories);
 
@@ -45,21 +46,23 @@ namespace CalorieTrackerApp.Controllers
                 .Where(a => a.UserAccountId == user.Id && a.Date.Date == today)
                 .SumAsync(a => a.CaloriesBurned);
 
-            int remaining = user.DailyCalorieGoal - meals + burned;
+            var remaining = user.DailyCalorieGoal - consumed + burned;
 
             ViewBag.Goal = user.DailyCalorieGoal;
-            ViewBag.Remaining = remaining;
-            ViewBag.Consumed = meals;
+            ViewBag.Consumed = consumed;
             ViewBag.Burned = burned;
+            ViewBag.Remaining = remaining;
 
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
