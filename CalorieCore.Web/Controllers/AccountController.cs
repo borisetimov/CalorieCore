@@ -1,6 +1,4 @@
-﻿using CalorieCore.Data;
-using CalorieCore.Models;
-using CalorieCore.ViewModels;
+﻿using CalorieCore.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

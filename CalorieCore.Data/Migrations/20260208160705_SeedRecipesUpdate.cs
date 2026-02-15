@@ -4,7 +4,7 @@
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace CalorieCore.Migrations
+namespace CalorieCore.Data.Migrations
 {
     /// <inheritdoc />
     public partial class SeedRecipesUpdate : Migration

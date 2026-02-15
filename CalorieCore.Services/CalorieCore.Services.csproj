@@ -9,7 +9,8 @@
   <ItemGroup>
     <ProjectReference Include="..\CalorieCore.DataModels\CalorieCore.DataModels.csproj" />
     <ProjectReference Include="..\CalorieCore.Data\CalorieCore.Data.csproj" />
-    <ProjectReference Include="..\CalorieCore\CalorieCore.Web.csproj" />
+    <ProjectReference Include="..\CalorieCore.ViewModels\CalorieCore.ViewModels.csproj" />
+    <ProjectReference Include="..\CalorieCore.Web\CalorieCore.Web.csproj" />
   </ItemGroup>
 
 </Project>

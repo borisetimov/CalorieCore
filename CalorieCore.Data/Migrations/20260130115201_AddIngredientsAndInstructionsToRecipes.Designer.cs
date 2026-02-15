@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace CalorieCore.Migrations
+namespace CalorieCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20260130115201_AddIngredientsAndInstructionsToRecipes")]

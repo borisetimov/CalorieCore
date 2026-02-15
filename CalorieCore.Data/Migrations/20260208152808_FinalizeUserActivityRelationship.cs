@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace CalorieCore.Migrations
+namespace CalorieCore.Data.Migrations
 {
     /// <inheritdoc />
     public partial class FinalizeUserActivityRelationship : Migration
