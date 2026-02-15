@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace CalorieTrackerApp.Areas.Identity.Pages.Account.Manage
+namespace CalorieCore.Areas.Identity.Pages.Account.Manage
 {
     public class SetPasswordModel : PageModel
     {

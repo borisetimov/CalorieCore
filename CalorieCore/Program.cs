@@ -1,10 +1,10 @@
-using CalorieTrackerApp.Data;
-using CalorieTrackerApp.Services;
+using CalorieCore.Data;
+using CalorieCore.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
-namespace CalorieTrackerApp
+namespace CalorieCore
 {
     public class Program
     {

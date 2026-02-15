@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CalorieTrackerApp.Models
+namespace CalorieCore.Models
 {
     public class Recipe
     {

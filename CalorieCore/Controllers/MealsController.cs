@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
-using CalorieTrackerApp.Data;
-using CalorieTrackerApp.Models;
+using CalorieCore.Data;
+using CalorieCore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System;
 
-namespace CalorieTrackerApp.Controllers
+namespace CalorieCore.Controllers
 {
     [Authorize]
     public class MealsController : Controller

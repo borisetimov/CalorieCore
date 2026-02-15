@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace CalorieTrackerApp.Models
+namespace CalorieCore.Models
 {
     public class UserAccount
     {

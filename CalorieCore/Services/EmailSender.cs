@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Threading.Tasks;
 
-namespace CalorieTrackerApp.Services
+namespace CalorieCore.Services
 {
     public class EmailSender : IEmailSender
     {

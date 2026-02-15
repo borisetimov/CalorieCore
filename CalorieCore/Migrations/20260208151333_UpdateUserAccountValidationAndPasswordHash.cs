@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace CalorieTrackerApp.Migrations
+namespace CalorieCore.Migrations
 {
     /// <inheritdoc />
     public partial class UpdateUserAccountValidationAndPasswordHash : Migration

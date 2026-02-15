@@ -1,9 +1,9 @@
-﻿using CalorieTrackerApp.Models;
+﻿using CalorieCore.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace CalorieTrackerApp.Data
+namespace CalorieCore.Data
 {
     public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {

@@ -1,12 +1,12 @@
 ﻿using System.Security.Claims;
-using CalorieTrackerApp.Data;
-using CalorieTrackerApp.Models;
+using CalorieCore.Data;
+using CalorieCore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
-namespace CalorieTrackerApp.Controllers
+namespace CalorieCore.Controllers
 {
     [Authorize]
     public class HomeController : Controller

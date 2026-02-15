@@ -1,10 +1,10 @@
-﻿using CalorieTrackerApp.Data;
-using CalorieTrackerApp.Models;
-using CalorieTrackerApp.ViewModels;
+﻿using CalorieCore.Data;
+using CalorieCore.Models;
+using CalorieCore.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CalorieTrackerApp.Controllers
+namespace CalorieCore.Controllers
 {
     public class AccountController : Controller
     {

@@ -4,7 +4,7 @@
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace CalorieTrackerApp.Migrations
+namespace CalorieCore.Migrations
 {
     /// <inheritdoc />
     public partial class CompleteGlobalRecipes : Migration

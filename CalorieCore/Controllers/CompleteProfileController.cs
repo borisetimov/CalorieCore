@@ -1,5 +1,5 @@
-﻿using CalorieTrackerApp.Data;
-using CalorieTrackerApp.Models;
+﻿using CalorieCore.Data;
+using CalorieCore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

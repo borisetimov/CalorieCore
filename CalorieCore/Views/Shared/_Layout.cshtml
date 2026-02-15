@@ -1,5 +1,5 @@
-﻿@using CalorieTrackerApp.Data
-@using CalorieTrackerApp.Models
+﻿@using CalorieCore.Data
+@using CalorieCore.Models
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @inject UserManager<IdentityUser> UserManager
@@ -10,10 +10,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CalorieTrackerApp</title>
+    <title>@ViewData["Title"] - CalorieCore</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/CalorieTrackerApp.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CalorieCore.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
@@ -23,14 +23,14 @@
                 {
                     <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
                         <img src="~/images/logo.png" alt="Logo" style="height:40px; width:40px; margin-right:10px;">
-                        CalorieTrackerApp
+                        CalorieCore
                     </a>
                 }
                 else
                 {
                     <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Landing">
                         <img src="~/images/logo.png" alt="Logo" style="height:40px; width:40px; margin-right:10px;">
-                        CalorieTrackerApp
+                        CalorieCore
                     </a>
                 }
 
@@ -103,7 +103,7 @@
         </main>
     </div>
     <div class="text-center" style="font-size:0.75rem; padding:0.25rem; color:#999;">
-        &copy; 2026 - CalorieTrackerApp - <a asp-area="" asp-controller="Home" asp-action="Privacy" style="color:#ccc;">Privacy</a>
+        &copy; 2026 - CalorieCore - <a asp-area="" asp-controller="Home" asp-action="Privacy" style="color:#ccc;">Privacy</a>
     </div>
 
 

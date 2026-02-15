@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace CalorieTrackerApp.Areas.Identity.Pages.Account
+namespace CalorieCore.Areas.Identity.Pages.Account
 {
     public class LoginWith2faModel : PageModel
     {

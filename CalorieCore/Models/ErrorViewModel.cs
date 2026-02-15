@@ -1,4 +1,4 @@
-namespace CalorieTrackerApp.Models
+namespace CalorieCore.Models
 {
     public class ErrorViewModel
     {

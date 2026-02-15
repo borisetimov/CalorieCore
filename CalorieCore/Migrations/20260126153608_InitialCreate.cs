@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace CalorieTrackerApp.Migrations
+namespace CalorieCore.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
