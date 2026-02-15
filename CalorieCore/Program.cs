@@ -35,7 +35,6 @@ namespace CalorieTrackerApp
 
             var app = builder.Build();
 
-            // Middleware order is critical
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36429.23 d17.14
+VisualStudioVersion = 17.14.36429.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalorieTrackerApp", "CalorieTrackerApp\CalorieTrackerApp.csproj", "{F1CE8AED-875E-4346-8F28-6249C8264835}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalorieCore", "CalorieCore\CalorieCore.csproj", "{8BB7B1FB-6329-F14D-A29A-D58B26E9D05F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F1CE8AED-875E-4346-8F28-6249C8264835}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F1CE8AED-875E-4346-8F28-6249C8264835}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F1CE8AED-875E-4346-8F28-6249C8264835}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F1CE8AED-875E-4346-8F28-6249C8264835}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BB7B1FB-6329-F14D-A29A-D58B26E9D05F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BB7B1FB-6329-F14D-A29A-D58B26E9D05F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BB7B1FB-6329-F14D-A29A-D58B26E9D05F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BB7B1FB-6329-F14D-A29A-D58B26E9D05F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
