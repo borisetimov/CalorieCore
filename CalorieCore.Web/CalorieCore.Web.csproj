@@ -25,6 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CalorieCore.DataModels\CalorieCore.DataModels.csproj" />
+    <ProjectReference Include="..\CalorieCore.Data\CalorieCore.Data.csproj" />
+    <ProjectReference Include="..\CalorieCore.GCommon\CalorieCore.GCommon.csproj" />
+    <ProjectReference Include="..\CalorieCore.Services\CalorieCore.Services.csproj" />
     <ProjectReference Include="..\CalorieCore.ViewModels\CalorieCore.ViewModels.csproj" />
   </ItemGroup>
 

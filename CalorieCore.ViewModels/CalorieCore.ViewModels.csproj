@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CalorieCore.GCommon\CalorieCore.GCommon.csproj" />
+  </ItemGroup>
+
 </Project>

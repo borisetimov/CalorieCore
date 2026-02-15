@@ -3,6 +3,8 @@ using CalorieCore.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using CalorieCore.Data.Migrations;
+using CalorieCore.Services.Services;
 
 namespace CalorieCore.Web
 {

@@ -1,10 +1,10 @@
 ﻿using System.Security.Claims;
-using CalorieCore.Data;
-using CalorieCore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using CalorieCore.Data.Migrations;
+using CalorieCore.ViewModels;
 
 namespace CalorieCore.Web.Controllers
 {

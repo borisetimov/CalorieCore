@@ -1,12 +1,9 @@
 ﻿using System.Security.Claims;
-using CalorieCore.Data;
-using CalorieCore.Models;
+using CalorieCore.Data.Migrations;
+using CalorieCore.DataModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
-using System.Linq;
-using System;
 
 namespace CalorieCore.Web.Controllers
 {
