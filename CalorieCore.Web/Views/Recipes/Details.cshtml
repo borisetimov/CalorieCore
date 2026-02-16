@@ -5,6 +5,11 @@
         <div class="col-md-8 offset-md-2">
 
             <h2>@Model.Title</h2>
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <p class="text-muted">@Model.Description</p>
+            }
+
 
             @if (!string.IsNullOrEmpty(Model.Img))
             {
@@ -16,11 +21,16 @@
 
             <p>
                 <strong>Tags:</strong>
-                @foreach (var tag in Model.Tags.Split(',').Select(t => t.Trim()))
+                @if (!string.IsNullOrEmpty(Model.Tags))
                 {
-                    <span class="badge bg-info me-1">@tag</span>
-                }
-            </p>
+                <p>
+                    <strong>Tags:</strong>
+                    @foreach (var tag in Model.Tags.Split(',').Select(t => t.Trim()))
+                    {
+                        <span class="badge bg-info me-1">@tag</span>
+                    }
+                </p>
+            }
 
             <hr />
 

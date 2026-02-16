@@ -16,7 +16,7 @@ namespace CalorieCore.Web
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-                    x => x.MigrationsAssembly("CalorieCore.Data")
+                    x => x.MigrationsAssembly("CalorieCore.Web")
             ));
 
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>

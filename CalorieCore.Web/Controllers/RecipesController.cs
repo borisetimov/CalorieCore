@@ -149,7 +149,7 @@ namespace CalorieCore.Web.Controllers
             recipe.Calories = updatedRecipe.Calories;
             recipe.Type = updatedRecipe.Type;
             recipe.Tags = updatedRecipe.Tags;
-            recipe.Ingredients = updatedRecipe.Instructions;
+            recipe.Ingredients = updatedRecipe.Ingredients;
             recipe.Instructions = updatedRecipe.Instructions;
             recipe.Difficulty = updatedRecipe.Difficulty;
             recipe.IsHealthy = updatedRecipe.IsHealthy;

@@ -6,7 +6,8 @@
 
 <p><strong>@Model.Title</strong></p>
 
-<form asp-action="Delete">
+<form asp-action="Delete" asp-controller="Recipes" method="post">
+    @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
     <button type="submit" class="btn btn-dark">Delete</button>
     <a asp-action="Index" class="btn btn-danger">Cancel</a>

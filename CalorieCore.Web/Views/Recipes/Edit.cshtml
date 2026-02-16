@@ -3,6 +3,7 @@
 <h2>Edit Recipe</h2>
 
 <form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
 
     <div class="mb-2">
@@ -10,6 +11,12 @@
         <input asp-for="Title" class="form-control" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
+    <div class="mb-2">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
     <div class="mb-2">
         <label asp-for="Ingredients">Ingredients</label>
         <textarea asp-for="Ingredients" class="form-control" rows="4" placeholder="List ingredients here"></textarea>

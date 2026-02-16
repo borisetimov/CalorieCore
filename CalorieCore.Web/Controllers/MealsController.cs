@@ -1,9 +1,9 @@
-﻿using System.Security.Claims;
-using CalorieCore.Data.Migrations;
+﻿using CalorieCore.Data.Migrations;
 using CalorieCore.DataModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CalorieCore.Web.Controllers
 {
@@ -55,6 +55,7 @@ namespace CalorieCore.Web.Controllers
             _context.Meals.Add(meal);
             await _context.SaveChangesAsync();
 
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -83,11 +84,15 @@ namespace CalorieCore.Web.Controllers
 
             if (meal == null) return NotFound();
 
+            if (!ModelState.IsValid)
+                return View(updatedMeal);
+
             meal.Name = updatedMeal.Name;
             meal.Calories = updatedMeal.Calories;
             meal.Date = updatedMeal.Date;
 
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -123,7 +128,9 @@ namespace CalorieCore.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddFromRecipe(int recipeId)
         {
             var user = await GetCurrentUserAsync();
@@ -142,6 +149,7 @@ namespace CalorieCore.Web.Controllers
 
             _context.Meals.Add(meal);
             await _context.SaveChangesAsync();
+
 
             return RedirectToAction(nameof(Index));
         }

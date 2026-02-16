@@ -3,10 +3,25 @@
 
 <h2>Log Meal</h2>
 
-<form method="post">
-    <input asp-for="Name" class="form-control mb-2" placeholder="Meal name" />
-    <input asp-for="Calories" class="form-control mb-2" placeholder="Calories" />
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
 
-    <button class="btn btn-success">Save</button>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" placeholder="Meal name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Calories" class="form-label"></label>
+        <input asp-for="Calories" class="form-control" placeholder="Calories" />
+        <span asp-validation-for="Calories" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success me-2">Save</button>
     <a asp-action="Index" class="btn btn-danger">Cancel</a>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

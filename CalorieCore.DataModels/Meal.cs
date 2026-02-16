@@ -17,6 +17,6 @@ namespace CalorieCore.DataModels
         public DateTime Date { get; set; } = DateTime.Now;
         public int UserAccountId { get; set; }
 
-        public UserAccount UserAccount { get; set; } = null!;
+        public UserAccount? UserAccount { get; set; }
     }
 }
