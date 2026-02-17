@@ -43,8 +43,14 @@
                         <label asp-for="Password" class="text-secondary small fw-bold mb-1 text-uppercase"></label>
                         <div class="input-group">
                             <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-lock"></i></span>
-                            <input asp-for="Password" type="password" class="form-control bg-dark text-white border-secondary" placeholder="••••••••" />
+                            <input asp-for="Password" id="passwordInput" type="password" class="form-control bg-dark text-white border-secondary" placeholder="••••••••" />
                         </div>
+
+                        <div class="progress mt-2" style="height: 6px; background-color: rgba(255,255,255,0.1);">
+                            <div id="strengthBar" class="progress-bar" role="progressbar" style="width: 0%; transition: width 0.3s ease;"></div>
+                        </div>
+                        <div id="strengthText" class="small mt-1 fw-bold" style="font-size: 0.7rem;"></div>
+
                         <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>
 
@@ -71,3 +77,38 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.getElementById('passwordInput').addEventListener('input', function () {
+            const password = this.value;
+            const bar = document.getElementById('strengthBar');
+            const text = document.getElementById('strengthText');
+            let strength = 0;
+
+            if (password.length >= 6) strength += 25;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 25;
+            if (password.match(/\d/)) strength += 25;
+            if (password.match(/[^a-zA-Z\d]/)) strength += 25;
+
+            bar.style.width = strength + '%';
+
+            if (strength === 0) {
+                bar.className = "progress-bar";
+                text.innerHTML = "";
+            } else if (strength <= 25) {
+                bar.className = "progress-bar bg-danger";
+                text.innerHTML = "<span class='text-danger'>Weak</span>";
+            } else if (strength <= 50) {
+                bar.className = "progress-bar bg-warning";
+                text.innerHTML = "<span class='text-warning'>Fair</span>";
+            } else if (strength <= 75) {
+                bar.className = "progress-bar bg-info";
+                text.innerHTML = "<span class='text-info'>Good</span>";
+            } else {
+                bar.className = "progress-bar bg-success";
+                text.innerHTML = "<span class='text-success'>Strong</span>";
+            }
+        });
+    </script>
+}
