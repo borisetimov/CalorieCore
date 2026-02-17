@@ -2,12 +2,43 @@
     ViewData["Title"] = "Privacy Policy";
 }
 
-<div class="container mt-4">
-    <h2>Privacy Policy</h2>
-    <p style="color: ##FFFFF;">
-        Your privacy is important to us. This application collects only the information necessary to track activities, calories, and recipes.
-        We do not share your data with third parties. All data is stored locally and securely.
-        By using this app, you agree to this privacy policy.
-    </p>
-</div>
+<div class="container mt-5 py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card glass-card p-5">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="fs-2 me-3">🛡️</div>
+                    <h2 class="fw-bold gradient-text mb-0">Privacy Policy</h2>
+                </div>
 
+                <div class="text-secondary lh-lg">
+                    <p>
+                        Your privacy is our top priority. <span class="text-white fw-semibold">CalorieCore</span> collects only the information strictly necessary to help you track your activities, calories, and recipes effectively.
+                    </p>
+
+                    <hr class="border-secondary opacity-25 my-4">
+
+                    <p>
+                        <i class="bi bi-shield-check text-warning me-2"></i>
+                        <strong>No Data Sharing:</strong> We do not share, sell, or distribute your personal data to any third parties.
+                    </p>
+
+                    <p>
+                        <i class="bi bi-lock text-warning me-2"></i>
+                        <strong>Security:</strong> All information is stored securely within your personal account and is used solely for the functionality of this application.
+                    </p>
+
+                    <p class="mt-4 small italic">
+                        By continuing to use this application, you acknowledge and agree to the terms of this privacy policy.
+                    </p>
+                </div>
+
+                <div class="mt-4">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-light-custom btn-sm">
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

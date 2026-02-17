@@ -315,23 +315,23 @@ new Recipe
                     UserAccountId = null,
                     IsGlobal = true
                 },
-                new Recipe
-                {
-                    Id = 17,
-                    Title = "Baked Cod with Lemon Herbs",
-                    Description = "Oven-baked cod fillet flavored with lemon zest and fresh herbs.",
-                    Calories = 350,
-                    Type = "Main",
-                    Difficulty = "Easy",
-                    Tags = "High-protein, Low-fat, Omega-3",
-                    Ingredients = "Cod fillet, Olive oil, Lemon zest, Garlic, Parsley, Salt, Pepper",
-                    Instructions = "1. Preheat oven to 200°C. 2. Season cod with herbs and lemon. 3. Bake 12-15 minutes until flaky.",
-                    IsHealthy = true,
-                    IsFavorite = false,
-                    Img = "",
-                    UserAccountId = null,
-                    IsGlobal = true
-                },
+new Recipe
+{
+Id = 17,
+Title = "Baked Cod with Lemon Herbs",
+Description = "Oven-baked cod fillet flavored with lemon zest and fresh herbs.",
+Calories = 350,
+Type = "Main",
+Difficulty = "Easy",
+Tags = "High-protein, Low-fat, Omega-3",
+Ingredients = "Cod fillet, Olive oil, Lemon zest, Garlic, Parsley, Salt, Pepper",
+Instructions = "1. Preheat oven to 200°C. 2. Season cod with herbs and lemon. 3. Bake 12-15 minutes until flaky.",
+IsHealthy = true,
+IsFavorite = false,
+Img = "",
+UserAccountId = null,
+IsGlobal = true
+},
 
 new Recipe
 {

@@ -1,98 +1,91 @@
 ﻿@{
     ViewData["Title"] = "Welcome";
 }
-<div class="landing-page">
-<div class="container mt-5 text-white">
 
-    <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold text-white">Track Your Calories</h1>
-        <p class="lead mt-3 text-white">
-            Log your meals, monitor your daily intake, and stay aware of your eating habits.
-        </p>
-
-        <div class="mt-4 d-flex justify-content-center gap-3">
-            <a asp-controller="Account" asp-action="Register" class="btn btn-warning px-4">
-                Register
-            </a>
-            <a asp-controller="Account" asp-action="Login" class="btn btn-light px-4">
-                Login
-            </a>
-        </div>
-    </div>
-
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-8 text-center">
-            <h2 class="mb-3 text-white">What is this app?</h2>
-            <p class="text-white">
-                This calorie tracker helps you log the food you eat, calculate your daily calorie intake,
-                and keep everything organized in one personal account.
+<div class="landing-page py-5">
+    <div class="container">
+        <div class="text-center mb-5 py-5">
+            <h1 class="display-3 fw-bold gradient-text">Track Your Calories</h1>
+            <p class="lead mt-3 text-secondary mx-auto" style="max-width: 650px;">
+                The minimalist tool to log your meals, monitor daily intake, and master your fitness goals with a clean, professional dashboard.
             </p>
-        </div>
-    </div>
 
-    <div class="row text-center mb-5">
-        <div class="col-md-3">
-            <div class="card h-100 shadow-sm bg-white text-dark">
-                <div class="card-body">
-                    <h5 class="card-title">🍎 Log Food</h5>
-                    <p class="card-text">
-                        Add foods you eat and record their calorie values.
-                    </p>
+            <div class="mt-5 d-flex justify-content-center gap-3">
+                <a asp-controller="Account" asp-action="Register" class="btn btn-warning btn-lg px-5">
+                    Get Started
+                </a>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light-custom btn-lg px-5">
+                    Login
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4 text-center mb-5">
+            <div class="col-md-3">
+                <div class="card h-100 glass-card border-0">
+                    <div class="card-body py-4">
+                        <div class="fs-1 mb-3">🍎</div>
+                        <h5 class="card-title fw-bold">Log Food</h5>
+                        <p class="card-text text-secondary small">Add meals effortlessly and track precise nutritional values.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 glass-card border-0">
+                    <div class="card-body py-4">
+                        <div class="fs-1 mb-3">📊</div>
+                        <h5 class="card-title fw-bold">Daily Totals</h5>
+                        <p class="card-text text-secondary small">Real-time calculation of your daily energy balance and progress.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 glass-card border-0">
+                    <div class="card-body py-4">
+                        <div class="fs-1 mb-3">📅</div>
+                        <h5 class="card-title fw-bold">Progress</h5>
+                        <p class="card-text text-secondary small">Visual history of your nutrition journey and habit patterns.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 glass-card border-0">
+                    <div class="card-body py-4">
+                        <div class="fs-1 mb-3">🔐</div>
+                        <h5 class="card-title fw-bold">Secure</h5>
+                        <p class="card-text text-secondary small">Your health data is strictly private and stored securely.</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="card h-100 shadow-sm bg-white text-dark">
-                <div class="card-body">
-                    <h5 class="card-title">📊 Daily Totals</h5>
-                    <p class="card-text">
-                        Automatically see your total calories for the day.
-                    </p>
+        <div class="row justify-content-center my-5 py-5">
+            <div class="col-md-7">
+                <div class="card glass-card p-5 border-0">
+                    <h2 class="text-center mb-4 fw-bold">How it works</h2>
+                    <div class="list-group list-group-flush bg-transparent">
+                        <div class="list-group-item list-group-item-dark-custom d-flex align-items-center px-4 py-3">
+                            <span class="badge bg-warning text-dark me-3 rounded-circle" style="width:28px; height:28px; line-height:20px;">1</span>
+                            <span>Create a free personal account</span>
+                        </div>
+                        <div class="list-group-item list-group-item-dark-custom d-flex align-items-center px-4 py-3">
+                            <span class="badge bg-warning text-dark me-3 rounded-circle" style="width:28px; height:28px; line-height:20px;">2</span>
+                            <span>Log the foods you eat and your activities</span>
+                        </div>
+                        <div class="list-group-item list-group-item-dark-custom d-flex align-items-center px-4 py-3">
+                            <span class="badge bg-warning text-dark me-3 rounded-circle" style="width:28px; height:28px; line-height:20px;">3</span>
+                            <span>Track your daily intake and reach your goals</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="card h-100 shadow-sm bg-white text-dark">
-                <div class="card-body">
-                    <h5 class="card-title">📅 Track Progress</h5>
-                    <p class="card-text">
-                        Review past days and understand your eating habits.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card h-100 shadow-sm bg-white text-dark">
-                <div class="card-body">
-                    <h5 class="card-title">🔐 Personal Account</h5>
-                    <p class="card-text">
-                        Your data is stored securely and only visible to you.
-                    </p>
-                </div>
-            </div>
+        <div class="text-center mb-5 py-4">
+            <h3 class="mb-4 fw-bold">Ready to start tracking?</h3>
+            <a asp-controller="Account" asp-action="Register" class="btn btn-warning btn-lg px-5">
+                Register Now
+            </a>
         </div>
     </div>
-
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-8">
-            <h2 class="text-center mb-4 text-white">How it works</h2>
-            <ol class="list-group list-group-numbered">
-                <li class="list-group-item bg-white text-dark">Create a free account</li>
-                <li class="list-group-item bg-white text-dark">Log the foods you eat & activities</li>
-                <li class="list-group-item bg-white text-dark">Track your daily calorie intake</li>
-            </ol>
-        </div>
-    </div>
-
-    <div class="text-center mb-5">
-        <h3 class="mb-3 text-white">Ready to start tracking?</h3>
-        <a asp-controller="Account" asp-action="Register" class="btn btn-warning px-4">
-            Register
-        </a>
-    </div>
-
-</div>
 </div>

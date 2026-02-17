@@ -1,8 +1,5 @@
 ﻿🍏 CalorieCore – Personal Calorie Tracker & Recipe Manager
 
-
-
-
 Overview
 
 CalorieCore is a web application designed to help you track your meals, monitor calories, and manage recipes easily. It's simple, interactive, and secure, giving users the ability to:
@@ -18,6 +15,7 @@ Maintain a complete personal profile
 Whether you're trying to eat healthier or just stay organized with your nutrition, CalorieCore keeps all your data in one place.
 
 Features
+
 🥗 Recipes
 
 Create, edit, and delete your personal recipes
@@ -32,6 +30,7 @@ Sort and filter recipes by calories, type, or difficulty
 
 Cook & log meals directly from a recipe
 
+
 🍽 Meals
 
 Log meals with name, calories, and date
@@ -42,6 +41,7 @@ View all meals in a table, sorted by most recent
 
 Prevent repeated form submissions using POST-Redirect-GET pattern
 
+
 🏃 Activities
 
 Log your physical activities with calories burned
@@ -50,6 +50,7 @@ Edit or delete activities
 
 View your personal activity history
 
+
 🔒 Account & Profile
 
 Custom registration and login pages
@@ -57,6 +58,7 @@ Custom registration and login pages
 Complete profile with age, weight, height, gender, and goals
 
 Only logged-in users can access personal data
+
 
 Technologies Used
 
@@ -74,16 +76,17 @@ Server & client-side validation – Ensures safe, correct data
 
 Authentication – Identity-based login
 
+
 Setup & Installation
 
 Clone the repository
 
-git clone https://github.com/<your-username>/CalorieCore.git
-
+git clone https://github.com/borisetimov/CalorieCore.git
 
 Open the project in Visual Studio 2022 or higher.
 
 Install dependencies
+
 NuGet packages restore automatically.
 
 Set up the database
@@ -94,9 +97,10 @@ Run EF Core migrations:
 
 Update-Database
 
-
 Run the app
+
 Press F5 or Ctrl+F5 to start. The app will open in your default browser.
+
 
 Architecture
 
@@ -108,7 +112,8 @@ Views: Razor pages with Bootstrap for responsive design
 
 Database: SQL Server with EF Core migrations
 
-Validation & Security: Data annotations and identity-based authentication
+Validtion & Security: Data annotations and identity-based authentication
+
 
 How to Use
 
@@ -132,13 +137,21 @@ Log daily meals and activities.
 
 Track calories and see your progress over time.
 
+
 Database Structure
+
 Table	Key Fields	Relationships
-UserAccount	Id, IdentityUserId	Meals, Activities (1-to-many)
+
+UserAccount	Id, IdentityUserId	Meals, Activities
+
 Recipe	Id, UserAccountId, IsGlobal	UserAccount (optional)
+
 Meal	Id, UserAccountId	UserAccount (required)
+
 UserActivity	Id, UserAccountId	UserAccount (required)
+
 Validation & Security
+
 
 Only authenticated users can access their data.
 
@@ -148,25 +161,20 @@ Meals, activities, and recipes are linked to the currently logged-in user.
 
 Global recipes cannot be modified or deleted by normal users.
 
+
 Future Improvements
 
 Add user roles for admin and standard users
 
 Analytics dashboard for calories and activity trends
 
+Better Views with more css/js 
+
 Recipe sharing and rating system
 
 Mobile-first responsive enhancements
 
-Optional front-end framework (Blazor or React)
 
-License
-
-MIT License – see LICENSE
- for details
-
-✅ Notes
-
+Notes
 This project is fully original, built following SoftUni ASP.NET Fundamentals requirements.
-
 It demonstrates MVC architecture, CRUD operations, user authentication, and responsive front-end design.
