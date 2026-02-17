@@ -3,15 +3,10 @@
 Overview
 
 CalorieCore is a web application designed to help you track your meals, monitor calories, and manage recipes easily. It's simple, interactive, and secure, giving users the ability to:
-
 Log meals and calories
-
 Track daily activity
-
 Browse and manage recipes
-
 Maintain a complete personal profile
-
 Whether you're trying to eat healthier or just stay organized with your nutrition, CalorieCore keeps all your data in one place.
 
 Features
@@ -99,9 +94,6 @@ Analytics dashboard for calories and activity trends
 Better Views with more css/js 
 Recipe sharing and rating system
 Mobile-first responsive enhancements
-
-License
-MIT License – see for details
 
 Notes
 This project is fully original, built following SoftUni ASP.NET Fundamentals requirements.
