@@ -1,73 +1,98 @@
 ﻿@model CalorieCore.DataModels.Recipe
 
-<h2>Edit Recipe</h2>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="glass-card p-5 shadow-lg">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <h2 class="gradient-text fw-bold mb-0">Edit Recipe</h2>
+                    <span class="badge bg-warning text-dark">ID: #@Model.Id</span>
+                </div>
 
-<form asp-action="Edit" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" asp-for="Id" />
+                <form asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
 
-    <div class="mb-2">
-        <label asp-for="Title"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="Title" class="text-secondary small fw-bold mb-1 text-uppercase">Recipe Name</label>
+                            <input asp-for="Title" class="form-control bg-dark text-white border-secondary" placeholder="e.g. Avocado Toast" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="Calories" class="text-secondary small fw-bold mb-1 text-uppercase">Calories (kcal)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-warning fw-bold">🔥</span>
+                                <input asp-for="Calories" type="number" class="form-control bg-dark text-white border-secondary" />
+                            </div>
+                            <span asp-validation-for="Calories" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Description" class="text-secondary small fw-bold mb-1 text-uppercase">Short Description</label>
+                        <textarea asp-for="Description" class="form-control bg-dark text-white border-secondary" rows="2" placeholder="Brief overview of the dish..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <label asp-for="Type" class="text-secondary small fw-bold mb-1 text-uppercase">Type of Food</label>
+                            <select asp-for="Type" class="form-select bg-dark text-white border-secondary">
+                                <option>Main</option>
+                                <option>Dessert</option>
+                                <option>Salad</option>
+                                <option>Soup</option>
+                                <option>Snack</option>
+                                <option>Beverage</option>
+                                <option>Breakfast</option>
+                                <option>Side</option>
+                                <option>Appetizer</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <label asp-for="Difficulty" class="text-secondary small fw-bold mb-1 text-uppercase">Difficulty</label>
+                            <select asp-for="Difficulty" class="form-select bg-dark text-white border-secondary">
+                                <option>Easy</option>
+                                <option>Medium</option>
+                                <option>Hard</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <label asp-for="Tags" class="text-secondary small fw-bold mb-1 text-uppercase">Tags</label>
+                            <input asp-for="Tags" class="form-control bg-dark text-white border-secondary" placeholder="Quick, Vegan, High-Protein" />
+                        </div>
+                    </div>
+
+                    <hr class="border-secondary opacity-25 my-4" />
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="Ingredients" class="text-white fw-bold mb-2 h5">Ingredients</label>
+                            <textarea asp-for="Ingredients" class="form-control bg-dark text-white border-secondary" rows="6" placeholder="One ingredient per line..."></textarea>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="Instructions" class="text-white fw-bold mb-2 h5">Instructions</label>
+                            <textarea asp-for="Instructions" class="form-control bg-dark text-white border-secondary" rows="6" placeholder="Step 1...&#10;Step 2..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 pt-3">
+                        <button type="submit" class="btn btn-warning btn-lg fw-bold px-5">Save Changes</button>
+                        <a asp-action="Index" class="btn btn-outline-light-custom btn-lg px-4">Cancel</a>
+                    </div>
+                </form>
+            </div>
+            <div class="mt-4">
+                <a asp-action="Index" class="text-secondary text-decoration-none small">
+                    <i class="bi bi-arrow-left"></i> Return to Library
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="mb-2">
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <div class="mb-2">
-        <label asp-for="Ingredients">Ingredients</label>
-        <textarea asp-for="Ingredients" class="form-control" rows="4" placeholder="List ingredients here"></textarea>
-    </div>
-
-    <div class="mb-2">
-        <label asp-for="Instructions">Instructions</label>
-        <textarea asp-for="Instructions" class="form-control" rows="5" placeholder="Step by step instructions"></textarea>
-    </div>
-
-
-    <div class="mb-2">
-        <label asp-for="Calories"></label>
-        <input asp-for="Calories" class="form-control" />
-        <span asp-validation-for="Calories" class="text-danger"></span>
-    </div>
-
-    <div class="mb-2">
-        <label asp-for="Type">Type of Food</label>
-        <select asp-for="Type" class="form-control">
-            <option>Main</option>
-            <option>Dessert</option>
-            <option>Salad</option>
-            <option>Soup</option>
-            <option>Snack</option>
-            <option>Beverage</option>
-            <option>Breakfast</option>
-            <option>Side</option>
-            <option>Appetizer</option>
-            <option>Other</option>
-        </select>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Difficulty" class="form-label">Difficulty</label>
-        <select asp-for="Difficulty" class="form-control">
-            <option>Easy</option>
-            <option>Medium</option>
-            <option>Hard</option>
-
-        </select>
-    </div>
-
-
-    <div class="mb-2">
-        <label asp-for="Tags">Tags (comma-separated)</label>
-        <input asp-for="Tags" class="form-control" placeholder="Easy to make, Quick, Vegan" />
-    </div>
-
-    <button type="submit" class="btn btn-success">Save</button>
-    <a asp-action="Index" class="btn btn-danger">Cancel</a>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

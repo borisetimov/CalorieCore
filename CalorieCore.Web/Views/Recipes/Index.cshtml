@@ -3,257 +3,203 @@
     var globalRecipes = Model.Where(r => r.IsGlobal).ToList();
     var myRecipes = Model.Where(r => !r.IsGlobal).ToList();
 }
-<div class="d-flex align-items-center justify-content-between mb-4">
-    <div class="d-flex align-items-center gap-2">
-        <h2 class="text-light mb-0">Recipes</h2>
-        <img src="~/images/Food.png" alt="Recipes" style="height:38px;">
+
+<div class="container mt-5">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div class="d-flex align-items-center gap-2">
+            <h2 class="gradient-text fw-bold mb-0">Recipe Library</h2>
+            <img src="~/images/Food.png" alt="Recipes" style="height:40px;">
+        </div>
+        <a asp-action="Create" class="btn btn-warning fw-bold shadow-sm">
+            <i class="bi bi-plus-lg"></i> New Recipe
+        </a>
     </div>
 
-    <a asp-action="Create" class="btn btn-success fw-semibold">
-        + Add Recipe
-    </a>
-</div>
+    <div class="glass-card p-3 mb-5 shadow">
+        <div class="row g-3">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-secondary text-secondary">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" id="recipeSearch" class="form-control bg-transparent text-white border-secondary"
+                           placeholder="Search by title, ingredients, or tags...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dropdown w-100">
+                    <button class="btn btn-outline-light-custom w-100 dropdown-toggle fw-bold" type="button" id="filterBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-funnel"></i> Advanced Filters
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-dark p-3 shadow-lg border-secondary" style="width: 300px;">
+                        <label class="small text-secondary fw-bold mb-1">Type of Food</label>
+                        <select class="form-select form-select-sm mb-3 filter-trigger" id="filterType">
+                            <option value="">All Types</option>
+                            <option>Breakfast</option>
+                            <option>Main</option>
+                            <option>Salad</option>
+                            <option>Soup</option>
+                            <option>Snack</option>
+                            <option>Dessert</option>
+                            <option>Beverage</option>
+                            <option>Side</option>
+                            <option>Appetizer</option>
+                        </select>
 
-<div class="row">
+                        <label class="small text-secondary fw-bold mb-1">Difficulty</label>
+                        <select class="form-select form-select-sm mb-3 filter-trigger" id="filterDiff">
+                            <option value="">All Difficulties</option>
+                            <option>Easy</option>
+                            <option>Medium</option>
+                            <option>Hard</option>
+                        </select>
+
+                        <label class="small text-secondary fw-bold mb-1">Calorie Range</label>
+                        <select class="form-select form-select-sm mb-3 filter-trigger" id="filterCalRange">
+                            <option value="">All Calories</option>
+                            <option value="low">Low-calorie (≤400)</option>
+                            <option value="high">High-calorie (>400)</option>
+                        </select>
+
+                        <label class="small text-secondary fw-bold mb-1">Sort by Calories</label>
+                        <select class="form-select form-select-sm mb-3 filter-trigger" id="sortCal">
+                            <option value="none">Default</option>
+                            <option value="low">Lowest First</option>
+                            <option value="high">Highest First</option>
+                        </select>
+
+                        <button class="btn btn-warning btn-sm w-100 fw-bold" onclick="resetFilters()">Reset All</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @if (myRecipes.Any())
     {
-        <h4 class="text-white mt-4">👤 My Recipes</h4>
-        <hr class="text-secondary" />
-
-        <div class="row">
+        <h4 class="text-white fw-bold mb-3"><i class="bi bi-person-circle text-warning me-2"></i>My Creations</h4>
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5" id="myRecipesContainer">
             @foreach (var item in myRecipes)
             {
-                <div class="col-md-4 mb-4 recipe-card"
-                     data-title="@item.Title.ToLower()"
-                     data-type="@item.Type.ToLower()"
-                     data-difficulty="@item.Difficulty.ToLower()"
-                     data-calories="@item.Calories">
-
-                    <div class="card bg-dark text-light h-100 shadow-lg border border-secondary recipe-hover">
-
-                        @if (!string.IsNullOrEmpty(item.Img))
-                        {
-                            <a asp-action="Details" asp-route-id="@item.Id">
-                                <img src="@item.Img" class="card-img-top recipe-card-img" alt="@item.Title">
-                            </a>
-                        }
-
-                        <div class="card-body d-flex flex-column">
-
-                            <h5 class="fw-semibold mb-2">
-                                <a asp-action="Details" asp-route-id="@item.Id"
-                                   class="text-decoration-none text-light hover-accent">
-                                    @item.Title
-                                </a>
-                            </h5>
-
-                            <p class="mb-2 text-white">
-                                🔥 @item.Calories kcal
-                            </p>
-
-                            <div class="mb-3 d-flex flex-wrap gap-2">
-                                @if (item.Calories <= 400)
-                                {
-                                    <span class="badge bg-success">Low-calorie</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">High-calorie</span>
-                                }
-
-                                <span class="badge bg-info">@item.Difficulty</span>
-                                <span class="badge bg-secondary">@item.Type</span>
-
-                                @if (item.IsFavorite)
-                                {
-                                    <span class="badge bg-warning text-dark">❤️ Favorite</span>
-                                }
-                            </div>
-
-                            <div class="mt-auto d-flex flex-wrap gap-2">
-
-                                <form asp-controller="Meals" asp-action="AddFromRecipe" method="post" class="w-100">
-                                    <input type="hidden" name="recipeId" value="@item.Id" />
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-outline-success btn-sm w-100">
-                                        Cook & Log Meal 🍽
-                                    </button>
-                                </form>
-
-
-                                <a asp-action="Edit"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-outline-secondary btn-sm">
-                                    Edit
-                                </a>
-
-                                <a asp-action="Delete"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-outline-danger btn-sm">
-                                    Delete
-                                </a>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
+                <partial name="_RecipeCard" model="item" />
             }
         </div>
     }
 
-    @if (globalRecipes.Any())
-    {
-        <h4 class="text-white mt-5">🌍 Global Recipes</h4>
-        <hr class="text-secondary" />
+    <h4 class="text-white fw-bold mb-3"><i class="bi bi-globe text-info me-2"></i>Global Recipes</h4>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5" id="globalRecipesContainer">
+        @foreach (var item in globalRecipes)
+        {
+            <partial name="_RecipeCard" model="item" />
+        }
+    </div>
+</div>
 
-        <div class="row">
-            @foreach (var item in globalRecipes)
-            {
-                <div class="col-md-4 mb-4 recipe-card"
-                     data-title="@item.Title.ToLower()"
-                     data-type="@item.Type.ToLower()"
-                     data-difficulty="@item.Difficulty.ToLower()"
-                     data-calories="@item.Calories">
-
-                    <div class="card bg-dark text-light h-100 shadow-lg border border-secondary recipe-hover">
-
-                        @if (!string.IsNullOrEmpty(item.Img))
-                        {
-                            <a asp-action="Details" asp-route-id="@item.Id">
-                                <img src="@item.Img" class="card-img-top recipe-card-img" alt="@item.Title">
-                            </a>
-                        }
-
-                        <div class="card-body d-flex flex-column">
-
-                            <h5 class="fw-semibold mb-2">
-                                <a asp-action="Details" asp-route-id="@item.Id"
-                                   class="text-decoration-none text-light hover-accent">
-                                    @item.Title
-                                </a>
-                            </h5>
-
-                            <p class="mb-2 text-white">
-                                🔥 @item.Calories kcal
-                            </p>
-
-                            <div class="mb-3 d-flex flex-wrap gap-2">
-                                @if (item.Calories <= 400)
-                                {
-                                    <span class="badge bg-success">Low-calorie</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">High-calorie</span>
-                                }
-
-                                <span class="badge bg-info">@item.Difficulty</span>
-                                <span class="badge bg-secondary">@item.Type</span>
-
-                                @if (item.IsFavorite)
-                                {
-                                    <span class="badge bg-warning text-dark">❤️ Favorite</span>
-                                }
-                            </div>
-
-                            <div class="mt-auto d-flex flex-wrap gap-2">
-
-                                <form asp-controller="Meals" asp-action="AddFromRecipe" method="post" class="w-100">
-                                    <input type="hidden" name="recipeId" value="@item.Id" />
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-outline-success btn-sm w-100">
-                                        Cook & Log Meal 🍽
-                                    </button>
-                                </form>
-
-
-                                <a asp-action="Edit"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-outline-secondary btn-sm disabled"
-                                   title="Cannot edit global recipe">
-                                    Edit
-                                </a>
-
-                                <a asp-action="Delete"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-outline-danger btn-sm disabled"
-                                   title="Cannot delete global recipe">
-                                    Delete
-                                </a>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-            }
+<div class="modal fade" id="deleteRecipeModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div id="deleteModalContent">
         </div>
-    }
+    </div>
 </div>
 
 @section Scripts {
     <script>
         const searchInput = document.getElementById("recipeSearch");
-        const filterDropdown = document.getElementById("filterDropdown");
-        const cards = document.querySelectorAll(".recipe-card");
+        const triggers = document.querySelectorAll(".filter-trigger");
 
-        function filterRecipes() {
-            const searchValue = searchInput.value.toLowerCase();
-            const filterValue = filterDropdown.value;
+        function applyFilters() {
+            const search = searchInput.value.toLowerCase();
+            const type = document.getElementById("filterType").value.toLowerCase();
+            const diff = document.getElementById("filterDiff").value.toLowerCase();
+            const calRange = document.getElementById("filterCalRange").value;
+            const sort = document.getElementById("sortCal").value;
 
-            let sortedCards = Array.from(cards);
+            const cards = document.querySelectorAll(".recipe-card-wrapper");
 
-            sortedCards.forEach(card => {
-                const title = card.dataset.title;
-                const type = card.dataset.type;
-                const difficulty = card.dataset.difficulty;
+            cards.forEach(card => {
+                const cTitle = card.dataset.title.toLowerCase();
+                const cType = card.dataset.type.toLowerCase();
+                const cDiff = card.dataset.difficulty.toLowerCase();
+                const cCalories = parseInt(card.dataset.calories);
+                const cTags = card.dataset.tags ? card.dataset.tags.toLowerCase() : "";
 
-                let visible = title.includes(searchValue);
+                let isVisible = cTitle.includes(search) || cTags.includes(search);
 
-                if (filterValue.startsWith("type-")) {
-                    visible = visible && type === filterValue.replace("type-", "");
-                }
+                if (type && cType !== type) isVisible = false;
+                if (diff && cDiff !== diff) isVisible = false;
 
-                if (filterValue.startsWith("diff-")) {
-                    visible = visible && difficulty === filterValue.replace("diff-", "");
-                }
+                if (calRange === "low" && cCalories > 400) isVisible = false;
+                if (calRange === "high" && cCalories <= 400) isVisible = false;
 
-                card.style.display = visible ? "" : "none";
+                card.style.display = isVisible ? "block" : "none";
             });
 
-            if (filterValue === "cal-low" || filterValue === "cal-high") {
-                const container = document.querySelector(".row");
-
-                sortedCards.sort((a, b) => {
-                    const calA = parseInt(a.dataset.calories);
-                    const calB = parseInt(b.dataset.calories);
-                    return filterValue === "cal-low" ? calA - calB : calB - calA;
+            if (sort !== "none") {
+                const containers = ['#myRecipesContainer', '#globalRecipesContainer'];
+                containers.forEach(selector => {
+                    const container = document.querySelector(selector);
+                    if (!container) return;
+                    const items = Array.from(container.children);
+                    items.sort((a, b) => {
+                        const calA = parseInt(a.dataset.calories);
+                        const calB = parseInt(b.dataset.calories);
+                        return sort === "low" ? calA - calB : calB - calA;
+                    });
+                    items.forEach(item => container.appendChild(item));
                 });
-
-                sortedCards.forEach(card => container.appendChild(card));
             }
         }
 
-        searchInput.addEventListener("keyup", filterRecipes);
-        filterDropdown.addEventListener("change", filterRecipes);
+        function resetFilters() {
+            searchInput.value = "";
+            document.querySelectorAll(".filter-trigger").forEach(t => {
+                t.value = t.tagName === 'SELECT' ? (t.id === 'sortCal' ? 'none' : '') : '';
+            });
+            applyFilters();
+        }
+
+        searchInput.addEventListener("keyup", applyFilters);
+        triggers.forEach(t => t.addEventListener("change", applyFilters));
+
+        function openDeleteModal(id) {
+            $.get("/Recipes/Delete/" + id, function(data) {
+                $('#deleteModalContent').html(data);
+                var modalElement = document.getElementById('deleteRecipeModal');
+                var modalInstance = new bootstrap.Modal(modalElement);
+                modalInstance.show();
+            });
+        }
     </script>
+
+    <style>
+        .dropdown-menu-dark {
+            z-index: 9999 !important;
+            background: rgba(30, 30, 30, 0.98) !important;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.15);
+            position: absolute !important;
+        }
+
+        .glass-card {
+            overflow: visible !important;
+            z-index: 1000;
+            position: relative;
+        }
+
+        .recipe-card-wrapper {
+            z-index: 1 !important;
+            position: relative;
+        }
+
+        .recipe-hover {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .recipe-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+                background: rgba(255, 255, 255, 0.1) !important;
+            }
+    </style>
 }
-
-<style>
-    .recipe-card-img {
-        height: 200px;
-        object-fit: cover;
-    }
-
-    .recipe-hover:hover {
-        transform: scale(1.02);
-        transition: 0.2s ease;
-    }
-
-    .hover-accent:hover {
-        color: #22c55e !important;
-    }
-</style>

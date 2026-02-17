@@ -1,48 +1,77 @@
 ﻿@model CalorieCore.DataModels.Recipe
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="glass-card p-5">
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div>
+                        <h1 class="display-5 fw-bold text-white mb-2">@Model.Title</h1>
+                        <p class="lead text-secondary">@Model.Description</p>
+                    </div>
+                    <div class="text-end">
+                        @if (Model.Calories <= 400)
+                        {
+                            <span class="badge bg-success fs-6">Low-calorie</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger fs-6">High-calorie</span>
+                        }
+                    </div>
+                </div>
 
-            <h2>@Model.Title</h2>
-            @if (!string.IsNullOrEmpty(Model.Description))
-            {
-                <p class="text-muted">@Model.Description</p>
-            }
+                <div class="row g-4 mb-5 text-center">
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 border border-secondary rounded-3">
+                            <small class="text-secondary d-block">CALORIES</small>
+                            <span class="fw-bold text-white fs-5">🔥 @Model.Calories</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 border border-secondary rounded-3">
+                            <small class="text-secondary d-block">DIFFICULTY</small>
+                            <span class="fw-bold text-white fs-5">⚖️ @Model.Difficulty</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 border border-secondary rounded-3">
+                            <small class="text-secondary d-block">TYPE</small>
+                            <span class="fw-bold text-white fs-5">🍴 @Model.Type</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 border border-secondary rounded-3">
+                            <small class="text-secondary d-block">TAGS</small>
+                            <span class="fw-bold text-white fs-6">#@(Model.Tags?.Split(',')[0] ?? "Healthy")</span>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="row">
+                    <div class="col-md-5 border-end border-secondary">
+                        <h4 class="text-white fw-bold mb-4">Ingredients</h4>
+                        <div class="text-secondary lh-lg" style="white-space: pre-line;">@Model.Ingredients</div>
+                    </div>
+                    <div class="col-md-7 ps-md-5">
+                        <h4 class="text-white fw-bold mb-4">Instructions</h4>
+                        <div class="text-secondary lh-lg" style="white-space: pre-line;">@Model.Instructions</div>
+                    </div>
+                </div>
 
-            @if (!string.IsNullOrEmpty(Model.Img))
-            {
-                <img src="@Model.Img" class="img-fluid mb-3" alt="@Model.Title">
-            }
-
-            <p><strong>Calories:</strong> @Model.Calories</p>
-            <p><strong>Type:</strong> @Model.Type</p>
-
-            <p>
-                <strong>Tags:</strong>
-                @if (!string.IsNullOrEmpty(Model.Tags))
-                {
-                <p>
-                    <strong>Tags:</strong>
-                    @foreach (var tag in Model.Tags.Split(',').Select(t => t.Trim()))
+                <div class="mt-5 pt-4 border-top border-secondary d-flex gap-3">
+                    <form asp-controller="Meals" asp-action="AddFromRecipe" method="post" class="flex-grow-1">
+                        <input type="hidden" name="recipeId" value="@Model.Id" />
+                        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold">Cook & Log this Meal 🍽</button>
+                    </form>
+                    @if (!Model.IsGlobal)
                     {
-                        <span class="badge bg-info me-1">@tag</span>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-light-custom btn-lg">Edit Recipe</a>
                     }
-                </p>
-            }
-
-            <hr />
-
-            <h5>Ingredients</h5>
-            <p>@Model.Ingredients</p>
-
-            <h5>Instructions</h5>
-            <p>@Model.Instructions</p>
-
-            <div class="mt-3">
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Edit</a>
-                <a asp-action="Index" class="btn btn-outline-dark">Back to Recipes</a>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a asp-action="Index" class="text-secondary text-decoration-none"><i class="bi bi-arrow-left"></i> Back to Recipes Library</a>
             </div>
         </div>
     </div>

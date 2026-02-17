@@ -1,9 +1,9 @@
-﻿using System.Security.Claims;
-using CalorieCore.Data.Migrations;
+﻿using CalorieCore.Data.Migrations;
 using CalorieCore.DataModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CalorieCore.Web.Controllers
 {
@@ -16,40 +16,23 @@ namespace CalorieCore.Web.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(string searchString, string filter, string sortOrder)
+
+        // GET: Recipes
+        public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var recipes = _context.Recipes
+            // Fetching all global recipes and recipes belonging to the logged-in user
+            var recipes = await _context.Recipes
                 .Include(r => r.UserAccount)
                 .Where(r => r.IsGlobal ||
-                    r.UserAccount != null && r.UserAccount.IdentityUserId == userId);
+                    (r.UserAccount != null && r.UserAccount.IdentityUserId == userId))
+                .ToListAsync();
 
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                recipes = recipes.Where(r => r.Title.Contains(searchString));
-            }
-
-            switch (filter)
-            {
-                case "low":
-                    recipes = recipes.Where(r => r.Calories <= 400);
-                    break;
-                case "high":
-                    recipes = recipes.Where(r => r.Calories > 400);
-                    break;
-            }
-
-            ViewData["CaloriesSort"] = sortOrder == "cal_asc" ? "cal_desc" : "cal_asc";
-
-            recipes = sortOrder switch
-            {
-                "cal_desc" => recipes.OrderByDescending(r => r.Calories),
-                _ => recipes.OrderBy(r => r.Calories),
-            };
-
-            return View(await recipes.ToListAsync());
+            return View(recipes);
         }
+
+        // GET: Recipes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -59,35 +42,33 @@ namespace CalorieCore.Web.Controllers
             var recipe = await _context.Recipes
                 .Include(r => r.UserAccount)
                 .FirstOrDefaultAsync(r => r.Id == id &&
-                    (r.IsGlobal ||
-                     r.UserAccount != null && r.UserAccount.IdentityUserId == userId));
+                    (r.IsGlobal || (r.UserAccount != null && r.UserAccount.IdentityUserId == userId)));
 
-            if (recipe == null)
-                return NotFound();
+            if (recipe == null) return NotFound();
 
             return View(recipe);
         }
 
+        // GET: Recipes/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        // POST: Recipes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Recipe recipe)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             var userAccount = await _context.UserAccounts
                 .FirstOrDefaultAsync(u => u.IdentityUserId == userId);
 
-            if (userAccount == null)
-                return Unauthorized();
+            if (userAccount == null) return Unauthorized();
 
-            if (!ModelState.IsValid)
-                return View(recipe);
+            if (!ModelState.IsValid) return View(recipe);
 
+            // Set default properties for a new user-created recipe
             recipe.UserAccountId = userAccount.Id;
             recipe.IsGlobal = false;
             recipe.IsFavorite = false;
@@ -97,6 +78,8 @@ namespace CalorieCore.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        // GET: Recipes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -107,43 +90,36 @@ namespace CalorieCore.Web.Controllers
                 .Include(r => r.UserAccount)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
-            if (recipe == null)
-                return NotFound();
+            if (recipe == null) return NotFound();
 
-            if (recipe.IsGlobal)
-                return Forbid();
-
-            if (recipe.UserAccount?.IdentityUserId != userId)
+            // Guard: Cannot edit global recipes or recipes belonging to others
+            if (recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != userId)
                 return Forbid();
 
             return View(recipe);
         }
 
+        // POST: Recipes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Recipe updatedRecipe)
         {
-            if (id != updatedRecipe.Id)
-                return NotFound();
+            if (id != updatedRecipe.Id) return NotFound();
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             var recipe = await _context.Recipes
                 .Include(r => r.UserAccount)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
-            if (recipe == null)
-                return NotFound();
+            if (recipe == null) return NotFound();
 
-            if (recipe.IsGlobal)
+            // Guard: Re-check permissions on POST
+            if (recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != userId)
                 return Forbid();
 
-            if (recipe.UserAccount?.IdentityUserId != userId)
-                return Forbid();
+            if (!ModelState.IsValid) return View(updatedRecipe);
 
-            if (!ModelState.IsValid)
-                return View(updatedRecipe);
-
+            // Map updated values to existing entity
             recipe.Title = updatedRecipe.Title;
             recipe.Description = updatedRecipe.Description;
             recipe.Calories = updatedRecipe.Calories;
@@ -152,13 +128,13 @@ namespace CalorieCore.Web.Controllers
             recipe.Ingredients = updatedRecipe.Ingredients;
             recipe.Instructions = updatedRecipe.Instructions;
             recipe.Difficulty = updatedRecipe.Difficulty;
-            recipe.IsHealthy = updatedRecipe.IsHealthy;
 
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Recipes/Delete/5 (Called by AJAX for the Modal)
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -169,18 +145,17 @@ namespace CalorieCore.Web.Controllers
                 .Include(r => r.UserAccount)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
-            if (recipe == null)
-                return NotFound();
+            if (recipe == null) return NotFound();
 
-            if (recipe.IsGlobal)
+            // Guard: Prevent unauthorized deletion
+            if (recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != userId)
                 return Forbid();
 
-            if (recipe.UserAccount?.IdentityUserId != userId)
-                return Forbid();
-
-            return View(recipe);
+            // IMPORTANT: Returns a Partial View for the Modal pop-up
+            return PartialView("_DeletePartial", recipe);
         }
 
+        // POST: Recipes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -191,13 +166,10 @@ namespace CalorieCore.Web.Controllers
                 .Include(r => r.UserAccount)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
-            if (recipe == null)
-                return NotFound();
+            if (recipe == null) return NotFound();
 
-            if (recipe.IsGlobal)
-                return Forbid();
-
-            if (recipe.UserAccount?.IdentityUserId != userId)
+            // Guard: Prevent unauthorized deletion
+            if (recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != userId)
                 return Forbid();
 
             _context.Recipes.Remove(recipe);
