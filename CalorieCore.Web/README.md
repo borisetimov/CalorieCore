@@ -1,67 +1,78 @@
-﻿Project Overview
+﻿🍏 CalorieCore – Personal Calorie Tracker & Recipe Manager
 
-CalorieCore is a personal calorie tracker and recipe manager designed to help users log meals, track calorie intake, and maintain a collection of recipes. The application allows users to:
 
-Add, edit, and delete personal recipes.
 
-Browse global recipes provided by the system.
 
-Log meals and activities for personal tracking.
+Overview
 
-View calorie information and difficulty levels for recipes.
+CalorieCore is a web application designed to help you track your meals, monitor calories, and manage recipes easily. It's simple, interactive, and secure, giving users the ability to:
 
-The application is built using ASP.NET Core MVC, following SOLID principles, OOP best practices, and MVC architecture. It includes both server-side and client-side validation and uses responsive design through Bootstrap.
+Log meals and calories
+
+Track daily activity
+
+Browse and manage recipes
+
+Maintain a complete personal profile
+
+Whether you're trying to eat healthier or just stay organized with your nutrition, CalorieCore keeps all your data in one place.
 
 Features
-Recipes
+🥗 Recipes
 
-Create, edit, and delete personal recipes.
+Create, edit, and delete your personal recipes
 
-View global recipes (system-provided) with Edit/Delete buttons disabled.
+Browse global recipes shared by the system
 
-Display recipe details: ingredients, instructions, calories, type, difficulty, and tags.
+View recipe details: ingredients, instructions, calories, type, difficulty, and tags
 
-Search, filter, and sort recipes by calories, type, or difficulty.
+Mark recipes as favorite
 
-Mark recipes as favorite.
+Sort and filter recipes by calories, type, or difficulty
 
-Add recipe meals directly to daily logs.
+Cook & log meals directly from a recipe
 
-Meals
+🍽 Meals
 
-Log meals with name, calories, and date.
+Log meals with name, calories, and date
 
-Edit or delete logged meals.
+Edit or delete logged meals
 
-View all meals in a tabular format, sorted by date.
+View all meals in a table, sorted by most recent
 
-Avoid repeated form submissions using proper POST-Redirect-GET pattern.
+Prevent repeated form submissions using POST-Redirect-GET pattern
 
-User Activities
+🏃 Activities
 
-Log physical activities with name, calories burned, and date.
+Log your physical activities with calories burned
 
-Edit or delete activities.
+Edit or delete activities
 
-View all logged activities for personal tracking.
+View your personal activity history
+
+🔒 Account & Profile
+
+Custom registration and login pages
+
+Complete profile with age, weight, height, gender, and goals
+
+Only logged-in users can access personal data
 
 Technologies Used
 
-ASP.NET Core MVC (.NET 8) – Web application framework
+ASP.NET Core MVC – Web framework
 
-Entity Framework Core – ORM for SQL Server database operations
+Entity Framework Core – Database ORM
 
 SQL Server – Relational database
 
-Bootstrap 5 – Responsive front-end styling
+Bootstrap 5 – Responsive UI
 
-Razor Views – Layouts, partials, sections
+Razor Views – Templating engine
 
-Dependency Injection – For database context and services
+Server & client-side validation – Ensures safe, correct data
 
-Server & Client-side Validation – Data annotations & validation scripts
-
-Git & GitHub – Version control with multiple commits and activity logs
+Authentication – Identity-based login
 
 Setup & Installation
 
@@ -70,129 +81,92 @@ Clone the repository
 git clone https://github.com/<your-username>/CalorieCore.git
 
 
-Open in Visual Studio 2022 (or higher)
+Open the project in Visual Studio 2022 or higher.
 
-Open the .sln file.
+Install dependencies
+NuGet packages restore automatically.
 
-Install Dependencies
+Set up the database
 
-NuGet packages will restore automatically.
+Ensure DefaultConnection in appsettings.json points to your SQL Server instance.
 
-Ensure Entity Framework Core and SQL Server provider are installed.
-
-Apply Migrations & Create Database
+Run EF Core migrations:
 
 Update-Database
 
 
-Run the Application
+Run the app
+Press F5 or Ctrl+F5 to start. The app will open in your default browser.
 
-Start debugging (F5) or run without debugging (Ctrl + F5).
+Architecture
 
-The application will launch on the default port (usually https://localhost:5001).
+Models: UserAccount, Recipe, Meal, UserActivity
 
-Environmental Variables
+Controllers: RecipesController, MealsController, UserActivitiesController, AccountController
 
-Connection string is defined in appsettings.json.
+Views: Razor pages with Bootstrap for responsive design
 
-Example:
+Database: SQL Server with EF Core migrations
 
-"ConnectionStrings": {
-  "DefaultConnection": "Server=.;Database=CalorieCoreDb;Trusted_Connection=True;MultipleActiveResultSets=true"
-}
+Validation & Security: Data annotations and identity-based authentication
 
-Project Architecture
+How to Use
 
-Models: Recipe, Meal, UserActivity, UserAccount
+Register / Log In
 
-Controllers: RecipesController, MealsController, UserActivitiesController
+Only logged-in users can log meals, activities, or create recipes.
 
-Views: Razor views with layouts and partials
+Complete Profile
 
-Database: Entity Framework Core with SQL Server
+Fill in your age, weight, height, gender, and goals to unlock full app functionality.
 
-Validation: Data annotations with client-side scripts
+Manage Recipes
 
-Entities & Relationships
-Recipe
+Add personal recipes or browse global recipes.
 
-Id, Title, Ingredients, Instructions, Calories, Type, Difficulty, Tags, IsGlobal, IsFavorite
+Edit/Delete only your recipes; global recipes are read-only.
 
-Global recipes cannot be edited/deleted by users
+Log Meals & Activities
 
-Meal
+Log daily meals and activities.
 
-Id, Name, Calories, Date, UserAccountId
+Track calories and see your progress over time.
 
-Linked to UserAccount (1-to-many)
-
-UserActivity
-
-Id, Name, CaloriesBurned, Date, UserAccountId
-
-Linked to UserAccount (1-to-many)
-
-UserAccount
-
-Id, IdentityUserId, UserName
-
-Linked to Meals and UserActivities
-
-Controllers & Views
-
-RecipesController
-
-CRUD operations for personal recipes
-
-View global recipes (read-only for users)
-
-Search, filter, sort functionalities
-
-MealsController
-
-Create, Edit, Delete logged meals
-
-Add meals from recipes
-
-POST-Redirect-GET pattern prevents form resubmission errors
-
-UserActivitiesController
-
-Create, Delete activities
-
-Only current user’s data is visible
-
+Database Structure
+Table	Key Fields	Relationships
+UserAccount	Id, IdentityUserId	Meals, Activities (1-to-many)
+Recipe	Id, UserAccountId, IsGlobal	UserAccount (optional)
+Meal	Id, UserAccountId	UserAccount (required)
+UserActivity	Id, UserAccountId	UserAccount (required)
 Validation & Security
 
-Server-side validation: Data annotations ensure required fields and proper ranges.
+Only authenticated users can access their data.
 
-Client-side validation: Razor _ValidationScriptsPartial for real-time feedback.
+All forms use server-side and client-side validation.
 
-Authorization: All controllers require authentication ([Authorize]).
+Meals, activities, and recipes are linked to the currently logged-in user.
 
-Data isolation: Users can only view and modify their own meals and activities.
+Global recipes cannot be modified or deleted by normal users.
 
-GitHub Repository & Commits
+Future Improvements
 
-Minimum 10 commits across at least 3 different days.
+Add user roles for admin and standard users
 
-Clear commit messages describing features and fixes.
+Analytics dashboard for calories and activity trends
 
-Repository is public for evaluation.
+Recipe sharing and rating system
 
-Future Enhancements
+Mobile-first responsive enhancements
 
-Implement user roles for admin and standard users.
+Optional front-end framework (Blazor or React)
 
-Add activity analytics dashboard (charts for calories burned and intake).
+License
 
-Allow recipe sharing and ratings.
+MIT License – see LICENSE
+ for details
 
-Mobile-first UI optimization.
+✅ Notes
 
-Integrate optional front-end framework (React or Blazor).
+This project is fully original, built following SoftUni ASP.NET Fundamentals requirements.
 
-Notes
-
-This project is fully original, built following the SoftUni ASP.NET Fundamentals requirements.
-All CRUD operations, data validations, MVC architecture, responsive design, and user tracking features are implemented as specified
+It demonstrates MVC architecture, CRUD operations, user authentication, and responsive front-end design.
