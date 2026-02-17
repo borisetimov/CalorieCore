@@ -86,7 +86,11 @@ Authentication – Identity-based login
 
 Clone the repository
 
+``` Bash
+ 
 git clone https://github.com/borisetimov/CalorieCore.git
+ 
+```
 
 Open the project in Visual Studio 2022 or higher.
 
@@ -115,6 +119,14 @@ NuGet packages restore automatically.
 Set up the database
 
 Ensure DefaultConnection in appsettings.json points to your SQL Server instance.
+
+``` JSON
+ 
+"ConnectionStrings": {
+  "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=CalorieTrackerDb;Trusted_Connection=True;"
+}
+ 
+```
 
 Run EF Core migrations:
 
