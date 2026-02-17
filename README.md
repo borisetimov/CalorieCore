@@ -1,3 +1,6 @@
+![.NET Version](https://img.shields.io/badge/.NET-8.0-purple)
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-8.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 # **CalorieCore**
 
 
@@ -9,9 +12,7 @@
 ## **CalorieCore – Personal Calorie Tracker & Recipe Manager**
 > A personal nutrition assistant and recipe manager built with ASP.NET Core, designed to help users track calories, manage meals, and stay organized with their fitness goals.
 
-![.NET Version](https://img.shields.io/badge/.NET-8.0-purple)
-![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-8.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+
 
 ---
 
