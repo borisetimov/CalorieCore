@@ -7,7 +7,6 @@
 
 
 ## **CalorieCore – Personal Calorie Tracker & Recipe Manager**
-```markdown
 > A personal nutrition assistant and recipe manager built with ASP.NET Core, designed to help users track calories, manage meals, and stay organized with their fitness goals.
 
 ![.NET Version](https://img.shields.io/badge/.NET-8.0-purple)
