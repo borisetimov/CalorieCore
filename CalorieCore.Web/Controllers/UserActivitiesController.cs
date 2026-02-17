@@ -20,25 +20,29 @@ namespace CalorieCore.Web.Controllers
         private async Task<UserAccount?> GetCurrentUserAsync()
         {
             var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             return await _context.UserAccounts
                 .FirstOrDefaultAsync(u => u.IdentityUserId == identityUserId);
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int offset = 0)
         {
             var user = await GetCurrentUserAsync();
             if (user == null) return Unauthorized();
 
+            DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
+            DateTime baseDate = DateTime.Today.AddDays(offset * 7);
+            int diff = (7 + (baseDate.DayOfWeek - firstDayOfWeek)) % 7;
+            DateTime startOfWeek = baseDate.AddDays(-1 * diff).Date;
+            DateTime endOfWeek = startOfWeek.AddDays(7);
+
             var activities = await _context.Activities
-                .Where(a => a.UserAccountId == user.Id)
+                .Where(a => a.UserAccountId == user.Id && a.Date >= startOfWeek && a.Date < endOfWeek)
                 .OrderByDescending(a => a.Date)
                 .ToListAsync();
 
+            ViewBag.CurrentWeekOffset = offset;
             return View(activities);
         }
-
-        public IActionResult Create() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -46,9 +50,6 @@ namespace CalorieCore.Web.Controllers
         {
             var user = await GetCurrentUserAsync();
             if (user == null) return Unauthorized();
-
-            if (!ModelState.IsValid)
-                return View(activity);
 
             activity.UserAccountId = user.Id;
             activity.Date = DateTime.Now;
@@ -59,7 +60,9 @@ namespace CalorieCore.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, UserActivity updatedActivity)
         {
             var user = await GetCurrentUserAsync();
             if (user == null) return Unauthorized();
@@ -69,7 +72,11 @@ namespace CalorieCore.Web.Controllers
 
             if (activity == null) return NotFound();
 
-            return View(activity);
+            activity.Name = updatedActivity.Name;
+            activity.CaloriesBurned = updatedActivity.CaloriesBurned;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost, ActionName("Delete")]

@@ -24,16 +24,23 @@ namespace CalorieCore.Web.Controllers
                 .FirstOrDefaultAsync(u => u.IdentityUserId == identityUserId);
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int offset = 0)
         {
             var user = await GetCurrentUserAsync();
             if (user == null) return Unauthorized();
 
+            DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
+            DateTime baseDate = DateTime.Today.AddDays(offset * 7);
+            int diff = (7 + (baseDate.DayOfWeek - firstDayOfWeek)) % 7;
+            DateTime startOfWeek = baseDate.AddDays(-1 * diff).Date;
+            DateTime endOfWeek = startOfWeek.AddDays(7);
+
             var meals = await _context.Meals
-                .Where(m => m.UserAccountId == user.Id)
+                .Where(m => m.UserAccountId == user.Id && m.Date >= startOfWeek && m.Date < endOfWeek)
                 .OrderByDescending(m => m.Date)
                 .ToListAsync();
 
+            ViewBag.CurrentWeekOffset = offset;
             return View(meals);
         }
 
@@ -55,7 +62,6 @@ namespace CalorieCore.Web.Controllers
             _context.Meals.Add(meal);
             await _context.SaveChangesAsync();
 
-            
             return RedirectToAction(nameof(Index));
         }
 
@@ -84,12 +90,9 @@ namespace CalorieCore.Web.Controllers
 
             if (meal == null) return NotFound();
 
-            if (!ModelState.IsValid)
-                return View(updatedMeal);
-
             meal.Name = updatedMeal.Name;
             meal.Calories = updatedMeal.Calories;
-            meal.Date = updatedMeal.Date;
+
 
             await _context.SaveChangesAsync();
 
@@ -128,7 +131,6 @@ namespace CalorieCore.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddFromRecipe(int recipeId)
@@ -149,7 +151,6 @@ namespace CalorieCore.Web.Controllers
 
             _context.Meals.Add(meal);
             await _context.SaveChangesAsync();
-
 
             return RedirectToAction(nameof(Index));
         }

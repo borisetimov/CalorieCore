@@ -1,39 +1,148 @@
 ﻿@model IEnumerable<CalorieCore.DataModels.Meal>
+@{
+    ViewData["Title"] = "Meals";
+    int offset = ViewBag.CurrentWeekOffset ?? 0;
+}
 
-<div class="container mt-4">
-    <h2>Meals🍽</h2>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="gradient-text fw-bold">Daily Meals 🍽️</h2>
+        <button class="btn btn-warning fw-bold" data-bs-toggle="modal" data-bs-target="#createMealModal">
+            + Log Meal
+        </button>
+    </div>
 
-    <p>
-        <a asp-action="Create" class="btn btn-dark">Log Meal</a>
-    </p>
+    <div class="week-nav glass-card">
+        <a asp-action="Index" asp-route-offset="@(offset - 1)" class="btn btn-outline-light-custom btn-sm">
+            <i class="bi bi-chevron-left"></i> Previous Week
+        </a>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Meal</th>
-                <th>Calories</th>
-                <th>Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var meal in Model)
-            {
-                <tr>
-                    <td>@meal.Name</td>
-                    <td>@meal.Calories kcal</td>
-                    <td>@meal.Date.ToShortDateString()</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@meal.Id" class="btn btn-outline-secondary btn-sm">
-                            Edit
-                        </a>
-                        <a asp-action="Delete" asp-route-id="@meal.Id" class="btn btn-outline-danger btn-sm">
-                            Delete
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        <span class="fw-bold">
+            @(offset == 0 ? "Current Week" : $" {Math.Abs(offset)} Week(s) Ago")
+        </span>
+
+        @if (offset < 0)
+        {
+            <a asp-action="Index" asp-route-offset="@(offset + 1)" class="btn btn-outline-light-custom btn-sm">
+                Next Week <i class="bi bi-chevron-right"></i>
+            </a>
+        }
+        else
+        {
+            <button class="btn btn-secondary btn-sm" disabled>Next Week</button>
+        }
+    </div>
+
+    <div class="row g-2">
+        @foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>().OrderBy(d => (int)d == 0 ? 7 : (int)d))
+        {
+            <div class="col-md">
+                <div class="day-column">
+                    <div class="day-header">@day.ToString()</div>
+                    <div class="meal-list">
+                        @foreach (var meal in Model.Where(m => m.Date.DayOfWeek == day).OrderByDescending(m => m.Date))
+                        {
+                            <div class="glass-card p-2 mb-2 small position-relative">
+                                <div class="fw-bold">@meal.Name</div>
+                                <div class="text-warning">@meal.Calories kcal</div>
+                                <div class="mt-1">
+                                    <button class="btn btn-sm p-0 text-secondary me-2" onclick="openEditModal('@meal.Id', '@meal.Name', '@meal.Calories')">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                    <button class="btn btn-sm p-0 text-danger" onclick="openDeleteModal('@meal.Id', '@meal.Name')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
+<div class="modal fade" id="createMealModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h5 class="modal-title">Log New Meal</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="Create" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input name="Name" class="form-control" placeholder="What did you eat?" required />
+                    </div>
+                    <div class="mb-3">
+                        <input name="Calories" type="number" class="form-control" placeholder="Calories" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-warning w-100">Save Meal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editMealModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Meal</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="Edit" method="post">
+                <input type="hidden" id="editId" name="Id" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input id="editName" name="Name" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <input id="editCalories" name="Calories" type="number" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-warning w-100">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteMealModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-danger">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete?</h5>
+            </div>
+            <form asp-action="Delete" method="post">
+                <input type="hidden" id="deleteId" name="Id" />
+                <div class="modal-body text-center">
+                    <p>Remove <strong id="deleteName"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openEditModal(id, name, cal) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editName').value = name;
+            document.getElementById('editCalories').value = cal;
+            new bootstrap.Modal(document.getElementById('editMealModal')).show();
+        }
+        function openDeleteModal(id, name) {
+            document.getElementById('deleteId').value = id;
+            document.getElementById('deleteName').innerText = name;
+            new bootstrap.Modal(document.getElementById('deleteMealModal')).show();
+        }
+    </script>
+}
