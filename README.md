@@ -1,4 +1,9 @@
-🍏 CalorieCore – Personal Calorie Tracker & Recipe Manager
+# **CalorieCore**
+
+![CalorieCore](CalorieCore.Web/wwwroot/images/CalorieCore-logo.png)
+
+
+## **CalorieCore – Personal Calorie Tracker & Recipe Manager**
 
 Overview
 
@@ -16,7 +21,7 @@ Whether you're trying to eat healthier or just stay organized with your nutritio
 
 Features
 
-🥗 Recipes
+## **Recipes**
 
 Create, edit, and delete your personal recipes
 
@@ -31,7 +36,7 @@ Sort and filter recipes by calories, type, or difficulty
 Cook & log meals directly from a recipe
 
 
-🍽 Meals
+## **Meals**
 
 Log meals with name, calories, and date
 
@@ -42,7 +47,7 @@ View all meals in a table, sorted by most recent
 Prevent repeated form submissions using POST-Redirect-GET pattern
 
 
-🏃 Activities
+## **Activities**
 
 Log your physical activities with calories burned
 
@@ -51,7 +56,7 @@ Edit or delete activities
 View your personal activity history
 
 
-🔒 Account & Profile
+## **Account & Profile**
 
 Custom registration and login pages
 
@@ -60,7 +65,7 @@ Complete profile with age, weight, height, gender, and goals
 Only logged-in users can access personal data
 
 
-Technologies Used
+## **Technologies Used**
 
 ASP.NET Core MVC – Web framework
 
@@ -77,7 +82,7 @@ Server & client-side validation – Ensures safe, correct data
 Authentication – Identity-based login
 
 
-Setup & Installation
+## **Setup & Installation**
 
 Clone the repository
 
@@ -85,7 +90,25 @@ git clone https://github.com/borisetimov/CalorieCore.git
 
 Open the project in Visual Studio 2022 or higher.
 
-Install dependencies
+*Dependencies & Prerequisites*
+
+Before running the application, ensure you have the following installed:
+
+.NET 8.0 SDK
+
+SQL Server (LocalDB or Express)
+
+Visual Studio 2022 with the ASP.NET and web development workload
+
+The project relies on the following key libraries. If they don't restore automatically, run dotnet restore in your terminal:
+
+Microsoft.EntityFrameworkCore.SqlServer – Database provider.
+
+Microsoft.EntityFrameworkCore.Tools – For migrations and database updates.
+
+Microsoft.AspNetCore.Identity.EntityFrameworkCore – For authentication and user management.
+
+Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation – (Optional) For real-time UI updates.
 
 NuGet packages restore automatically.
 
@@ -102,7 +125,7 @@ Run the app
 Press F5 or Ctrl+F5 to start. The app will open in your default browser.
 
 
-Architecture
+## **Architecture**
 
 Models: UserAccount, Recipe, Meal, UserActivity
 
@@ -115,7 +138,7 @@ Database: SQL Server with EF Core migrations
 Validtion & Security: Data annotations and identity-based authentication
 
 
-How to Use
+## **How to Use**
 
 Register / Log In
 
@@ -138,7 +161,7 @@ Log daily meals and activities.
 Track calories and see your progress over time.
 
 
-Database Structure
+## **Database Structure**
 
 Table	Key Fields	Relationships
 
@@ -150,7 +173,7 @@ Meal	Id, UserAccountId	UserAccount (required)
 
 UserActivity	Id, UserAccountId	UserAccount (required)
 
-Validation & Security
+## **Validation & Security**
 
 
 Only authenticated users can access their data.
@@ -162,7 +185,7 @@ Meals, activities, and recipes are linked to the currently logged-in user.
 Global recipes cannot be modified or deleted by normal users.
 
 
-Future Improvements
+## **Future Improvements**
 
 Add user roles for admin and standard users
 
@@ -175,6 +198,6 @@ Recipe sharing and rating system
 Mobile-first responsive enhancements
 
 
-Notes
+## **Notes**
 This project is fully original, built following SoftUni ASP.NET Fundamentals requirements.
 It demonstrates MVC architecture, CRUD operations, user authentication, and responsive front-end design.
