@@ -1,29 +1,73 @@
 ﻿@model CalorieCore.ViewModels.RegisterViewModel
 
-<h2>Register</h2>
+@{
+    ViewData["Title"] = "Register";
+}
 
-<form asp-action="Register" method="post">
-    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
 
-    <div class="mb-3">
-        <label asp-for="Username" class="form-label"></label>
-        <input asp-for="Username" class="form-control" />
-        <span asp-validation-for="Username" class="text-danger"></span>
+            <div class="glass-card p-4 p-md-5 shadow-lg border border-secondary border-opacity-25">
+
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-info bg-opacity-10 rounded-circle mb-3" style="width: 60px; height: 60px;">
+                        <i class="bi bi-person-plus-fill text-info fs-3"></i>
+                    </div>
+                    <h2 class="gradient-text fw-bold">Join the Community</h2>
+                    <p class="text-secondary small">Start tracking your calories and sharing recipes today.</p>
+                </div>
+
+                <form asp-action="Register" method="post">
+                    <div asp-validation-summary="All" class="alert alert-danger bg-danger bg-opacity-10 border-0 text-danger text-center small mb-4"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="text-secondary small fw-bold mb-1 text-uppercase"></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-person"></i></span>
+                            <input asp-for="Username" class="form-control bg-dark text-white border-secondary" placeholder="Choose a username" />
+                        </div>
+                        <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="text-secondary small fw-bold mb-1 text-uppercase"></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-envelope"></i></span>
+                            <input asp-for="Email" class="form-control bg-dark text-white border-secondary" placeholder="name@example.com" />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="text-secondary small fw-bold mb-1 text-uppercase"></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-lock"></i></span>
+                            <input asp-for="Password" type="password" class="form-control bg-dark text-white border-secondary" placeholder="••••••••" />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="ConfirmPassword" class="text-secondary small fw-bold mb-1 text-uppercase">Confirm Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-shield-check"></i></span>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control bg-dark text-white border-secondary" placeholder="Re-enter password" />
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-info text-dark w-100 fw-bold py-2 mb-3 shadow-sm">
+                        Create Account
+                    </button>
+
+                    <div class="text-center">
+                        <span class="text-secondary small">Already have an account?</span>
+                        <a asp-action="Login" class="text-info fw-bold text-decoration-none small ms-1">Login here</a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
     </div>
-    <div class="mb-3">
-        <label asp-for="Email" class="form-label"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Password" class="form-label"></label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="ConfirmPassword" class="form-label"></label>
-        <input asp-for="ConfirmPassword" class="form-control" />
-        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Register</button>
-</form>
+</div>

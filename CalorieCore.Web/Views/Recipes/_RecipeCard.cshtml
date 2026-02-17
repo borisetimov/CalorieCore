@@ -7,44 +7,55 @@
      data-calories="@Model.Calories"
      data-tags="@Model.Tags">
 
-    <div class="card h-100 glass-card recipe-hover border-0 position-relative">
-        <a asp-action="Details" asp-route-id="@Model.Id" class="text-decoration-none flex-grow-1">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                    <h5 class="fw-bold text-white mb-0">@Model.Title</h5>
-                    @if (!Model.IsGlobal)
-                    {
-                        <button type="button" onclick="event.preventDefault(); openDeleteModal(@Model.Id)" class="btn btn-sm text-danger p-0">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    }
-                </div>
+    <div class="glass-card h-100 recipe-hover p-3 border border-secondary border-opacity-25" onclick="location.href='@Url.Action("Details", "Recipes", new { id = Model.Id })'">
 
-                <div class="mb-3 d-flex flex-wrap gap-1">
-                    @if (Model.Calories <= 400)
-                    {
-                        <span class="badge bg-success bg-opacity-75">Low-calorie</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-danger bg-opacity-75">High-calorie</span>
-                    }
-                    <span class="badge border border-secondary text-secondary">@Model.Type</span>
-                    <span class="badge border border-info text-info">@Model.Difficulty</span>
-                </div>
+        <div class="d-flex flex-wrap gap-1 mb-2">
+            <span class="badge @(Model.Calories <= 400 ? "bg-success" : "bg-danger")">
+                @(Model.Calories <= 400 ? "Low-calorie" : "High-calorie")
+            </span>
+            <span class="badge bg-secondary text-uppercase" style="font-size: 0.7rem;">@Model.Type</span>
+            <span class="badge bg-info text-dark text-uppercase" style="font-size: 0.7rem;">@Model.Difficulty</span>
+        </div>
 
-                <p class="text-warning small fw-bold mb-2">🔥 @Model.Calories kcal</p>
-                <p class="text-secondary small">@Model.Description</p>
+        @if (!string.IsNullOrEmpty(Model.Tags))
+        {
+            <div class="d-flex flex-wrap gap-1 mb-3">
+                @{
+                    var tagList = Model.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var tag in tagList)
+                    {
+                        <span class="badge bg-custom-tag">@tag.Trim()</span>
+                    }
+                }
             </div>
-        </a>
+        }
 
-        <div class="card-footer border-0 bg-transparent pb-3">
-            <form asp-controller="Meals" asp-action="AddFromRecipe" method="post">
-                <input type="hidden" name="recipeId" value="@Model.Id" />
-                <button type="submit" class="btn btn-outline-success w-100 fw-bold py-2">
-                    Cook & Log Meal 🍽
-                </button>
-            </form>
+        <h5 class="text-white fw-bold mb-1">@Model.Title</h5>
+
+        <div class="d-flex align-items-center gap-1 mb-2 text-warning">
+            <i class="bi bi-fire"></i>
+            <span class="small fw-bold">@Model.Calories kcal</span>
+        </div>
+
+        <p class="text-secondary small mb-3 line-clamp-2">
+            @Model.Description
+        </p>
+
+        <div class="mt-auto d-flex justify-content-between align-items-center">
+            @if (!Model.IsGlobal)
+            {
+                <div class="d-flex gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-warning border-0 p-0 px-1">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <button type="button" class="btn btn-sm btn-outline-danger border-0 p-0 px-1" onclick="event.stopPropagation(); openDeleteModal(@Model.Id)">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </div>
+            }
+            <span class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 ms-auto">
+                Cook & Log Meal <i class="bi bi-egg-fried"></i>
+            </span>
         </div>
     </div>
 </div>
