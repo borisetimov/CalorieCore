@@ -72,7 +72,10 @@ namespace CalorieCore.Web.Controllers
             {
                 return View("NotFound");
             }
-
+            if (statusCode == 403)
+            {
+                return View("AccessDenied");
+            }
             return View(new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
