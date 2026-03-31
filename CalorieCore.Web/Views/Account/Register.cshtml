@@ -18,7 +18,7 @@
                     <p class="text-secondary small">Start tracking your calories and sharing recipes today.</p>
                 </div>
 
-                <form asp-action="Register" method="post">
+                <form asp-action="Register" method="post" id="registerForm">
                     <div asp-validation-summary="All" class="alert alert-danger bg-danger bg-opacity-10 border-0 text-danger text-center small mb-4"></div>
 
                     <div class="mb-3">
@@ -57,13 +57,16 @@
                     <div class="mb-4">
                         <label asp-for="ConfirmPassword" class="text-secondary small fw-bold mb-1 text-uppercase">Confirm Password</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-shield-check"></i></span>
-                            <input asp-for="ConfirmPassword" type="password" class="form-control bg-dark text-white border-secondary" placeholder="Re-enter password" />
+                            <span class="input-group-text bg-dark border-secondary text-secondary" id="matchIconContainer">
+                                <i class="bi bi-shield-check" id="matchIcon"></i>
+                            </span>
+                            <input asp-for="ConfirmPassword" id="confirmPasswordInput" type="password" class="form-control bg-dark text-white border-secondary" placeholder="Re-enter password" />
                         </div>
+                        <div id="matchText" class="small mt-1 fw-bold" style="font-size: 0.7rem;"></div>
                         <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-info text-dark w-100 fw-bold py-2 mb-3 shadow-sm">
+                    <button type="submit" id="submitBtn" class="btn btn-info text-dark w-100 fw-bold py-2 mb-3 shadow-sm">
                         Create Account
                     </button>
 
@@ -80,10 +83,31 @@
 
 @section Scripts {
     <script>
-        document.getElementById('passwordInput').addEventListener('input', function () {
+        const pwd = document.getElementById('passwordInput');
+        const confirmPwd = document.getElementById('confirmPasswordInput');
+        const bar = document.getElementById('strengthBar');
+        const sText = document.getElementById('strengthText');
+        const mText = document.getElementById('matchText');
+        const mIcon = document.getElementById('matchIcon');
+
+        function validateMatch() {
+            if (confirmPwd.value === "") {
+                mText.innerHTML = "";
+                mIcon.className = "bi bi-shield-check";
+                return;
+            }
+
+            if (pwd.value === confirmPwd.value) {
+                mText.innerHTML = "<span class='text-success small'>Passwords match</span>";
+                mIcon.className = "bi bi-check-circle-fill text-success";
+            } else {
+                mText.innerHTML = "<span class='text-danger small'>Passwords do not match</span>";
+                mIcon.className = "bi bi-x-circle-fill text-danger";
+            }
+        }
+
+        pwd.addEventListener('input', function () {
             const password = this.value;
-            const bar = document.getElementById('strengthBar');
-            const text = document.getElementById('strengthText');
             let strength = 0;
 
             if (password.length >= 6) strength += 25;
@@ -95,20 +119,24 @@
 
             if (strength === 0) {
                 bar.className = "progress-bar";
-                text.innerHTML = "";
+                sText.innerHTML = "";
             } else if (strength <= 25) {
                 bar.className = "progress-bar bg-danger";
-                text.innerHTML = "<span class='text-danger'>Weak</span>";
+                sText.innerHTML = "<span class='text-danger'>Weak</span>";
             } else if (strength <= 50) {
                 bar.className = "progress-bar bg-warning";
-                text.innerHTML = "<span class='text-warning'>Fair</span>";
+                sText.innerHTML = "<span class='text-warning'>Fair</span>";
             } else if (strength <= 75) {
                 bar.className = "progress-bar bg-info";
-                text.innerHTML = "<span class='text-info'>Good</span>";
+                sText.innerHTML = "<span class='text-info'>Good</span>";
             } else {
                 bar.className = "progress-bar bg-success";
-                text.innerHTML = "<span class='text-success'>Strong</span>";
+                sText.innerHTML = "<span class='text-success'>Strong</span>";
             }
+
+            validateMatch(); 
         });
+
+        confirmPwd.addEventListener('input', validateMatch);
     </script>
 }

@@ -162,5 +162,18 @@ namespace CalorieCore.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        [HttpPost]
+        public async Task<IActionResult> ToggleFavorite(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var recipe = await _context.Recipes.FindAsync(id);
+
+            if (recipe == null) return NotFound();
+            recipe.IsFavorite = !recipe.IsFavorite;
+
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, isFavorite = recipe.IsFavorite });
+        }
     }
 }

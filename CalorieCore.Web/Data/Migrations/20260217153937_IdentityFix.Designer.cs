@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace CalorieCore.Web.Migrations
+namespace CalorieCore.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260216145140_AddRoles")]
-    partial class AddRoles
+    [Migration("20260217153937_IdentityFix")]
+    partial class IdentityFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -779,6 +779,406 @@ namespace CalorieCore.Web.Migrations
                             Tags = "Quick, Healthy, Light",
                             Title = "Apple Cinnamon Yogurt Bowl",
                             Type = "Snack"
+                        },
+                        new
+                        {
+                            Id = 42,
+                            Calories = 460,
+                            Description = "Sweet and savory glazed salmon served with steamed broccoli.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Salmon fillet, Honey, Soy sauce, Garlic, Broccoli, Lemon",
+                            Instructions = "1. Mix honey, soy sauce, and garlic. 2. Brush over salmon. 3. Bake at 200°C for 12-15 minutes. 4. Steam broccoli as a side.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Omega-3, Dinner",
+                            Title = "Honey Garlic Glazed Salmon",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 43,
+                            Calories = 210,
+                            Description = "A lean, high-protein breakfast with fluffy egg whites and sautéed peppers.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Egg whites, Bell peppers, Spinach, Onion, Salt, Pepper",
+                            Instructions = "1. Sauté peppers and onions. 2. Pour in egg whites. 3. Scramble until firm. 4. Stir in fresh spinach at the end.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Low-fat, High-protein, Quick",
+                            Title = "Egg White Veggie Scramble",
+                            Type = "Breakfast"
+                        },
+                        new
+                        {
+                            Id = 44,
+                            Calories = 480,
+                            Description = "Whole wheat pasta tossed with grilled chicken and a light basil pesto.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Whole wheat pasta, Chicken breast, Basil pesto, Cherry tomatoes, Pine nuts",
+                            Instructions = "1. Cook pasta. 2. Grill and slice chicken. 3. Toss pasta with pesto, tomatoes, and chicken. 4. Garnish with pine nuts.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Balanced, Mediterranean",
+                            Title = "Pesto Chicken Pasta",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 45,
+                            Calories = 280,
+                            Description = "Refreshing spinach salad with strawberries, blueberries, and walnuts.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Baby spinach, Strawberries, Blueberries, Walnuts, Balsamic vinaigrette",
+                            Instructions = "1. Toss spinach with fresh berries. 2. Add walnuts for crunch. 3. Drizzle with balsamic vinaigrette.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, Antioxidants, Light",
+                            Title = "Berry Spinach Salad",
+                            Type = "Salad"
+                        },
+                        new
+                        {
+                            Id = 46,
+                            Calories = 370,
+                            Description = "Hearty and warming chili made with lean ground turkey and beans.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Ground turkey, Kidney beans, Diced tomatoes, Chili powder, Onion, Bell pepper",
+                            Instructions = "1. Brown the turkey with onions and peppers. 2. Add tomatoes, beans, and spices. 3. Simmer for 30 minutes on low heat.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-fiber, Meal prep, High-protein",
+                            Title = "Turkey Chili",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 47,
+                            Calories = 330,
+                            Description = "Elevated breakfast toast with creamy avocado and smoked salmon.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Whole grain bread, Avocado, Smoked salmon, Red onion, Capers",
+                            Instructions = "1. Toast the bread. 2. Mash avocado and spread evenly. 3. Top with salmon, onion slices, and capers.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Healthy fats, Omega-3, Quick",
+                            Title = "Avocado Toast with Smoked Salmon",
+                            Type = "Breakfast"
+                        },
+                        new
+                        {
+                            Id = 48,
+                            Calories = 410,
+                            Description = "Lean beef strips and broccoli florets in a ginger-garlic sauce.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Beef sirloin, Broccoli, Soy sauce, Ginger, Garlic, Sesame oil",
+                            Instructions = "1. Stir fry beef until browned. 2. Add broccoli and a splash of water to steam. 3. Stir in sauce and cook until thick.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Low-carb, Quick",
+                            Title = "Beef and Broccoli",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 49,
+                            Calories = 240,
+                            Description = "Overnight chia pudding made with almond milk and vanilla.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Chia seeds, Almond milk, Vanilla extract, Stevia, Raspberries",
+                            Instructions = "1. Mix chia seeds, milk, and vanilla. 2. Refrigerate overnight. 3. Top with raspberries before serving.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-fiber, Plant-based, Snack",
+                            Title = "Chia Seed Pudding",
+                            Type = "Breakfast"
+                        },
+                        new
+                        {
+                            Id = 50,
+                            Calories = 350,
+                            Description = "Crunchy roasted chickpeas over a bed of kale and tahini dressing.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Chickpeas, Kale, Tahini, Lemon, Garlic, Olive oil",
+                            Instructions = "1. Roast chickpeas until crispy. 2. Massage kale with olive oil. 3. Top kale with chickpeas and tahini dressing.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, High-fiber, Gluten-free",
+                            Title = "Roasted Chickpea Salad",
+                            Type = "Salad"
+                        },
+                        new
+                        {
+                            Id = 51,
+                            Calories = 440,
+                            Description = "Classic roasted chicken thighs with rosemary and lemon.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Chicken thighs, Rosemary, Lemon, Garlic, Butter, Salt",
+                            Instructions = "1. Rub chicken with garlic and herbs. 2. Place lemon slices on top. 3. Roast at 190°C for 35-40 minutes.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Comfort food, Dinner",
+                            Title = "Lemon Herb Roasted Chicken",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 52,
+                            Calories = 290,
+                            Description = "Clear vegetable soup with small pasta and Italian herbs.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Carrots, Celery, Zucchini, Tomato paste, Vegetable broth, Small pasta",
+                            Instructions = "1. Sauté veggies. 2. Add broth and tomato paste. 3. Add pasta and simmer until tender.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, Low-calorie, Healthy",
+                            Title = "Vegetable Minestrone Soup",
+                            Type = "Soup"
+                        },
+                        new
+                        {
+                            Id = 53,
+                            Calories = 320,
+                            Description = "Baked eggplant layers with marinara and low-fat mozzarella.",
+                            Difficulty = "Medium",
+                            Img = "",
+                            Ingredients = "Eggplant, Marinara sauce, Low-fat mozzarella, Parmesan, Basil",
+                            Instructions = "1. Slice and bake eggplant. 2. Layer with sauce and cheese. 3. Bake until bubbly and golden.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, Balanced, Dinner",
+                            Title = "Eggplant Parmigiana Light",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 54,
+                            Calories = 310,
+                            Description = "Quick lunch featuring tuna salad served inside avocado halves.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Canned tuna, Avocado, Greek yogurt, Celery, Lime juice",
+                            Instructions = "1. Mix tuna with yogurt and celery. 2. Scoop out a bit of avocado. 3. Fill with tuna mixture.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Low-carb, High-protein, No-cook",
+                            Title = "Tuna Stuffed Avocado",
+                            Type = "Lunch"
+                        },
+                        new
+                        {
+                            Id = 55,
+                            Calories = 340,
+                            Description = "Oatmeal that tastes like freshly baked banana bread.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Oats, Ripe banana, Walnuts, Cinnamon, Milk",
+                            Instructions = "1. Cook oats with milk. 2. Stir in mashed banana and cinnamon. 3. Top with crushed walnuts.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-fiber, Vegetarian, Quick",
+                            Title = "Banana Bread Oats",
+                            Type = "Breakfast"
+                        },
+                        new
+                        {
+                            Id = 56,
+                            Calories = 280,
+                            Description = "Succulent shrimp sautéed in a light garlic butter sauce.",
+                            Difficulty = "Easy",
+                            Img = "",
+                            Ingredients = "Shrimp, Garlic, Butter, Parsley, Lemon, Red pepper flakes",
+                            Instructions = "1. Sauté garlic in butter. 2. Add shrimp and cook 2 minutes per side. 3. Finish with lemon and parsley.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Low-carb, Quick",
+                            Title = "Garlic Butter Shrimp",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 57,
+                            Calories = 520,
+                            Description = "A sophisticated dish featuring lean beef tenderloin wrapped in mushroom duxelles and light pastry.",
+                            Difficulty = "Hard",
+                            Img = "",
+                            Ingredients = "Beef tenderloin, Mushrooms, Shallots, Thyme, Dijon mustard, Prosciutto (lean), Phyllo pastry, Egg wash",
+                            Instructions = "1. Sear beef tenderloin on all sides and chill. 2. Finely chop mushrooms and sauté with shallots and thyme until all moisture evaporates (Duxelles). 3. Spread mustard on beef. 4. Layer prosciutto, then duxelles, then beef on plastic wrap and roll tightly into a log; chill for 1 hour. 5. Wrap the log in phyllo pastry, brush with egg wash, and bake at 200°C until the pastry is golden and internal temp is 52°C.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Gourmet, High-protein, High-effort",
+                            Title = "Beef Wellington Bites (Lean Edition)",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 58,
+                            Calories = 480,
+                            Description = "Fresh pasta made from scratch, filled with a delicate spinach and ricotta mixture in a light sage butter.",
+                            Difficulty = "Hard",
+                            Img = "",
+                            Ingredients = "Type 00 flour, Eggs, Fresh spinach, Ricotta cheese, Nutmeg, Parmesan, Fresh sage, Butter, Garlic",
+                            Instructions = "1. Create a flour mound, add eggs in the center, and knead for 10 minutes until smooth; rest for 30 minutes. 2. Blanch spinach, squeeze out ALL moisture, and mix with ricotta, nutmeg, and parmesan. 3. Roll pasta dough into thin sheets using a machine. 4. Place dollops of filling, fold over, seal without air bubbles, and cut into squares. 5. Boil for 3 minutes and toss in a pan with browned butter and crispy sage leaves.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, Italian, Handmade",
+                            Title = "Handmade Spinach & Ricotta Ravioli",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 59,
+                            Calories = 550,
+                            Description = "Authentic Spanish saffron rice cooked slowly with an array of fresh seafood and aromatics.",
+                            Difficulty = "Hard",
+                            Img = "",
+                            Ingredients = "Bomba rice, Saffron threads, Shrimp, Mussels, Squid, Chicken thighs, Bell peppers, Tomatoes, Smoked paprika, Seafood stock",
+                            Instructions = "1. Sauté chicken and squid in a wide paella pan; remove. 2. Create a 'sofrito' by slowly cooking onions, peppers, and grated tomatoes until dark and jammy. 3. Add rice and toast slightly, then add saffron-infused stock. 4. Simmer WITHOUT STIRRING to develop the 'socarrat' (crispy bottom). 5. Arrange shrimp and mussels on top for the last 8 minutes, allowing them to steam as the liquid disappears.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Seafood, Spanish, One-pan",
+                            Title = "Traditional Seafood Paella",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 60,
+                            Calories = 410,
+                            Description = "A deep, rich soup requiring hours of onion caramelization for a complex, sweet-savory flavor profile.",
+                            Difficulty = "Hard",
+                            Img = "",
+                            Ingredients = "Yellow onions (2kg), Beef bone broth, Dry white wine, Cognac, Flour, Thyme, Bay leaf, Baguette slices, Gruyère cheese",
+                            Instructions = "1. Slice onions thinly and cook in a heavy pot on low heat for 60-90 minutes, stirring occasionally until deep mahogany brown. 2. Deglaze with cognac and white wine, scraping the bottom. 3. Stir in flour, then slowly add beef broth and herbs. 4. Simmer for 45 minutes to develop depth. 5. Ladle into oven-safe bowls, top with toasted baguette and a thick layer of Gruyère, and broil until bubbly and charred.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = false,
+                            Tags = "French, Comfort food, High-effort",
+                            Title = "French Onion Soup (Authentic)",
+                            Type = "Soup"
+                        },
+                        new
+                        {
+                            Id = 61,
+                            Calories = 620,
+                            Description = "Slow-cooked lamb shanks that fall off the bone, served in a reduced wine and root vegetable jus.",
+                            Difficulty = "Hard",
+                            Img = "",
+                            Ingredients = "Lamb shanks, Red wine (Cabernet), Carrots, Celery, Leeks, Garlic, Rosemary, Tomato paste, Lamb stock",
+                            Instructions = "1. Season and brown lamb shanks deeply in a Dutch oven; remove. 2. Sauté mirepoix (carrots, celery, leeks) until soft. 3. Add tomato paste and cook until it darkens. 4. Return lamb to the pot, cover halfway with wine and stock. 5. Braise at 150°C for 3.5 hours. 6. Strain the liquid into a saucepan and reduce by half until it coats a spoon; pour over the lamb to serve.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "High-protein, Slow-cook, Gourmet",
+                            Title = "Braised Lamb Shanks in Red Wine",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 62,
+                            Calories = 580,
+                            Description = "A labor-intensive Greek classic with spiced meat sauce, fried eggplant, and thick béchamel topping.",
+                            Difficulty = "Hard",
+                            Img = "",
+                            Ingredients = "Eggplants, Potatoes, Ground lamb, Cinnamon, Allspice, Onions, Red wine, Milk, Flour, Butter, Egg yolks, Kefalotyri cheese",
+                            Instructions = "1. Slice and salt eggplants to remove bitterness; rinse and bake until soft. 2. Fry potato slices for the base layer. 3. Cook lamb with onions, wine, and warm spices (cinnamon/allspice) until thick. 4. Make a roux with butter and flour, whisk in milk until thick, then temper with egg yolks and cheese for the béchamel. 5. Layer potatoes, meat, eggplant, then béchamel; bake at 180°C for 50 minutes until golden brown.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = false,
+                            Tags = "Greek, Traditional, Layered",
+                            Title = "Eggplant Moussaka (Layered)",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 63,
+                            Calories = 320,
+                            Description = "Restaurant-quality cold appetizer requiring precision knife work and fresh, high-grade ingredients.",
+                            Difficulty = "Hard",
+                            Img = "",
+                            Ingredients = "Sashimi-grade Ahi Tuna, Shallots, Chives, Ginger, Soy sauce, Sesame oil, Lime, Ripe avocado, Wasabi, Microgreens",
+                            Instructions = "1. Chill all equipment. 2. Use a razor-sharp knife to dice tuna into perfect 5mm cubes. 3. Mix tuna with finely minced shallots, chives, ginger, and dressing. 4. Blend avocado with lime and wasabi until completely smooth; pass through a fine sieve. 5. Use a ring mold to layer the tuna on a plate, top with dots of avocado mousse using a piping bag, and garnish with microgreens.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Seafood, Low-carb, Precision",
+                            Title = "Tuna Tartare with Avocado Mousse",
+                            Type = "Appetizer"
+                        },
+                        new
+                        {
+                            Id = 64,
+                            Calories = 450,
+                            Description = "A technical Italian dish requiring constant attention to achieve the perfect 'all'onda' consistency.",
+                            Difficulty = "Hard",
+                            Img = "",
+                            Ingredients = "Arborio rice, Dried porcini, Fresh cremini, Shiitake, Shallots, Dry vermouth, Mushroom stock, Butter, Parmesan, Truffle oil",
+                            Instructions = "1. Rehydrate porcini and keep stock simmering nearby. 2. Sauté mushrooms in batches to ensure browning; remove. 3. Toast rice with shallots until edges are translucent. 4. Add vermouth and reduce. 5. Add stock ONE LADLE AT A TIME, stirring constantly to release starch. 6. Once rice is al dente, vigorously beat in cold butter and parmesan (Mantucatura) to create a creamy sauce. 7. Drizzle with truffle oil.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vegetarian, Italian, Technique",
+                            Title = "Wild Mushroom Risotto with Truffle Oil",
+                            Type = "Main"
+                        },
+                        new
+                        {
+                            Id = 65,
+                            Calories = 490,
+                            Description = "Vietnamese noodle soup featuring a clear, deeply aromatic broth made from charred aromatics and bones.",
+                            Difficulty = "Hard",
+                            Img = "",
+                            Ingredients = "Beef marrow bones, Star anise, Cinnamon sticks, Cardamom, Charred ginger, Charred onion, Rice noodles, Flank steak, Fish sauce",
+                            Instructions = "1. Parboil bones for 10 minutes, then scrub clean to ensure a clear broth. 2. Simmer bones for 12-24 hours, skimming fat constantly. 3. Toast spices and add to broth with charred ginger and onion for the final 4 hours. 4. Strain through a cheesecloth and season with fish sauce. 5. Serve with blanched rice noodles, paper-thin raw steak slices (cooked by the hot broth), and fresh herbs.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Vietnamese, High-effort, Aromatic",
+                            Title = "Authentic Pho (24-Hour Broth)",
+                            Type = "Soup"
+                        },
+                        new
+                        {
+                            Id = 66,
+                            Calories = 540,
+                            Description = "Technical dish combining modern sous-vide precision with classic French sauce reduction.",
+                            Difficulty = "Hard",
+                            Img = "",
+                            Ingredients = "Duck breast, Fresh cherries, Red wine vinegar, Sugar, Port wine, Star anise, Thyme, Parsnip puree",
+                            Instructions = "1. Score duck skin in a diamond pattern without hitting the meat. 2. Vacuum seal with thyme and cook in water bath at 54°C for 2 hours. 3. Create a gastrique by caramelizing sugar, deglazing with vinegar and port, and reducing with cherries until syrupy. 4. Sear duck in a cold pan, rendering out all fat until skin is paper-thin and crispy. 5. Rest meat, slice, and serve over parsnip puree with the reduction.",
+                            IsFavorite = false,
+                            IsGlobal = true,
+                            IsHealthy = true,
+                            Tags = "Gourmet, Precision, French",
+                            Title = "Sous-Vide Duck Breast with Cherry Gastrique",
+                            Type = "Main"
                         });
                 });
 

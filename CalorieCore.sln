@@ -21,6 +21,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalorieCore.ViewModels", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalorieCore.Web", "CalorieCore.Web\CalorieCore.Web.csproj", "{7D5D2734-5789-F82F-F7D1-D0E00C712DC2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{CFE533E5-8455-4240-B18E-517782CEBBD5}"
+	ProjectSection(SolutionItems) = preProject
+		IRecipeService.cs = IRecipeService.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Implementations", "Implementations", "{4698AC25-FA8C-4AD8-82B4-B024E82FC70C}"
+	ProjectSection(SolutionItems) = preProject
+		RecipeService.cs = RecipeService.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +71,8 @@ Global
 		{B05FF882-2239-4072-ABB1-89AA76668CEB} = {5AD09158-120D-4EB7-8970-57399736A9D2}
 		{EFF3AC85-7732-4BEC-B10A-A0769C589C51} = {55C6A8C1-93AB-4B87-97E5-08D098F9C170}
 		{7D5D2734-5789-F82F-F7D1-D0E00C712DC2} = {55C6A8C1-93AB-4B87-97E5-08D098F9C170}
+		{CFE533E5-8455-4240-B18E-517782CEBBD5} = {5AD09158-120D-4EB7-8970-57399736A9D2}
+		{4698AC25-FA8C-4AD8-82B4-B024E82FC70C} = {5AD09158-120D-4EB7-8970-57399736A9D2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BC83364D-6FD9-4569-A46A-3F214D4AFA11}

@@ -7,7 +7,15 @@
      data-calories="@Model.Calories"
      data-tags="@Model.Tags">
 
-    <div class="glass-card h-100 recipe-hover p-3 border border-secondary border-opacity-25" onclick="location.href='@Url.Action("Details", "Recipes", new { id = Model.Id })'">
+    <div class="glass-card h-100 recipe-hover p-3 border border-secondary border-opacity-25 position-relative"
+         onclick="location.href='@Url.Action("Details", "Recipes", new { id = Model.Id })'">
+
+        <button type="button"
+                class="btn btn-link position-absolute top-0 end-0 p-3 z-3"
+                onclick="event.stopPropagation(); toggleFavorite(@Model.Id, this)"
+                style="text-decoration: none; outline: none; box-shadow: none;">
+            <i class="bi @(Model.IsFavorite ? "bi-heart-fill text-danger" : "bi-heart text-white") fs-4"></i>
+        </button>
 
         <div class="d-flex flex-wrap gap-1 mb-2">
             <span class="badge @(Model.Calories <= 400 ? "bg-success" : "bg-danger")">
@@ -30,7 +38,7 @@
             </div>
         }
 
-        <h5 class="text-white fw-bold mb-1">@Model.Title</h5>
+        <h5 class="text-white fw-bold mb-1 pe-4">@Model.Title</h5>
 
         <div class="d-flex align-items-center gap-1 mb-2 text-warning">
             <i class="bi bi-fire"></i>
@@ -45,7 +53,7 @@
             @if (!Model.IsGlobal)
             {
                 <div class="d-flex gap-2">
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-warning border-0 p-0 px-1">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-warning border-0 p-0 px-1" onclick="event.stopPropagation();">
                         <i class="bi bi-pencil-square"></i>
                     </a>
                     <button type="button" class="btn btn-sm btn-outline-danger border-0 p-0 px-1" onclick="event.stopPropagation(); openDeleteModal(@Model.Id)">

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using CalorieCore.Data.Migrations;
 using CalorieCore.Services.Services;
 
+
 namespace CalorieCore.Web
 {
     public class Program
@@ -34,7 +35,12 @@ namespace CalorieCore.Web
                 options.AccessDeniedPath = "/Account/Login";
             });
 
+            // Infrastructure Services
             builder.Services.AddSingleton<IEmailSender, EmailSender>();
+
+            // Business Logic Services (Dependency Injection)
+            // This links your Interface to the Implementation
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
@@ -44,18 +50,17 @@ namespace CalorieCore.Web
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-
+            app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRouting();          
-            app.UseAuthentication();  
-            app.UseAuthorization();   
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Landing}/{id?}");
-
-            
 
             app.Run();
         }

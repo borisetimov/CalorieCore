@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Page Not Found";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5 pt-5 text-center">
+    <div class="glass-card p-5 mx-auto" style="max-width: 600px;">
+        <h1 class="display-1 fw-bold gradient-text">404</h1>
+        <h2 class="mb-4 text-white">Oops! Page not found.</h2>
+        <p class="text-light mb-5">
+            The recipe or page you are looking for doesn't exist or has been moved to a different kitchen.
+        </p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-warning px-4 py-2 fw-bold">
+                <i class="bi bi-house-door me-2"></i>Back to Dashboard
+            </a>
+            <a href="javascript:history.back()" class="btn btn-outline-light-custom px-4 py-2">
+                Go Back
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Adding a little extra pop for the 404 page */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+</style>
