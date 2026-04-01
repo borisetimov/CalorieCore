@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using CalorieCore.Data.Migrations;
 using CalorieCore.Services.Services;
+using CalorieCore.Services.Contracts;
+using CalorieCore.Services.Implementations;
 
 
 namespace CalorieCore.Web

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
-
+//This method is used ny Identity framework to send emails for password resets, email confirmations, etc. Since we are not implementing actual email sending functionality, this is a dummy implementation that does nothing.
 namespace CalorieCore.Services.Services
 {
     public class EmailSender : IEmailSender
