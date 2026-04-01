@@ -60,5 +60,25 @@ namespace CalorieCore.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        [HttpPost]
+        public async Task<IActionResult> DeleteLog(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userAccount = await _context.UserAccounts
+                .FirstOrDefaultAsync(u => u.IdentityUserId == userId);
+
+            if (userAccount == null) return Unauthorized();
+
+            var log = await _context.WeightLogs
+                .FirstOrDefaultAsync(l => l.Id == id && l.UserAccountId == userAccount.Id);
+
+            if (log != null)
+            {
+                _context.WeightLogs.Remove(log);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
