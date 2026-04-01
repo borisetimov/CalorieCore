@@ -17,6 +17,8 @@ namespace CalorieCore.Data.Migrations
         public DbSet<UserAccount> UserAccounts { get; set; } = null!;
         public DbSet<Meal> Meals { get; set; } = null!;
 
+        public DbSet<WeightLog> WeightLogs { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

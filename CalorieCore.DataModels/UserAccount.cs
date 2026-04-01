@@ -29,6 +29,8 @@ namespace CalorieCore.DataModels
 
         public bool IsProfileComplete { get; set; } = false;
 
+        public ICollection<WeightLog> WeightLogs { get; set; } = new List<WeightLog>();
+
         public ICollection<Meal> Meals { get; set; } = new List<Meal>();
         public ICollection<UserActivity> Activities { get; set; } = new List<UserActivity>();
     }
