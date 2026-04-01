@@ -93,12 +93,34 @@
             <partial name="_RecipeCard" model="item" />
         }
     </div>
+
+    <div class="d-flex justify-content-center mt-5 mb-5">
+        <nav>
+            <ul class="pagination">
+                @if (ViewBag.CurrentPage > 1)
+                {
+                    <li class="page-item"><a class="page-link bg-dark text-warning border-secondary px-4" asp-route-page="@(ViewBag.CurrentPage - 1)"><i class="bi bi-chevron-left"></i></a></li>
+                }
+
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link @(i == ViewBag.CurrentPage ? "bg-warning text-dark border-warning" : "bg-dark text-light border-secondary")" asp-route-page="@i">@i</a>
+                    </li>
+                }
+
+                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                {
+                    <li class="page-item"><a class="page-link bg-dark text-warning border-secondary px-4" asp-route-page="@(ViewBag.CurrentPage + 1)"><i class="bi bi-chevron-right"></i></a></li>
+                }
+            </ul>
+        </nav>
+    </div>
 </div>
 
 <div class="modal fade" id="deleteRecipeModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div id="deleteModalContent">
-        </div>
+        <div id="deleteModalContent"></div>
     </div>
 </div>
 
@@ -124,10 +146,8 @@
                 const cTags = card.dataset.tags ? card.dataset.tags.toLowerCase() : "";
 
                 let isVisible = cTitle.includes(search) || cTags.includes(search);
-
                 if (type && cType !== type) isVisible = false;
                 if (diff && cDiff !== diff) isVisible = false;
-
                 if (calRange === "low" && cCalories > 400) isVisible = false;
                 if (calRange === "high" && cCalories <= 400) isVisible = false;
 
@@ -173,13 +193,14 @@
 
     <style>
         .bg-custom-tag {
-            background-color: #BDE3FF !important; 
+            background-color: #BDE3FF !important;
             color: #002B4D !important;
             font-weight: 600;
             font-size: 0.7rem;
             text-transform: capitalize;
             border: 1px solid rgba(0,0,0,0.1);
         }
+
         .dropdown-menu-dark {
             z-index: 9999 !important;
             background: rgba(30, 30, 30, 0.98) !important;
@@ -188,9 +209,10 @@
             position: absolute !important;
         }
 
+       
         .glass-card {
             overflow: visible !important;
-            z-index: 1000;
+            z-index: 1050 !important;
             position: relative;
         }
 
@@ -198,16 +220,14 @@
             z-index: 1 !important;
             position: relative;
         }
-
-        .recipe-hover {
-            transition: all 0.3s ease;
-            cursor: pointer;
+        .row {
+            position: relative;
+            z-index: 1;
         }
 
-            .recipe-hover:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-                background: rgba(255, 255, 255, 0.1) !important;
-            }
+        .pagination .page-link:hover {
+            background-color: #ffc107 !important;
+            color: #000 !important;
+        }
     </style>
 }

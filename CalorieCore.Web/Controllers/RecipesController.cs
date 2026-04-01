@@ -16,15 +16,32 @@ namespace CalorieCore.Web.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? page)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var recipes = await _context.Recipes
+            int pageSize = 9;
+            int pageNumber = page ?? 1;
+
+            var query = _context.Recipes
                 .Include(r => r.UserAccount)
-                .Where(r => r.IsGlobal ||
-                    (r.UserAccount != null && r.UserAccount.IdentityUserId == userId))
+                .Where(r => r.IsGlobal || (r.UserAccount != null && r.UserAccount.IdentityUserId == userId));
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(r => r.Title.Contains(searchString) || r.Tags.Contains(searchString));
+            }
+
+            int totalItems = await query.CountAsync();
+            var recipes = await query
+                .OrderBy(r => r.Title)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.SearchString = searchString;
 
             return View(recipes);
         }
