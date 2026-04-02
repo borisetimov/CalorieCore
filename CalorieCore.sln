@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalorieCore.ViewModels", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalorieCore.Web", "CalorieCore.Web\CalorieCore.Web.csproj", "{7D5D2734-5789-F82F-F7D1-D0E00C712DC2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalorieCore.Tests", "CalorieCore.Tests\CalorieCore.Tests.csproj", "{1ED83303-50BC-4208-8EE9-E5B635866265}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{7D5D2734-5789-F82F-F7D1-D0E00C712DC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D5D2734-5789-F82F-F7D1-D0E00C712DC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D5D2734-5789-F82F-F7D1-D0E00C712DC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ED83303-50BC-4208-8EE9-E5B635866265}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ED83303-50BC-4208-8EE9-E5B635866265}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ED83303-50BC-4208-8EE9-E5B635866265}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ED83303-50BC-4208-8EE9-E5B635866265}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
