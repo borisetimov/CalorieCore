@@ -1,8 +1,7 @@
-﻿using CalorieCore.Data.Migrations;
-using CalorieCore.DataModels;
+﻿using CalorieCore.DataModels;
+using CalorieCore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace CalorieCore.Web.Controllers
@@ -10,36 +9,18 @@ namespace CalorieCore.Web.Controllers
     [Authorize]
     public class MealsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IMealService _mealService;
 
-        public MealsController(ApplicationDbContext context)
+        public MealsController(IMealService mealService)
         {
-            _context = context;
+            _mealService = mealService;
         }
 
-        private async Task<UserAccount?> GetCurrentUserAsync()
-        {
-            var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return await _context.UserAccounts
-                .FirstOrDefaultAsync(u => u.IdentityUserId == identityUserId);
-        }
+        private string CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
         public async Task<IActionResult> Index(int offset = 0)
         {
-            var user = await GetCurrentUserAsync();
-            if (user == null) return Unauthorized();
-
-            DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
-            DateTime baseDate = DateTime.Today.AddDays(offset * 7);
-            int diff = (7 + (baseDate.DayOfWeek - firstDayOfWeek)) % 7;
-            DateTime startOfWeek = baseDate.AddDays(-1 * diff).Date;
-            DateTime endOfWeek = startOfWeek.AddDays(7);
-
-            var meals = await _context.Meals
-                .Where(m => m.UserAccountId == user.Id && m.Date >= startOfWeek && m.Date < endOfWeek)
-                .OrderByDescending(m => m.Date)
-                .ToListAsync();
-
+            var meals = await _mealService.GetMealsByWeekAsync(CurrentUserId, offset);
             ViewBag.CurrentWeekOffset = offset;
             return View(meals);
         }
@@ -50,31 +31,15 @@ namespace CalorieCore.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Meal meal)
         {
-            var user = await GetCurrentUserAsync();
-            if (user == null) return Unauthorized();
-
-            if (!ModelState.IsValid)
-                return View(meal);
-
-            meal.UserAccountId = user.Id;
-            meal.Date = DateTime.Now;
-
-            _context.Meals.Add(meal);
-            await _context.SaveChangesAsync();
-
+            if (!ModelState.IsValid) return View(meal);
+            await _mealService.CreateMealAsync(meal, CurrentUserId);
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            var user = await GetCurrentUserAsync();
-            if (user == null) return Unauthorized();
-
-            var meal = await _context.Meals
-                .FirstOrDefaultAsync(m => m.Id == id && m.UserAccountId == user.Id);
-
+            var meal = await _mealService.GetMealByIdAsync(id, CurrentUserId);
             if (meal == null) return NotFound();
-
             return View(meal);
         }
 
@@ -82,33 +47,15 @@ namespace CalorieCore.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Meal updatedMeal)
         {
-            var user = await GetCurrentUserAsync();
-            if (user == null) return Unauthorized();
-
-            var meal = await _context.Meals
-                .FirstOrDefaultAsync(m => m.Id == id && m.UserAccountId == user.Id);
-
-            if (meal == null) return NotFound();
-
-            meal.Name = updatedMeal.Name;
-            meal.Calories = updatedMeal.Calories;
-
-
-            await _context.SaveChangesAsync();
-
+            var success = await _mealService.UpdateMealAsync(id, updatedMeal, CurrentUserId);
+            if (!success) return NotFound();
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            var user = await GetCurrentUserAsync();
-            if (user == null) return Unauthorized();
-
-            var meal = await _context.Meals
-                .FirstOrDefaultAsync(m => m.Id == id && m.UserAccountId == user.Id);
-
+            var meal = await _mealService.GetMealByIdAsync(id, CurrentUserId);
             if (meal == null) return NotFound();
-
             return View(meal);
         }
 
@@ -116,18 +63,7 @@ namespace CalorieCore.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await GetCurrentUserAsync();
-            if (user == null) return Unauthorized();
-
-            var meal = await _context.Meals
-                .FirstOrDefaultAsync(m => m.Id == id && m.UserAccountId == user.Id);
-
-            if (meal != null)
-            {
-                _context.Meals.Remove(meal);
-                await _context.SaveChangesAsync();
-            }
-
+            await _mealService.DeleteMealAsync(id, CurrentUserId);
             return RedirectToAction(nameof(Index));
         }
 
@@ -135,23 +71,8 @@ namespace CalorieCore.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddFromRecipe(int recipeId)
         {
-            var user = await GetCurrentUserAsync();
-            if (user == null) return Unauthorized();
-
-            var recipe = await _context.Recipes.FindAsync(recipeId);
-            if (recipe == null) return NotFound();
-
-            var meal = new Meal
-            {
-                UserAccountId = user.Id,
-                Name = recipe.Title,
-                Calories = recipe.Calories,
-                Date = DateTime.Now
-            };
-
-            _context.Meals.Add(meal);
-            await _context.SaveChangesAsync();
-
+            var success = await _mealService.AddMealFromRecipeAsync(recipeId, CurrentUserId);
+            if (!success) return NotFound();
             return RedirectToAction(nameof(Index));
         }
     }

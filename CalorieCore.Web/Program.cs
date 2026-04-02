@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using CalorieCore.Data.Migrations;
 using CalorieCore.Services.Services;
-using CalorieCore.Services.Contracts;
-using CalorieCore.Services.Implementations;
 
 
 namespace CalorieCore.Web
@@ -38,9 +36,14 @@ namespace CalorieCore.Web
             });
 
             // Infrastructure Services
-            builder.Services.AddSingleton<IEmailSender, EmailSender>();
-
             // Business Logic Services (Dependency Injection)
+            builder.Services.AddSingleton<IEmailSender, EmailSender>();
+            builder.Services.AddScoped<IWeightService, WeightService>();
+            builder.Services.AddScoped<IMealService, MealService>();
+            builder.Services.AddScoped<IRecipeService, RecipeService>();
+            builder.Services.AddScoped<IUserActivityService, UserActivityService>();
+            builder.Services.AddScoped<IProfileService, ProfileService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
             // This links your Interface to the Implementation
 
             builder.Services.AddControllersWithViews();

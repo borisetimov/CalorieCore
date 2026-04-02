@@ -1,8 +1,7 @@
-﻿using CalorieCore.Data.Migrations;
-using CalorieCore.DataModels;
+﻿using CalorieCore.DataModels;
+using CalorieCore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace CalorieCore.Web.Controllers
@@ -10,151 +9,79 @@ namespace CalorieCore.Web.Controllers
     [Authorize]
     public class RecipesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IRecipeService _recipeService;
 
-        public RecipesController(ApplicationDbContext context)
+        public RecipesController(IRecipeService recipeService)
         {
-            _context = context;
+            _recipeService = recipeService;
         }
+
+        private string CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
         public async Task<IActionResult> Index(string searchString, int? page)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             int pageSize = 9;
             int pageNumber = page ?? 1;
 
-            var query = _context.Recipes
-                .Include(r => r.UserAccount)
-                .Where(r => r.IsGlobal || (r.UserAccount != null && r.UserAccount.IdentityUserId == userId));
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                query = query.Where(r => r.Title.Contains(searchString) || r.Tags.Contains(searchString));
-            }
-
-            int totalItems = await query.CountAsync();
-            var recipes = await query
-                .OrderBy(r => r.Title)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            var (recipes, totalPages) = await _recipeService.GetPagedRecipesAsync(CurrentUserId, searchString, pageNumber, pageSize);
 
             ViewBag.CurrentPage = pageNumber;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.TotalPages = totalPages;
             ViewBag.SearchString = searchString;
 
             return View(recipes);
         }
 
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null) return NotFound();
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var recipe = await _context.Recipes
-                .Include(r => r.UserAccount)
-                .FirstOrDefaultAsync(r => r.Id == id &&
-                    (r.IsGlobal || (r.UserAccount != null && r.UserAccount.IdentityUserId == userId)));
-
+            var recipe = await _recipeService.GetRecipeByIdAsync(id, CurrentUserId);
             if (recipe == null) return NotFound();
-
             return View(recipe);
         }
 
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Recipe recipe)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userAccount = await _context.UserAccounts
-                .FirstOrDefaultAsync(u => u.IdentityUserId == userId);
-
-            if (userAccount == null) return Unauthorized();
-
             if (!ModelState.IsValid) return View(recipe);
 
-            recipe.UserAccountId = userAccount.Id;
-            recipe.IsGlobal = false;
-            recipe.IsFavorite = false;
-
-            _context.Add(recipe);
-            await _context.SaveChangesAsync();
+            var success = await _recipeService.CreateRecipeAsync(recipe, CurrentUserId);
+            if (!success) return Unauthorized();
 
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var recipe = await _context.Recipes
-                .Include(r => r.UserAccount)
-                .FirstOrDefaultAsync(r => r.Id == id);
-
+            var recipe = await _recipeService.GetRecipeByIdAsync(id, CurrentUserId);
             if (recipe == null) return NotFound();
 
-            if (recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != userId)
+            // Re-check ownership for Edit specifically (since Details allows Global)
+            if (recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != CurrentUserId)
                 return Forbid();
 
             return View(recipe);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Recipe updatedRecipe)
         {
-            if (id != updatedRecipe.Id) return NotFound();
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var recipe = await _context.Recipes
-                .Include(r => r.UserAccount)
-                .FirstOrDefaultAsync(r => r.Id == id);
-
-            if (recipe == null) return NotFound();
-
-            if (recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != userId)
-                return Forbid();
-
             if (!ModelState.IsValid) return View(updatedRecipe);
 
-            recipe.Title = updatedRecipe.Title;
-            recipe.Description = updatedRecipe.Description;
-            recipe.Calories = updatedRecipe.Calories;
-            recipe.Type = updatedRecipe.Type;
-            recipe.Tags = updatedRecipe.Tags;
-            recipe.Ingredients = updatedRecipe.Ingredients;
-            recipe.Instructions = updatedRecipe.Instructions;
-            recipe.Difficulty = updatedRecipe.Difficulty;
-
-            await _context.SaveChangesAsync();
+            var success = await _recipeService.UpdateRecipeAsync(id, updatedRecipe, CurrentUserId);
+            if (!success) return Forbid();
 
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null) return NotFound();
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var recipe = await _context.Recipes
-                .Include(r => r.UserAccount)
-                .FirstOrDefaultAsync(r => r.Id == id);
-
-            if (recipe == null) return NotFound();
-
-            if (recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != userId)
+            var recipe = await _recipeService.GetRecipeByIdAsync(id, CurrentUserId);
+            if (recipe == null || recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != CurrentUserId)
                 return Forbid();
-
 
             return PartialView("_DeletePartial", recipe);
         }
@@ -163,34 +90,19 @@ namespace CalorieCore.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var recipe = await _context.Recipes
-                .Include(r => r.UserAccount)
-                .FirstOrDefaultAsync(r => r.Id == id);
-
-            if (recipe == null) return NotFound();
-
-            if (recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != userId)
-                return Forbid();
-
-            _context.Recipes.Remove(recipe);
-            await _context.SaveChangesAsync();
+            var success = await _recipeService.DeleteRecipeAsync(id, CurrentUserId);
+            if (!success) return Forbid();
 
             return RedirectToAction(nameof(Index));
         }
+
         [HttpPost]
         public async Task<IActionResult> ToggleFavorite(int id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var recipe = await _context.Recipes.FindAsync(id);
+            var success = await _recipeService.ToggleFavoriteAsync(id, CurrentUserId);
+            if (!success) return NotFound();
 
-            if (recipe == null) return NotFound();
-            recipe.IsFavorite = !recipe.IsFavorite;
-
-            await _context.SaveChangesAsync();
-
-            return Json(new { success = true, isFavorite = recipe.IsFavorite });
+            return Json(new { success = true });
         }
     }
 }

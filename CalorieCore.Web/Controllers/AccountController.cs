@@ -1,4 +1,5 @@
 ﻿using CalorieCore.ViewModels;
+using CalorieCore.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,20 +7,20 @@ namespace CalorieCore.Web.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly IAccountService _accountService;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(IAccountService accountService, UserManager<IdentityUser> userManager)
         {
+            _accountService = accountService;
             _userManager = userManager;
-            _signInManager = signInManager;
         }
+
         [HttpGet]
         public async Task<IActionResult> Settings()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return RedirectToAction("Login");
+            if (user == null) return RedirectToAction("Login");
 
             var model = new SettingsViewModel
             {
@@ -27,7 +28,6 @@ namespace CalorieCore.Web.Controllers
                 Username = user.UserName ?? "",
                 Email = user.Email ?? ""
             };
-
             return View(model);
         }
 
@@ -35,42 +35,28 @@ namespace CalorieCore.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteAccount(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user != null)
-            {
-                await _signInManager.SignOutAsync();
-                var result = await _userManager.DeleteAsync(user);
+            var result = await _accountService.DeleteAccountAsync(id);
+            if (result.Succeeded)
+                return RedirectToAction("Landing", "Home");
 
-                if (result.Succeeded)
-                    return RedirectToAction("Landing", "Home");
-
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError("", error.Description);
-            }
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
 
             return RedirectToAction("Settings");
         }
+
         [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
+        public IActionResult Register() => View();
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (!ModelState.IsValid)
-                return View(model);
+            if (!ModelState.IsValid) return View(model);
 
-            var user = new IdentityUser { UserName = model.Username, Email = model.Email };
-            var result = await _userManager.CreateAsync(user, model.Password);
-
+            var result = await _accountService.RegisterUserAsync(model);
             if (result.Succeeded)
-            {
-                await _signInManager.SignInAsync(user, isPersistent: false);
-
                 return RedirectToAction("Index", "CompleteProfile");
-            }
 
             foreach (var error in result.Errors)
                 ModelState.AddModelError("", error.Description);
@@ -79,16 +65,13 @@ namespace CalorieCore.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
+        public IActionResult Login() => View();
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string username, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(username, password, false, false);
-
+            var result = await _accountService.LoginAsync(username, password);
             if (result.Succeeded)
                 return RedirectToAction("Index", "Home");
 
@@ -97,9 +80,10 @@ namespace CalorieCore.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            await _accountService.LogoutAsync();
             return RedirectToAction("Landing", "Home");
         }
     }

@@ -1,8 +1,7 @@
-﻿using CalorieCore.Data.Migrations;
-using CalorieCore.DataModels;
+﻿using CalorieCore.Web.Controllers;
+using CalorieCore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace CalorieCore.Web.Controllers
@@ -10,27 +9,19 @@ namespace CalorieCore.Web.Controllers
     [Authorize]
     public class WeightController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IWeightService _weightService;
 
-        public WeightController(ApplicationDbContext context)
+        public WeightController(IWeightService weightService)
         {
-            _context = context;
+            _weightService = weightService;
         }
 
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userAccount = await _context.UserAccounts
-                .Include(u => u.WeightLogs)
-                .FirstOrDefaultAsync(u => u.IdentityUserId == userId);
+            var chartData = await _weightService.GetChartDataAsync(userId);
 
-            if (userAccount == null) return RedirectToAction("Landing", "Home");
-
-            var chartData = userAccount.WeightLogs
-                .OrderByDescending(w => w.DateRecorded)
-                .Take(7)
-                .OrderBy(w => w.DateRecorded)
-                .ToList();
+            if (chartData == null) return RedirectToAction("Landing", "Home");
 
             return View(chartData);
         }
@@ -39,44 +30,17 @@ namespace CalorieCore.Web.Controllers
         public async Task<IActionResult> LogWeight(double weight)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userAccount = await _context.UserAccounts
-                .FirstOrDefaultAsync(u => u.IdentityUserId == userId);
-
-            if (userAccount != null && weight > 0)
-            {
-                var entry = new WeightLog
-                {
-                    Weight = weight,
-                    DateRecorded = DateTime.Now,
-                    UserAccountId = userAccount.Id
-                };
-
-                _context.WeightLogs.Add(entry);
-
-                userAccount.Weight = weight;
-
-                await _context.SaveChangesAsync();
-            }
-
+            await _weightService.LogWeightAsync(userId, weight);
             return RedirectToAction(nameof(Index));
         }
+
         [HttpPost]
         public async Task<IActionResult> DeleteLog(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userAccount = await _context.UserAccounts
-                .FirstOrDefaultAsync(u => u.IdentityUserId == userId);
+            var success = await _weightService.DeleteLogAsync(id, userId);
 
-            if (userAccount == null) return Unauthorized();
-
-            var log = await _context.WeightLogs
-                .FirstOrDefaultAsync(l => l.Id == id && l.UserAccountId == userAccount.Id);
-
-            if (log != null)
-            {
-                _context.WeightLogs.Remove(log);
-                await _context.SaveChangesAsync();
-            }
+            if (!success) return Unauthorized();
 
             return RedirectToAction(nameof(Index));
         }

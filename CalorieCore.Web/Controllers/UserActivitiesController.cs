@@ -1,45 +1,26 @@
 ﻿using System.Security.Claims;
-using CalorieCore.Data.Migrations;
 using CalorieCore.DataModels;
+using CalorieCore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CalorieCore.Web.Controllers
 {
     [Authorize]
     public class UserActivitiesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUserActivityService _activityService;
 
-        public UserActivitiesController(ApplicationDbContext context)
+        public UserActivitiesController(IUserActivityService activityService)
         {
-            _context = context;
+            _activityService = activityService;
         }
 
-        private async Task<UserAccount?> GetCurrentUserAsync()
-        {
-            var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return await _context.UserAccounts
-                .FirstOrDefaultAsync(u => u.IdentityUserId == identityUserId);
-        }
+        private string CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
         public async Task<IActionResult> Index(int offset = 0)
         {
-            var user = await GetCurrentUserAsync();
-            if (user == null) return Unauthorized();
-
-            DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
-            DateTime baseDate = DateTime.Today.AddDays(offset * 7);
-            int diff = (7 + (baseDate.DayOfWeek - firstDayOfWeek)) % 7;
-            DateTime startOfWeek = baseDate.AddDays(-1 * diff).Date;
-            DateTime endOfWeek = startOfWeek.AddDays(7);
-
-            var activities = await _context.Activities
-                .Where(a => a.UserAccountId == user.Id && a.Date >= startOfWeek && a.Date < endOfWeek)
-                .OrderByDescending(a => a.Date)
-                .ToListAsync();
-
+            var activities = await _activityService.GetActivitiesByWeekAsync(CurrentUserId, offset);
             ViewBag.CurrentWeekOffset = offset;
             return View(activities);
         }
@@ -48,15 +29,9 @@ namespace CalorieCore.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UserActivity activity)
         {
-            var user = await GetCurrentUserAsync();
-            if (user == null) return Unauthorized();
+            if (!ModelState.IsValid) return RedirectToAction(nameof(Index));
 
-            activity.UserAccountId = user.Id;
-            activity.Date = DateTime.Now;
-
-            _context.Activities.Add(activity);
-            await _context.SaveChangesAsync();
-
+            await _activityService.CreateActivityAsync(activity, CurrentUserId);
             return RedirectToAction(nameof(Index));
         }
 
@@ -64,18 +39,9 @@ namespace CalorieCore.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, UserActivity updatedActivity)
         {
-            var user = await GetCurrentUserAsync();
-            if (user == null) return Unauthorized();
+            var success = await _activityService.UpdateActivityAsync(id, updatedActivity, CurrentUserId);
+            if (!success) return NotFound();
 
-            var activity = await _context.Activities
-                .FirstOrDefaultAsync(a => a.Id == id && a.UserAccountId == user.Id);
-
-            if (activity == null) return NotFound();
-
-            activity.Name = updatedActivity.Name;
-            activity.CaloriesBurned = updatedActivity.CaloriesBurned;
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -83,18 +49,7 @@ namespace CalorieCore.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await GetCurrentUserAsync();
-            if (user == null) return Unauthorized();
-
-            var activity = await _context.Activities
-                .FirstOrDefaultAsync(a => a.Id == id && a.UserAccountId == user.Id);
-
-            if (activity != null)
-            {
-                _context.Activities.Remove(activity);
-                await _context.SaveChangesAsync();
-            }
-
+            var success = await _activityService.DeleteActivityAsync(id, CurrentUserId);
             return RedirectToAction(nameof(Index));
         }
     }
