@@ -59,5 +59,34 @@ namespace CalorieCore.Tests.Services
             // Assert
             Assert.False(result);
         }
+        [Fact]
+        public async Task GetMealById_OtherUserMeal_ReturnsNull()
+        {
+            var db = GetDbContext();
+            var service = new MealService(db);
+
+            var meal = new Meal { UserAccountId = 2, Name = "User2's Lunch", Calories = 500 };
+            db.Meals.Add(meal);
+            await db.SaveChangesAsync();
+
+            // User1 tries to access it
+            var result = await service.GetMealByIdAsync(meal.Id, "user1");
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task AddMealFromRecipe_ValidRecipe_CreatesMeal()
+        {
+            var db = GetDbContext();
+            var service = new MealService(db);
+
+            var result = await service.AddMealFromRecipeAsync(1, "user1");
+            var meal = await db.Meals.FirstOrDefaultAsync(m => m.Name == "Grilled Chicken Salad");
+
+            Assert.True(result);
+            Assert.NotNull(meal);
+            Assert.Equal(350, meal.Calories); 
+        }
     }
 }

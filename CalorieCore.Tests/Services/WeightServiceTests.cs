@@ -18,14 +18,13 @@ namespace CalorieCore.Tests.Services
             db.UserAccounts.Add(new UserAccount { Id = 1, IdentityUserId = userId });
             await db.SaveChangesAsync();
 
-            // Act - Sending (string, double) as required by your service
+            // Act
             var result = await service.LogWeightAsync(userId, 85.5);
 
             // Assert
             Assert.True(result);
             Assert.Equal(1, await db.WeightLogs.CountAsync());
 
-            // Check if it synced to the main profile weight
             var user = await db.UserAccounts.FirstAsync();
             Assert.Equal(85.5, user.Weight);
         }
@@ -42,7 +41,7 @@ namespace CalorieCore.Tests.Services
             db.WeightLogs.Add(new WeightLog { Weight = 70, DateRecorded = DateTime.Now, UserAccountId = 10 });
             await db.SaveChangesAsync();
 
-            // Act - Using your exact method name
+            // Act 
             var result = await service.GetChartDataAsync(userId);
 
             // Assert
@@ -69,6 +68,36 @@ namespace CalorieCore.Tests.Services
             // Assert
             Assert.False(result);
             Assert.Equal(1, await db.WeightLogs.CountAsync()); // Log should still exist
+        }
+        [Fact]
+        public async Task LogWeight_NegativeWeight_ReturnsFalse()
+        {
+            var db = GetDbContext();
+            var service = new WeightService(db);
+
+            // Testing the 'weight <= 0' branch
+            var result = await service.LogWeightAsync("user1", -5.0);
+
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task GetChartData_ReturnsOnlyLastSevenEntries()
+        {
+            var db = GetDbContext();
+            var service = new WeightService(db);
+            var user = await db.UserAccounts.FirstAsync(u => u.IdentityUserId == "user1");
+
+            for (int i = 1; i <= 10; i++)
+            {
+                db.WeightLogs.Add(new WeightLog { UserAccountId = user.Id, Weight = 70 + i, DateRecorded = DateTime.Now.AddDays(i) });
+            }
+            await db.SaveChangesAsync();
+
+            var logs = await service.GetChartDataAsync("user1");
+
+            
+            Assert.Equal(7, logs.Count);
         }
     }
 }

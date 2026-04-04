@@ -43,7 +43,7 @@ namespace CalorieCore.Services
             };
 
             _context.WeightLogs.Add(entry);
-            userAccount.Weight = weight; // Sync the main profile weight
+            userAccount.Weight = weight; 
 
             await _context.SaveChangesAsync();
             return true;

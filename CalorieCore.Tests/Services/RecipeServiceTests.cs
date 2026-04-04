@@ -51,5 +51,34 @@ namespace CalorieCore.Tests.Services
             var updated = await db.Recipes.FindAsync(recipe.Id);
             Assert.True(updated.IsFavorite);
         }
+        [Fact]
+        public async Task UpdateRecipe_GlobalRecipe_ReturnsFalse()
+        {
+            var db = GetDbContext();
+            var service = new RecipeService(db);
+
+            var updated = new Recipe { Title = "Hacked Title" };
+            var result = await service.UpdateRecipeAsync(1, updated, "user1");
+
+            Assert.False(result);
+            var original = await db.Recipes.FindAsync(1);
+            Assert.NotEqual("Hacked Title", original.Title);
+        }
+
+        [Fact]
+        public async Task DeleteRecipe_OwnedByUser_ReturnsTrue()
+        {
+            var db = GetDbContext();
+            var service = new RecipeService(db);
+
+            // Create a private recipe for user1
+            var recipe = new Recipe { Title = "My Secret Cake", UserAccountId = 1, IsGlobal = false };
+            db.Recipes.Add(recipe);
+            await db.SaveChangesAsync();
+
+            var result = await service.DeleteRecipeAsync(recipe.Id, "user1");
+
+            Assert.True(result);
+        }
     }
 }
