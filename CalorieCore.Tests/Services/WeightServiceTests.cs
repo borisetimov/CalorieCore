@@ -10,13 +10,9 @@ namespace CalorieCore.Tests.Services
         [Fact]
         public async Task LogWeightAsync_ShouldAddRecord_AndReturnTrue()
         {
-            // Arrange
             var db = GetDbContext();
             var service = new WeightService(db);
-            var userId = "test-user-1";
-
-            db.UserAccounts.Add(new UserAccount { Id = 1, IdentityUserId = userId });
-            await db.SaveChangesAsync();
+            var userId = "user1"; // Use the ID seeded in TestBase
 
             // Act
             var result = await service.LogWeightAsync(userId, 85.5);
@@ -25,20 +21,19 @@ namespace CalorieCore.Tests.Services
             Assert.True(result);
             Assert.Equal(1, await db.WeightLogs.CountAsync());
 
-            var user = await db.UserAccounts.FirstAsync();
+            var user = await db.UserAccounts.FirstAsync(u => u.IdentityUserId == userId);
             Assert.Equal(85.5, user.Weight);
         }
 
         [Fact]
         public async Task GetChartDataAsync_ShouldReturnLogs_ForCorrectUser()
         {
-            // Arrange
             var db = GetDbContext();
             var service = new WeightService(db);
-            var userId = "me";
+            var userId = "user1";
+            var user = await db.UserAccounts.FirstAsync(u => u.IdentityUserId == userId);
 
-            db.UserAccounts.Add(new UserAccount { Id = 10, IdentityUserId = userId });
-            db.WeightLogs.Add(new WeightLog { Weight = 70, DateRecorded = DateTime.Now, UserAccountId = 10 });
+            db.WeightLogs.Add(new WeightLog { Weight = 70, DateRecorded = DateTime.Now, UserAccountId = user.Id });
             await db.SaveChangesAsync();
 
             // Act 
@@ -52,30 +47,32 @@ namespace CalorieCore.Tests.Services
         [Fact]
         public async Task DeleteLogAsync_ShouldReturnFalse_IfLogDoesNotBelongToUser()
         {
-            // Arrange
             var db = GetDbContext();
             var service = new WeightService(db);
 
-            db.UserAccounts.Add(new UserAccount { Id = 1, IdentityUserId = "real-owner" });
-            db.UserAccounts.Add(new UserAccount { Id = 2, IdentityUserId = "attacker" });
+            // "user1" exists from TestBase. Let's add a second user.
+            var attacker = new UserAccount { IdentityUserId = "attacker", Gender = "Male", Goal = "Maintain" };
+            db.UserAccounts.Add(attacker);
 
-            db.WeightLogs.Add(new WeightLog { Id = 50, Weight = 100, UserAccountId = 1 });
+            var owner = await db.UserAccounts.FirstAsync(u => u.IdentityUserId == "user1");
+            var log = new WeightLog { Weight = 100, UserAccountId = owner.Id };
+            db.WeightLogs.Add(log);
             await db.SaveChangesAsync();
 
             // Act - Attacker tries to delete owner's log
-            var result = await service.DeleteLogAsync(50, "attacker");
+            var result = await service.DeleteLogAsync(log.Id, "attacker");
 
             // Assert
             Assert.False(result);
-            Assert.Equal(1, await db.WeightLogs.CountAsync()); // Log should still exist
+            Assert.Equal(1, await db.WeightLogs.CountAsync());
         }
+
         [Fact]
         public async Task LogWeight_NegativeWeight_ReturnsFalse()
         {
             var db = GetDbContext();
             var service = new WeightService(db);
 
-            // Testing the 'weight <= 0' branch
             var result = await service.LogWeightAsync("user1", -5.0);
 
             Assert.False(result);
@@ -96,7 +93,6 @@ namespace CalorieCore.Tests.Services
 
             var logs = await service.GetChartDataAsync("user1");
 
-            
             Assert.Equal(7, logs.Count);
         }
     }

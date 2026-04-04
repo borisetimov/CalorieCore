@@ -8,9 +8,11 @@ namespace CalorieCore.Tests
 {
     public class IntegrationTests : TestBase
     {
+
         [Fact]
         public async Task FullUserJourney_IntegrationTest()
         {
+
             // Arrange 
             var db = GetDbContext();
             var weightService = new WeightService(db);

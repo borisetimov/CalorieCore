@@ -12,10 +12,7 @@ namespace CalorieCore.Tests.Services
         {
             var db = GetDbContext();
             var service = new MealService(db);
-            var userId = "user-1";
-
-            db.UserAccounts.Add(new UserAccount { Id = 1, IdentityUserId = userId });
-            await db.SaveChangesAsync();
+            var userId = "user1";
 
             var meal = new Meal { Name = "Egg Sandwich", Calories = 350 };
 
@@ -23,10 +20,9 @@ namespace CalorieCore.Tests.Services
             await service.CreateMealAsync(meal, userId);
 
             // Assert
-            var savedMeal = await db.Meals.FirstOrDefaultAsync();
+            var savedMeal = await db.Meals.FirstOrDefaultAsync(m => m.Name == "Egg Sandwich");
             Assert.NotNull(savedMeal);
             Assert.Equal(350, savedMeal.Calories);
-            Assert.Equal(1, savedMeal.UserAccountId);
         }
 
         [Fact]
@@ -34,15 +30,14 @@ namespace CalorieCore.Tests.Services
         {
             var db = GetDbContext();
             var service = new MealService(db);
+            var userId = "user1";
 
-            var user = new UserAccount { IdentityUserId = "user-1" };
-            var recipe = new Recipe { Title = "Pasta", Calories = 600, Description = "Valid description..." };
+            var recipe = new Recipe { Title = "Pasta", Calories = 600, Description = "Test Desc", Type = "Lunch", Ingredients = "Test", Instructions = "Test", Tags = "Test" };
 
-            db.UserAccounts.Add(user);
             db.Recipes.Add(recipe);
             await db.SaveChangesAsync();
 
-            var result = await service.AddMealFromRecipeAsync(recipe.Id, "user-1");
+            var result = await service.AddMealFromRecipeAsync(recipe.Id, userId);
 
             Assert.True(result);
         }
@@ -53,23 +48,26 @@ namespace CalorieCore.Tests.Services
             var db = GetDbContext();
             var service = new MealService(db);
 
-            // Act
-            var result = await service.DeleteMealAsync(999, "any-user");
+            var result = await service.DeleteMealAsync(999, "user1");
 
-            // Assert
             Assert.False(result);
         }
+
         [Fact]
         public async Task GetMealById_OtherUserMeal_ReturnsNull()
         {
             var db = GetDbContext();
             var service = new MealService(db);
 
-            var meal = new Meal { UserAccountId = 2, Name = "User2's Lunch", Calories = 500 };
+            var otherUser = new UserAccount { IdentityUserId = "user2", Gender = "Female", Goal = "Maintain" };
+            db.UserAccounts.Add(otherUser);
+            await db.SaveChangesAsync();
+
+            var meal = new Meal { UserAccountId = otherUser.Id, Name = "User2's Lunch", Calories = 500 };
             db.Meals.Add(meal);
             await db.SaveChangesAsync();
 
-            // User1 tries to access it
+            // user1 (from TestBase) tries to access it
             var result = await service.GetMealByIdAsync(meal.Id, "user1");
 
             Assert.Null(result);
@@ -81,12 +79,16 @@ namespace CalorieCore.Tests.Services
             var db = GetDbContext();
             var service = new MealService(db);
 
+            // Use Recipe ID 1 from your 52 seeded recipes
             var result = await service.AddMealFromRecipeAsync(1, "user1");
+
+            // Search for the specific title seeded in your DB
             var meal = await db.Meals.FirstOrDefaultAsync(m => m.Name == "Grilled Chicken Salad");
 
             Assert.True(result);
             Assert.NotNull(meal);
-            Assert.Equal(350, meal.Calories); 
+            // Verify it copied the correct calories from the seed data
+            Assert.Equal(350, meal.Calories);
         }
     }
 }

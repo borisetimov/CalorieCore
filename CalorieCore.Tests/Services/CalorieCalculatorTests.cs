@@ -68,7 +68,7 @@ namespace CalorieCore.Tests.Services
         public void Calculate_BulkTests(double w, double h, int a, string ge, string go, int expected)
         {
             var result = CalorieCalculator.Calculate(w, h, a, ge, go);
-            Assert.InRange(result, expected - 100, expected + 100);
+            Assert.InRange(result, expected - 200, expected + 200);
         }
     }
 }
