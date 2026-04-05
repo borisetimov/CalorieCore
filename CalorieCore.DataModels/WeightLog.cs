@@ -20,5 +20,6 @@ namespace CalorieCore.DataModels
 
         [ForeignKey("UserAccountId")]
         public virtual UserAccount? UserAccount { get; set; }
+
     }
 }

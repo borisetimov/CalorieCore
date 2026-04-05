@@ -1,35 +1,87 @@
-﻿@model IEnumerable<CalorieCore.DataModels.WeightLog>
+﻿@model CalorieCore.Web.ViewModels.WeightViewModel
 
 @{
     ViewData["Title"] = "Weight Progress";
-    var labels = Model.Select(m => m.DateRecorded.ToString("MMM dd")).ToList();
-    var values = Model.Select(m => m.Weight).ToList();
 
-    var currentWeight = Model.LastOrDefault()?.Weight ?? 0;
-    var startingWeight = Model.FirstOrDefault()?.Weight ?? 0;
-    var weightChange = currentWeight - startingWeight;
+    // 1. Data Preparation for Chart
+    var chartLogs = Model.Logs.OrderBy(l => l.DateRecorded).ToList();
+    var labels = chartLogs.Select(m => m.DateRecorded.ToString("dd MMM")).ToList();
+    var values = chartLogs.Select(m => m.Weight).ToList();
+
+    var startingWeight = chartLogs.FirstOrDefault()?.Weight ?? 0;
+    var weightChange = Model.CurrentWeight - startingWeight;
+
+    // 2. Dynamic Gauge Calculations
+    double gaugeMin = 40;
+    double gaugeMax = 120;
+    double totalRange = gaugeMax - gaugeMin;
+
+    // Mapping weights to 0-50% for the top half-circle
+    double blueStop = ((Model.Status.MinNormalWeight - gaugeMin) / totalRange) * 50;
+    double greenStop = ((Model.Status.MaxNormalWeight - gaugeMin) / totalRange) * 50;
+    double yellowStop = greenStop + 3;
 }
 
 <div class="container mt-4">
     <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="glass-card p-3 text-center">
-                <h6 class="text-secondary text-uppercase small">Starting</h6>
-                <h2 class="text-white">@startingWeight <span class="small">kg</span></h2>
+        @* Modern BMI Gauge Section *@
+        <div class="col-md-8">
+            <div class="glass-card p-4 h-100 text-center">
+                <h4 class="text-white mb-4 text-start"><i class="bi bi-speedometer2 me-2"></i>Body Mass Index (BMI)</h4>
+
+                @if (Model.Status != null)
+                {
+                    <div class="gauge-container mx-auto">
+                        <div class="gauge-ring-modern"
+                             style="background: conic-gradient(from 270deg,
+                                        #5bc0de 0% @(blueStop)%,
+                                        #5cb85c @(blueStop)% @(greenStop)%,
+                                        #f0ad4e @(greenStop)% @(yellowStop)%,
+                                        #d9534f @(yellowStop)% 50%,
+                                        #1a1a1a 50% 100%);">
+
+                            <div class="needle" id="bmiPointer"></div>
+
+                            <div class="gauge-center-info">
+                                <h1 class="display-3 fw-bold text-white mb-0">@Model.Status.BMI</h1>
+                                <span class="badge rounded-pill bg-@Model.Status.Color.ToLower() px-3 py-2 text-uppercase">
+                                    @Model.Status.Category
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* New Info Section *@
+                    <div class="mt-4 pt-2 border-top border-secondary border-opacity-25">
+                        <p class="text-light mb-1">
+                            Based on your profile, the healthy norm for your height (@Model.Height cm) is:
+                        </p>
+                        <h5 class="text-success fw-bold">@Model.Status.MinNormalWeight kg - @Model.Status.MaxNormalWeight kg</h5>
+                        <p class="text-secondary small">This range is calculated based on standards for your age and height.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info bg-dark border-secondary text-light">
+                        Please update your profile height to view BMI analysis.
+                    </div>
+                }
             </div>
         </div>
+
+        @* Summary Cards *@
         <div class="col-md-4">
-            <div class="glass-card p-3 text-center border-start border-warning">
-                <h6 class="text-secondary text-uppercase small">Current</h6>
-                <h2 class="text-warning">@currentWeight <span class="small">kg</span></h2>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="glass-card p-3 text-center">
-                <h6 class="text-secondary text-uppercase small">Total Change</h6>
-                <h2 class="@(weightChange <= 0 ? "text-success" : "text-danger")">
-                    @(weightChange > 0 ? "+" : "")@weightChange.ToString("0.0") <span class="small">kg</span>
-                </h2>
+            <div class="d-flex flex-column gap-3 h-100">
+                <div class="glass-card p-3 text-center flex-grow-1 d-flex flex-column justify-content-center">
+                    <h6 class="text-secondary text-uppercase small">Current Weight</h6>
+                    <h2 class="text-warning">@Model.CurrentWeight <span class="small">kg</span></h2>
+                </div>
+                <div class="glass-card p-3 text-center flex-grow-1 d-flex flex-column justify-content-center">
+                    <h6 class="text-secondary text-uppercase small">Total Change</h6>
+                    <h2 class="@(weightChange <= 0 ? "text-success" : "text-danger")">
+                        @(weightChange > 0 ? "+" : "")@weightChange.ToString("0.0") <span class="small">kg</span>
+                    </h2>
+                </div>
             </div>
         </div>
     </div>
@@ -38,10 +90,10 @@
         <div class="col-md-4">
             <div class="glass-card p-4 mb-4">
                 <h4 class="text-white mb-3"><i class="bi bi-plus-circle me-2"></i>New Entry</h4>
-                <form asp-action="LogWeight" method="post">
+                <form asp-action="LogWeight" asp-controller="Weight" method="post">
                     <div class="mb-3">
                         <label class="text-light small">Weight (kg)</label>
-                        <input type="number" step="0.1" name="weight" class="form-control bg-dark text-white border-secondary" placeholder="0.0" required />
+                        <input type="number" step="0.1" name="weight" class="form-control bg-dark text-white border-secondary" placeholder="@Model.CurrentWeight" required />
                     </div>
                     <button type="submit" class="btn btn-warning w-100 fw-bold">Update Progress</button>
                 </form>
@@ -49,26 +101,19 @@
 
             <div class="glass-card p-0 overflow-hidden">
                 <div class="p-3 border-bottom border-secondary">
-                    <h5 class="text-white m-0">Recent Logs</h5>
+                    <h5 class="text-white m-0">Recent History</h5>
                 </div>
                 <div style="max-height: 300px; overflow-y: auto;">
                     <table class="table table-dark table-hover m-0">
-                        <thead class="small text-secondary">
-                            <tr>
-                                <th class="ps-3">Date</th>
-                                <th>Weight</th>
-                                <th class="text-end pe-3">Action</th>
-                            </tr>
-                        </thead>
                         <tbody>
-                            @foreach (var log in Model.OrderByDescending(x => x.DateRecorded))
+                            @foreach (var log in Model.Logs.OrderByDescending(l => l.DateRecorded))
                             {
                                 <tr>
                                     <td class="ps-3 align-middle">@log.DateRecorded.ToString("dd MMM")</td>
-                                    <td class="fw-bold text-warning align-middle">@log.Weight kg</td>
+                                    <td class="fw-bold text-warning align-middle text-center">@log.Weight kg</td>
                                     <td class="text-end pe-3">
                                         <button type="button" class="btn btn-link text-danger p-0 border-0" onclick="openDeleteModal(@log.Id)">
-                                            <i class="bi bi-trash3 small"></i>
+                                            <i class="bi bi-trash3"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -82,7 +127,7 @@
         <div class="col-md-8">
             <div class="glass-card p-4 h-100">
                 <h4 class="text-white mb-4"><i class="bi bi-graph-up me-2"></i>Weight Trend</h4>
-                <div style="height: 400px;">
+                <div style="height: 350px; position: relative;">
                     <canvas id="weightChart"></canvas>
                 </div>
             </div>
@@ -95,49 +140,60 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
-        const ctx = document.getElementById('weightChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: @Html.Raw(Json.Serialize(labels)),
-                datasets: [{
-                    label: 'Weight Progress',
-                    data: @Html.Raw(Json.Serialize(values)),
-                    borderColor: '#ffc107',
-                    backgroundColor: 'rgba(255, 193, 7, 0.1)',
-                    borderWidth: 4,
-                    pointBackgroundColor: '#ffc107',
-                    pointRadius: 5,
-                    tension: 0.3,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        ticks: { color: '#aaa' },
-                        grid: { color: 'rgba(255,255,255,0.05)' }
+            const currentW = parseFloat("@Model.CurrentWeight");
+            const pointer = document.getElementById("bmiPointer");
+            const minW = 40;
+            const maxW = 120;
+
+            let percent = (currentW - minW) / (maxW - minW);
+            percent = Math.max(0, Math.min(1, percent));
+            const angle = -90 + (percent * 180);
+
+            if (pointer) {
+                pointer.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+            }
+            const ctx = document.getElementById('weightChart');
+            if (ctx) {
+                new Chart(ctx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: @Html.Raw(Json.Serialize(labels)),
+                        datasets: [{
+                            label: 'Weight (kg)',
+                            data: @Html.Raw(Json.Serialize(values)),
+                            borderColor: '#ffc107',
+                            backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.3,
+                            fill: true,
+                            pointRadius: 5,
+                            pointBackgroundColor: '#ffc107'
+                        }]
                     },
-                    x: {
-                        ticks: { color: '#aaa' },
-                        grid: { display: false }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { ticks: { color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                            x: { ticks: { color: '#aaa' }, grid: { display: false } }
+                        }
                     }
-                }
+                });
             }
         });
 
-
-        function openDeleteModal(id) {
+                function openDeleteModal(id) {
             const form = document.getElementById('deleteForm');
-            form.action = '/Weight/DeleteLog/' + id;
-            const myModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-            myModal.show();
+            if (form) {
+                form.action = '/Weight/DeleteLog/' + id;
+
+                const modalEl = document.getElementById('deleteModal');
+                const myModal = new bootstrap.Modal(modalEl);
+                myModal.show();
+            }
         }
     </script>
 }

@@ -1,5 +1,6 @@
 ﻿using CalorieCore.Web.Controllers;
 using CalorieCore.Services;
+using CalorieCore.Web.ViewModels; // Add this to find your new ViewModel
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -19,11 +20,35 @@ namespace CalorieCore.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var chartData = await _weightService.GetChartDataAsync(userId);
 
-            if (chartData == null) return RedirectToAction("Landing", "Home");
+           
+            var userAccount = await _weightService.GetUserAccountWithLogsAsync(userId);
 
-            return View(chartData);
+            if (userAccount == null) return RedirectToAction("Landing", "Home");
+
+            var model = new WeightViewModel
+            {
+
+                Logs = userAccount.WeightLogs.OrderByDescending(l => l.DateRecorded).ToList(),
+                Height = userAccount.Height
+            };
+
+            if (userAccount.Height > 0)
+            {
+               
+                model.CurrentWeight = model.Logs.Any()
+                    ? model.Logs.First().Weight
+                    : userAccount.Weight;
+
+               
+                model.Status = WeightCalculator.Analyze(
+                    model.CurrentWeight,
+                    userAccount.Height,
+                    userAccount.Age
+                );
+            }
+
+            return View(model);
         }
 
         [HttpPost]

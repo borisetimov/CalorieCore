@@ -232,3 +232,75 @@ body {
 .modal-footer {
     border-top: 1px solid rgba(255,255,255,0.1);
 }
+
+.gauge-ring-modern {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    /* Colors now perfectly mapped to the 180-degree top arc */
+    #5cb85c 12.5% 35%, /* Normal (Green) */
+    #f0ad4e 35% 40%, /* Transition (Yellow) */
+    #d9534f 40% 50%, /* Overweight (Red) */
+    #1a1a1a 50% 100% /* Background for bottom half */
+    );
+}
+
+
+.gauge-container {
+    position: relative;
+    width: 300px;
+    height: 150px;
+    overflow: hidden;
+}
+
+.gauge-ring-modern::after {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    right: 25px;
+    bottom: 25px;
+    background: #1a1a1a; 
+    border-radius: 50%;
+    z-index: 2;
+}
+
+/* Modern Sleek Needle */
+.needle {
+    position: absolute;
+    width: 3px;
+    height: 120px; /* Adjust height so it doesn't poke out of the ring */
+    background: #fff;
+    /* Position the bottom of the needle at the center of the 300x300 circle */
+    bottom: 50%;
+    left: 50%;
+    /* This is the secret: rotate around the bottom center */
+    transform-origin: bottom center;
+    z-index: 5;
+    transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Initial state: pointing to the far left (Blue) */
+    transform: translateX(-50%) rotate(-90deg);
+}
+
+    .needle::after {
+        content: '';
+        position: absolute;
+        bottom: -7px; /* Center the dot on the pivot point */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 14px;
+        height: 14px;
+        background: #fff;
+        border-radius: 50%;
+        z-index: 6;
+        box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    }
+
+.gauge-center-info {
+    position: absolute;
+    bottom: 160px;
+    width: 100%;
+    z-index: 10;
+    text-align: center;
+}
