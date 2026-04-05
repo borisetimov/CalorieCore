@@ -1,9 +1,12 @@
-﻿using CalorieCore.Web.Controllers;
+﻿using CalorieCore.Data.Migrations;
+using CalorieCore.DataModels;
 using CalorieCore.Services;
 using CalorieCore.ViewModels;
+using CalorieCore.Web.Controllers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Security.Claims;
 using Xunit;
@@ -115,6 +118,33 @@ namespace CalorieCore.Tests.Controllers
             // Assert
             var redirect = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Landing", redirect.ActionName);
+        }
+        [Fact]
+        public async Task UpdateProfile_UpdatesHeightAndGender_ReturnsRedirect()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDb")
+                .Options;
+
+            using var context = new ApplicationDbContext(options);
+            var user = new IdentityUser { Id = "user1", UserName = "test" };
+            var account = new UserAccount { IdentityUserId = "user1", Height = 170, Gender = "Male" };
+            context.UserAccounts.Add(account);
+            await context.SaveChangesAsync();
+
+            var controller = new AccountController(null, GetMockUserManager(user).Object, context);
+            var model = new SettingsViewModel { Height = 180, Gender = "Female" };
+
+            // Act
+            var result = await controller.UpdateProfile(model);
+
+            // Assert
+            var updatedAccount = await context.UserAccounts.FirstAsync();
+            Assert.Equal(180, updatedAccount.Height);
+            Assert.Equal("Female", updatedAccount.Gender);
+            var redirect = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Settings", redirect.ActionName);
         }
     }
 }

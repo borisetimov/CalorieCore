@@ -16,7 +16,6 @@
     double gaugeMax = 120;
     double totalRange = gaugeMax - gaugeMin;
 
-    // Mapping weights to 0-50% for the top half-circle
     double blueStop = ((Model.Status.MinNormalWeight - gaugeMin) / totalRange) * 50;
     double greenStop = ((Model.Status.MaxNormalWeight - gaugeMin) / totalRange) * 50;
     double yellowStop = greenStop + 3;
@@ -34,11 +33,11 @@
                     <div class="gauge-container mx-auto">
                         <div class="gauge-ring-modern"
                              style="background: conic-gradient(from 270deg,
-                                        #5bc0de 0% @(blueStop)%,
-                                        #5cb85c @(blueStop)% @(greenStop)%,
-                                        #f0ad4e @(greenStop)% @(yellowStop)%,
-                                        #d9534f @(yellowStop)% 50%,
-                                        #1a1a1a 50% 100%);">
+                                            #5bc0de 0% @(blueStop)%,
+                                            #5cb85c @(blueStop)% @(greenStop)%,
+                                            #f0ad4e @(greenStop)% @(yellowStop)%,
+                                            #d9534f @(yellowStop)% 50%,
+                                            #1a1a1a 50% 100%);">
 
                             <div class="needle" id="bmiPointer"></div>
 
@@ -51,7 +50,7 @@
                         </div>
                     </div>
 
-                    @* New Info Section *@
+                    @* Healthy Norm Info *@
                     <div class="mt-4 pt-2 border-top border-secondary border-opacity-25">
                         <p class="text-light mb-1">
                             Based on your profile, the healthy norm for your height (@Model.Height cm) is:
@@ -69,18 +68,54 @@
             </div>
         </div>
 
-        @* Summary Cards *@
+        @* Compact Stats & Body Fat Column *@
         <div class="col-md-4">
             <div class="d-flex flex-column gap-3 h-100">
-                <div class="glass-card p-3 text-center flex-grow-1 d-flex flex-column justify-content-center">
-                    <h6 class="text-secondary text-uppercase small">Current Weight</h6>
-                    <h2 class="text-warning">@Model.CurrentWeight <span class="small">kg</span></h2>
+
+                @* Slim Stats Row *@
+                <div class="d-flex gap-2">
+                    <div class="glass-card p-2 flex-grow-1 text-center">
+                        <h6 class="text-secondary small mb-1" style="font-size: 0.7rem;">CURRENT WEIGHT</h6>
+                        <h4 class="text-warning m-0">@Model.CurrentWeight<span class="small" style="font-size: 0.6em;">kg</span></h4>
+                    </div>
+                    <div class="glass-card p-2 flex-grow-1 text-center">
+                        <h6 class="text-secondary small mb-1" style="font-size: 0.7rem;">TOTAL CHANGE</h6>
+                        <h4 class="@(weightChange <= 0 ? "text-success" : "text-danger") m-0">
+                            @(weightChange > 0 ? "+" : "")@weightChange.ToString("0.0")<span class="small" style="font-size: 0.6em;">kg</span>
+                        </h4>
+                    </div>
                 </div>
-                <div class="glass-card p-3 text-center flex-grow-1 d-flex flex-column justify-content-center">
-                    <h6 class="text-secondary text-uppercase small">Total Change</h6>
-                    <h2 class="@(weightChange <= 0 ? "text-success" : "text-danger")">
-                        @(weightChange > 0 ? "+" : "")@weightChange.ToString("0.0") <span class="small">kg</span>
-                    </h2>
+
+                @* Body Fat Calculator Card *@
+                <div class="glass-card p-3 flex-grow-1">
+                    <h6 class="text-white mb-3"><i class="bi bi-percent me-2"></i>Body Fat Calculator</h6>
+
+                    <div class="mb-2">
+                        <label class="text-secondary small">Waist (cm)</label>
+                        <input type="number" id="bfWaist" class="form-control form-control-sm bg-dark text-white border-secondary">
+                    </div>
+                    <div class="mb-2">
+                        <label class="text-secondary small">Neck (cm)</label>
+                        <input type="number" id="bfNeck" class="form-control form-control-sm bg-dark text-white border-secondary">
+                    </div>
+                    <div id="hipContainer" class="mb-2" style="display:none;">
+                        <label class="text-secondary small">Hips (cm)</label>
+                        <input type="number" id="bfHips" class="form-control form-control-sm bg-dark text-white border-secondary">
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-secondary small">Gender</label>
+                        <select id="bfGender" class="form-select form-select-sm bg-dark text-white border-secondary" onchange="toggleHipsSide()">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="btn btn-warning btn-sm w-100 fw-bold mb-3" onclick="calculateBF()">Calculate</button>
+
+                    <div class="text-center p-2 rounded bg-black bg-opacity-25 border border-secondary border-opacity-25">
+                        <span id="bfCategory" class="text-secondary small d-block">ESTIMATED</span>
+                        <h2 id="bfResult" class="text-info m-0">--%</h2>
+                    </div>
                 </div>
             </div>
         </div>
@@ -141,7 +176,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-
+            // Gauge Pointer Logic
             const currentW = parseFloat("@Model.CurrentWeight");
             const pointer = document.getElementById("bmiPointer");
             const minW = 40;
@@ -154,6 +189,8 @@
             if (pointer) {
                 pointer.style.transform = `translateX(-50%) rotate(${angle}deg)`;
             }
+
+            // Chart Logic
             const ctx = document.getElementById('weightChart');
             if (ctx) {
                 new Chart(ctx.getContext('2d'), {
@@ -185,15 +222,56 @@
             }
         });
 
-                function openDeleteModal(id) {
+        function openDeleteModal(id) {
             const form = document.getElementById('deleteForm');
             if (form) {
                 form.action = '/Weight/DeleteLog/' + id;
-
                 const modalEl = document.getElementById('deleteModal');
                 const myModal = new bootstrap.Modal(modalEl);
                 myModal.show();
             }
+        }
+
+        // Body Fat Logic
+        function toggleHipsSide() {
+            const gender = document.getElementById("bfGender").value;
+            document.getElementById("hipContainer").style.display = (gender === "female") ? "block" : "none";
+        }
+
+        function calculateBF() {
+            const height = parseFloat("@Model.Height");
+            const waist = parseFloat(document.getElementById("bfWaist").value);
+            const neck = parseFloat(document.getElementById("bfNeck").value);
+            const gender = document.getElementById("bfGender").value;
+            let result = 0;
+
+            if (!height || !waist || !neck) {
+                alert("Please ensure height, waist, and neck are entered.");
+                return;
+            }
+
+            if (gender === "male") {
+                result = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;
+            } else {
+                const hips = parseFloat(document.getElementById("bfHips").value);
+                if (!hips) { alert("Hips required for female calculation."); return; }
+                result = 495 / (1.29579 - 0.35004 * Math.log10(waist + hips - neck) + 0.22100 * Math.log10(height)) - 450;
+            }
+
+            const finalVal = result.toFixed(1);
+            document.getElementById("bfResult").innerHTML = `${finalVal}%`;
+
+            let cat = "Average";
+            if (gender === "male") {
+                if (result < 6) cat = "Essential Fat";
+                else if (result < 14) cat = "Athlete";
+                else if (result > 25) cat = "Obese";
+            } else {
+                if (result < 14) cat = "Essential Fat";
+                else if (result < 21) cat = "Athlete";
+                else if (result > 32) cat = "Obese";
+            }
+            document.getElementById("bfCategory").innerText = cat;
         }
     </script>
 }

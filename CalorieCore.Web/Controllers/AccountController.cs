@@ -1,7 +1,9 @@
 ﻿using CalorieCore.ViewModels;
 using CalorieCore.Services;
+using CalorieCore.Data.Migrations; // Ensure this points to your ApplicationDbContext location
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CalorieCore.Web.Controllers
 {
@@ -9,11 +11,16 @@ namespace CalorieCore.Web.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ApplicationDbContext _context; // Added DB context
 
-        public AccountController(IAccountService accountService, UserManager<IdentityUser> userManager)
+        public AccountController(
+            IAccountService accountService,
+            UserManager<IdentityUser> userManager,
+            ApplicationDbContext context)
         {
             _accountService = accountService;
             _userManager = userManager;
+            _context = context;
         }
 
         [HttpGet]
@@ -22,13 +29,42 @@ namespace CalorieCore.Web.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login");
 
+            // Fetch the linked UserAccount to get Height and Gender
+            var userAccount = await _context.UserAccounts
+                .FirstOrDefaultAsync(u => u.IdentityUserId == user.Id);
+
             var model = new SettingsViewModel
             {
                 Id = user.Id,
                 Username = user.UserName ?? "",
-                Email = user.Email ?? ""
+                Email = user.Email ?? "",
+                // Pulling data from UserAccount if it exists
+                Height = userAccount?.Height ?? 0,
+                Gender = userAccount?.Gender ?? "Male"
             };
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(SettingsViewModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Login");
+
+            var userAccount = await _context.UserAccounts
+                .FirstOrDefaultAsync(u => u.IdentityUserId == user.Id);
+
+            if (userAccount != null)
+            {
+                userAccount.Height = model.Height;
+                userAccount.Gender = model.Gender;
+
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Profile updated successfully!";
+            }
+
+            return RedirectToAction("Settings");
         }
 
         [HttpPost]
