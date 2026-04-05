@@ -12,7 +12,7 @@ namespace CalorieCore.Tests.Services
         {
             var db = GetDbContext();
             var service = new WeightService(db);
-            var userId = "user1"; // Use the ID seeded in TestBase
+            var userId = "user1";
 
             // Act
             var result = await service.LogWeightAsync(userId, 85.5);
@@ -45,12 +45,31 @@ namespace CalorieCore.Tests.Services
         }
 
         [Fact]
+        public async Task GetChartDataAsync_ShouldReturnInChronologicalOrder()
+        {
+            var db = GetDbContext();
+            var service = new WeightService(db);
+            var user = await db.UserAccounts.FirstAsync(u => u.IdentityUserId == "user1");
+
+            // Adding logs out of order
+            db.WeightLogs.Add(new WeightLog { Weight = 90, DateRecorded = DateTime.Now, UserAccountId = user.Id });
+            db.WeightLogs.Add(new WeightLog { Weight = 80, DateRecorded = DateTime.Now.AddDays(-1), UserAccountId = user.Id });
+            await db.SaveChangesAsync();
+
+            // Act
+            var logs = await service.GetChartDataAsync("user1");
+
+            
+            Assert.Equal(80, logs[0].Weight);
+            Assert.Equal(90, logs[1].Weight);
+        }
+
+        [Fact]
         public async Task DeleteLogAsync_ShouldReturnFalse_IfLogDoesNotBelongToUser()
         {
             var db = GetDbContext();
             var service = new WeightService(db);
 
-            // "user1" exists from TestBase. Let's add a second user.
             var attacker = new UserAccount { IdentityUserId = "attacker", Gender = "Male", Goal = "Maintain" };
             db.UserAccounts.Add(attacker);
 
@@ -59,7 +78,7 @@ namespace CalorieCore.Tests.Services
             db.WeightLogs.Add(log);
             await db.SaveChangesAsync();
 
-            // Act - Attacker tries to delete owner's log
+            // Act
             var result = await service.DeleteLogAsync(log.Id, "attacker");
 
             // Assert
@@ -94,6 +113,24 @@ namespace CalorieCore.Tests.Services
             var logs = await service.GetChartDataAsync("user1");
 
             Assert.Equal(7, logs.Count);
+        }
+
+        [Fact]
+        public async Task GetUserAccountWithLogsAsync_ShouldIncludeLogsList()
+        {
+            var db = GetDbContext();
+            var service = new WeightService(db);
+            var user = await db.UserAccounts.FirstAsync(u => u.IdentityUserId == "user1");
+
+            db.WeightLogs.Add(new WeightLog { Weight = 75, UserAccountId = user.Id });
+            await db.SaveChangesAsync();
+
+            // Act
+            var result = await service.GetUserAccountWithLogsAsync("user1");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.NotEmpty(result.WeightLogs);
         }
     }
 }

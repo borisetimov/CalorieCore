@@ -18,18 +18,38 @@ namespace CalorieCore.Web.Controllers
 
         private string CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-        public async Task<IActionResult> Index(string searchString, int? page)
+        public async Task<IActionResult> Index(string searchString, int? myPage, int? globalPage)
         {
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
+            // Consistent page size for full-width gallery
+            int pageSize = 12;
+            int myPageNum = myPage ?? 1;
+            int globalPageNum = globalPage ?? 1;
 
-            var (recipes, totalPages) = await _recipeService.GetPagedRecipesAsync(CurrentUserId, searchString, pageNumber, pageSize);
+            var (allRecipes, _) = await _recipeService.GetPagedRecipesAsync(CurrentUserId, searchString, 1, 999);
 
-            ViewBag.CurrentPage = pageNumber;
-            ViewBag.TotalPages = totalPages;
+            // My Collection: Owned OR Favorited (For the Sidebar)
+            var mySource = allRecipes
+                .Where(r => !r.IsGlobal || r.IsFavorite)
+                .OrderByDescending(r => r.Id)
+                .ToList();
+
+            // Global Discovery: Show everything global (don't exclude favorites)
+            var globalSource = allRecipes
+                .Where(r => r.IsGlobal)
+                .OrderBy(r => r.Title)
+                .ToList();
+
+            var myRecipesPaged = mySource.Skip((myPageNum - 1) * pageSize).Take(pageSize).ToList();
+            var globalRecipesPaged = globalSource.Skip((globalPageNum - 1) * pageSize).Take(pageSize).ToList();
+
+            ViewBag.MyTotalPages = (int)Math.Ceiling((double)mySource.Count / pageSize);
+            ViewBag.GlobalTotalPages = (int)Math.Ceiling((double)globalSource.Count / pageSize);
+            ViewBag.MyCurrentPage = myPageNum;
+            ViewBag.GlobalCurrentPage = globalPageNum;
             ViewBag.SearchString = searchString;
+            ViewBag.GlobalRecipes = globalRecipesPaged;
 
-            return View(recipes);
+            return View(myRecipesPaged);
         }
 
         public async Task<IActionResult> Details(int id)
@@ -46,22 +66,14 @@ namespace CalorieCore.Web.Controllers
         public async Task<IActionResult> Create(Recipe recipe)
         {
             if (!ModelState.IsValid) return View(recipe);
-
             var success = await _recipeService.CreateRecipeAsync(recipe, CurrentUserId);
-            if (!success) return Unauthorized();
-
-            return RedirectToAction(nameof(Index));
+            return success ? RedirectToAction(nameof(Index)) : Unauthorized();
         }
 
         public async Task<IActionResult> Edit(int id)
         {
             var recipe = await _recipeService.GetRecipeByIdAsync(id, CurrentUserId);
-            if (recipe == null) return NotFound();
-
-            // Re-check ownership for Edit specifically (since Details allows Global)
-            if (recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != CurrentUserId)
-                return Forbid();
-
+            if (recipe == null || recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != CurrentUserId) return Forbid();
             return View(recipe);
         }
 
@@ -70,19 +82,14 @@ namespace CalorieCore.Web.Controllers
         public async Task<IActionResult> Edit(int id, Recipe updatedRecipe)
         {
             if (!ModelState.IsValid) return View(updatedRecipe);
-
             var success = await _recipeService.UpdateRecipeAsync(id, updatedRecipe, CurrentUserId);
-            if (!success) return Forbid();
-
-            return RedirectToAction(nameof(Index));
+            return success ? RedirectToAction(nameof(Index)) : Forbid();
         }
 
         public async Task<IActionResult> Delete(int id)
         {
             var recipe = await _recipeService.GetRecipeByIdAsync(id, CurrentUserId);
-            if (recipe == null || recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != CurrentUserId)
-                return Forbid();
-
+            if (recipe == null || recipe.IsGlobal || recipe.UserAccount?.IdentityUserId != CurrentUserId) return Forbid();
             return PartialView("_DeletePartial", recipe);
         }
 
@@ -91,18 +98,14 @@ namespace CalorieCore.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var success = await _recipeService.DeleteRecipeAsync(id, CurrentUserId);
-            if (!success) return Forbid();
-
-            return RedirectToAction(nameof(Index));
+            return success ? RedirectToAction(nameof(Index)) : Forbid();
         }
 
         [HttpPost]
         public async Task<IActionResult> ToggleFavorite(int id)
         {
             var success = await _recipeService.ToggleFavoriteAsync(id, CurrentUserId);
-            if (!success) return NotFound();
-
-            return Json(new { success = true });
+            return success ? Json(new { success = true }) : NotFound();
         }
     }
 }

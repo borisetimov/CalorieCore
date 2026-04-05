@@ -1,39 +1,47 @@
 ﻿@model IEnumerable<CalorieCore.DataModels.Recipe>
 @{
-    var globalRecipes = Model.Where(r => r.IsGlobal).ToList();
-    var myRecipes = Model.Where(r => !r.IsGlobal).ToList();
+    var globalRecipes = ViewBag.GlobalRecipes as List<CalorieCore.DataModels.Recipe> ?? new List<CalorieCore.DataModels.Recipe>();
 }
 
-<div class="container mt-5">
-    <div class="d-flex align-items-center justify-content-between mb-4">
+@Html.AntiForgeryToken()
+
+<div class="container mt-4">
+    @* --- TOP PART: TITLE & TOGGLE --- *@
+    <div class="d-flex align-items-center justify-content-between mb-3">
         <div class="d-flex align-items-center gap-2">
-            <h2 class="gradient-text fw-bold mb-0">Recipe Library</h2>
-            <img src="~/images/Food.png" alt="Recipes" style="height:40px;">
+            <h3 class="gradient-text fw-bold mb-0">Global Discovery</h3>
+            <img src="~/images/Food.png" alt="Recipes" style="height:32px;">
         </div>
-        <a asp-action="Create" class="btn btn-warning fw-bold shadow-sm">
-            <i class="bi bi-plus-lg"></i> New Recipe
-        </a>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-warning btn-sm fw-bold shadow-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#myCollectionSidebar">
+                <i class="bi bi-heart-fill me-1 text-danger"></i> My Collection
+            </button>
+            <a asp-action="Create" class="btn btn-warning btn-sm fw-bold shadow-sm">
+                <i class="bi bi-plus-lg"></i> New Recipe
+            </a>
+        </div>
     </div>
 
-    <div class="glass-card p-3 mb-5 shadow">
-        <div class="row g-3">
+    @* --- SEARCH & FILTERS --- *@
+    <div class="glass-card p-2 mb-4 shadow mx-auto" style="max-width: 1000px; position: relative; z-index: 1100;">
+        <div class="row g-2">
             <div class="col-md-8">
-                <div class="input-group">
+                <div class="input-group input-group-sm">
                     <span class="input-group-text bg-transparent border-secondary text-secondary">
                         <i class="bi bi-search"></i>
                     </span>
                     <input type="text" id="recipeSearch" class="form-control bg-transparent text-white border-secondary"
-                           placeholder="Search by title, ingredients, or tags...">
+                           placeholder="Search recipes, ingredients, tags...">
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="dropdown w-100">
-                    <button class="btn btn-outline-light-custom w-100 dropdown-toggle fw-bold" type="button" id="filterBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-funnel"></i> Advanced Filters
+                    <button class="btn btn-outline-light-custom btn-sm w-100 dropdown-toggle fw-bold" type="button" id="filterBtn" data-bs-toggle="dropdown">
+                        <i class="bi bi-funnel"></i> Filters
                     </button>
-                    <div class="dropdown-menu dropdown-menu-dark p-3 shadow-lg border-secondary" style="width: 300px;">
+                    <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end p-3 shadow-lg border-secondary" style="width: 300px; z-index: 9999 !important;">
                         <label class="small text-secondary fw-bold mb-1">Type of Food</label>
-                        <select class="form-select form-select-sm mb-3 filter-trigger" id="filterType">
+                        <select class="form-select form-select-sm mb-2 filter-trigger" id="filterType">
                             <option value="">All Types</option>
                             <option>Breakfast</option>
                             <option>Main</option>
@@ -41,33 +49,20 @@
                             <option>Soup</option>
                             <option>Snack</option>
                             <option>Dessert</option>
-                            <option>Beverage</option>
-                            <option>Side</option>
-                            <option>Appetizer</option>
                         </select>
-
                         <label class="small text-secondary fw-bold mb-1">Difficulty</label>
-                        <select class="form-select form-select-sm mb-3 filter-trigger" id="filterDiff">
+                        <select class="form-select form-select-sm mb-2 filter-trigger" id="filterDiff">
                             <option value="">All Difficulties</option>
                             <option>Easy</option>
                             <option>Medium</option>
                             <option>Hard</option>
                         </select>
-
-                        <label class="small text-secondary fw-bold mb-1">Calorie Range</label>
-                        <select class="form-select form-select-sm mb-3 filter-trigger" id="filterCalRange">
-                            <option value="">All Calories</option>
-                            <option value="low">Low-calorie (≤400)</option>
-                            <option value="high">High-calorie (>400)</option>
-                        </select>
-
-                        <label class="small text-secondary fw-bold mb-1">Sort by Calories</label>
+                        <label class="small text-secondary fw-bold mb-2">Sort by Calories</label>
                         <select class="form-select form-select-sm mb-3 filter-trigger" id="sortCal">
                             <option value="none">Default</option>
                             <option value="low">Lowest First</option>
                             <option value="high">Highest First</option>
                         </select>
-
                         <button class="btn btn-warning btn-sm w-100 fw-bold" onclick="resetFilters()">Reset All</button>
                     </div>
                 </div>
@@ -75,49 +70,47 @@
         </div>
     </div>
 
-    @if (myRecipes.Any())
-    {
-        <h4 class="text-white fw-bold mb-3"><i class="bi bi-person-circle text-warning me-2"></i>My Creations</h4>
-        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5" id="myRecipesContainer">
-            @foreach (var item in myRecipes)
-            {
-                <partial name="_RecipeCard" model="item" />
-            }
-        </div>
-    }
-
-    <h4 class="text-white fw-bold mb-3"><i class="bi bi-globe text-info me-2"></i>Global Recipes</h4>
-    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5" id="globalRecipesContainer">
+    @* --- GLOBAL GALLERY --- *@
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3 compact-grid" id="globalRecipesContainer">
         @foreach (var item in globalRecipes)
         {
             <partial name="_RecipeCard" model="item" />
         }
     </div>
 
-    <div class="d-flex justify-content-center mt-5 mb-5">
-        <nav>
-            <ul class="pagination">
-                @if (ViewBag.CurrentPage > 1)
-                {
-                    <li class="page-item"><a class="page-link bg-dark text-warning border-secondary px-4" asp-route-page="@(ViewBag.CurrentPage - 1)"><i class="bi bi-chevron-left"></i></a></li>
-                }
+    @* --- GLOBAL PAGINATION --- *@
+    <nav class="mt-5">
+        <ul class="pagination pagination-sm justify-content-center">
+            @for (int i = 1; i <= ViewBag.GlobalTotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.GlobalCurrentPage ? "active" : "")">
+                    <a class="page-link bg-dark text-light border-secondary px-3"
+                       href="@Url.Action("Index", new { globalPage = i, searchString = ViewBag.SearchString })">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
 
-                @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                {
-                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link @(i == ViewBag.CurrentPage ? "bg-warning text-dark border-warning" : "bg-dark text-light border-secondary")" asp-route-page="@i">@i</a>
-                    </li>
-                }
-
-                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-                {
-                    <li class="page-item"><a class="page-link bg-dark text-warning border-secondary px-4" asp-route-page="@(ViewBag.CurrentPage + 1)"><i class="bi bi-chevron-right"></i></a></li>
-                }
-            </ul>
-        </nav>
+@* --- MY COLLECTION SIDEBAR (OFFCANVAS) --- *@
+<div class="offcanvas offcanvas-end bg-dark text-white border-start border-secondary" tabindex="-1" id="myCollectionSidebar" style="width: 380px;">
+    <div class="offcanvas-header border-bottom border-secondary">
+        <h5 class="offcanvas-title fw-bold text-warning"><i class="bi bi-heart-fill me-2 text-danger"></i>My Collection</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div id="myRecipesSidebarContainer" class="compact-grid d-flex flex-column gap-3">
+            @foreach (var item in Model)
+            {
+                <div class="sidebar-item" data-id="@item.Id">
+                    <partial name="_RecipeCard" model="item" />
+                </div>
+            }
+        </div>
     </div>
 </div>
 
+@* Delete Modal *@
 <div class="modal fade" id="deleteRecipeModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div id="deleteModalContent"></div>
@@ -133,7 +126,6 @@
             const search = searchInput.value.toLowerCase();
             const type = document.getElementById("filterType").value.toLowerCase();
             const diff = document.getElementById("filterDiff").value.toLowerCase();
-            const calRange = document.getElementById("filterCalRange").value;
             const sort = document.getElementById("sortCal").value;
 
             const cards = document.querySelectorAll(".recipe-card-wrapper");
@@ -142,39 +134,70 @@
                 const cTitle = card.dataset.title.toLowerCase();
                 const cType = card.dataset.type.toLowerCase();
                 const cDiff = card.dataset.difficulty.toLowerCase();
-                const cCalories = parseInt(card.dataset.calories);
                 const cTags = card.dataset.tags ? card.dataset.tags.toLowerCase() : "";
 
                 let isVisible = cTitle.includes(search) || cTags.includes(search);
                 if (type && cType !== type) isVisible = false;
                 if (diff && cDiff !== diff) isVisible = false;
-                if (calRange === "low" && cCalories > 400) isVisible = false;
-                if (calRange === "high" && cCalories <= 400) isVisible = false;
 
                 card.style.display = isVisible ? "block" : "none";
             });
 
             if (sort !== "none") {
-                const containers = ['#myRecipesContainer', '#globalRecipesContainer'];
-                containers.forEach(selector => {
-                    const container = document.querySelector(selector);
-                    if (!container) return;
-                    const items = Array.from(container.children);
-                    items.sort((a, b) => {
-                        const calA = parseInt(a.dataset.calories);
-                        const calB = parseInt(b.dataset.calories);
-                        return sort === "low" ? calA - calB : calB - calA;
-                    });
-                    items.forEach(item => container.appendChild(item));
+                const container = document.getElementById('globalRecipesContainer');
+                const items = Array.from(container.children);
+                items.sort((a, b) => {
+                    const calA = parseInt(a.dataset.calories);
+                    const calB = parseInt(b.dataset.calories);
+                    return sort === "low" ? calA - calB : calB - calA;
                 });
+                items.forEach(item => container.appendChild(item));
             }
+        }
+
+        async function toggleFavorite(recipeId, buttonElement) {
+            const icon = buttonElement.querySelector('i');
+            const originalCard = buttonElement.closest('.recipe-card-wrapper');
+            const sidebarContainer = document.getElementById('myRecipesSidebarContainer');
+
+            try {
+                const response = await fetch(`/Recipes/ToggleFavorite/${recipeId}`, {
+                    method: 'POST',
+                    headers: { 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        if (icon.classList.contains('bi-heart')) {
+                            // UI Update Global Card
+                            icon.classList.replace('bi-heart', 'bi-heart-fill');
+                            icon.classList.replace('text-white', 'text-danger');
+
+                            // Clone to Sidebar
+                            const clone = originalCard.cloneNode(true);
+                            const sidebarItem = document.createElement('div');
+                            sidebarItem.className = 'sidebar-item';
+                            sidebarItem.setAttribute('data-id', recipeId);
+                            sidebarItem.appendChild(clone);
+                            sidebarContainer.prepend(sidebarItem);
+                        } else {
+                            // UI Update Global Card
+                            icon.classList.replace('bi-heart-fill', 'bi-heart');
+                            icon.classList.replace('text-danger', 'text-white');
+
+                            // Remove from Sidebar
+                            const match = sidebarContainer.querySelector(`[data-id="${recipeId}"]`);
+                            if(match) match.remove();
+                        }
+                    }
+                }
+            } catch (e) { console.error(e); }
         }
 
         function resetFilters() {
             searchInput.value = "";
-            document.querySelectorAll(".filter-trigger").forEach(t => {
-                t.value = t.tagName === 'SELECT' ? (t.id === 'sortCal' ? 'none' : '') : '';
-            });
+            triggers.forEach(t => t.value = t.id === 'sortCal' ? 'none' : '');
             applyFilters();
         }
 
@@ -184,49 +207,58 @@
         function openDeleteModal(id) {
             $.get("/Recipes/Delete/" + id, function(data) {
                 $('#deleteModalContent').html(data);
-                var modalElement = document.getElementById('deleteRecipeModal');
-                var modalInstance = new bootstrap.Modal(modalElement);
-                modalInstance.show();
+                new bootstrap.Modal(document.getElementById('deleteRecipeModal')).show();
             });
         }
     </script>
 
     <style>
+        .compact-grid .card {
+            border-radius: 8px !important;
+        }
+
+        .compact-grid .card-body {
+            padding: 0.75rem !important;
+        }
+
+        .compact-grid .card-title {
+            font-size: 0.9rem !important;
+            margin-bottom: 0.2rem !important;
+            line-height: 1.2;
+        }
+
+        .compact-grid .badge {
+            font-size: 0.6rem !important;
+            padding: 0.2rem 0.4rem !important;
+        }
+
+        .compact-grid p, .compact-grid span {
+            font-size: 0.75rem !important;
+        }
+
+        .compact-grid .btn {
+            padding: 0.2rem 0.4rem !important;
+            font-size: 0.7rem !important;
+        }
+
+        .offcanvas {
+            box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+        }
+
+        .recipe-card-wrapper:hover {
+            transform: translateY(-3px);
+            transition: 0.2s;
+        }
+
         .bg-custom-tag {
             background-color: #BDE3FF !important;
             color: #002B4D !important;
             font-weight: 600;
-            font-size: 0.7rem;
-            text-transform: capitalize;
-            border: 1px solid rgba(0,0,0,0.1);
         }
 
-        .dropdown-menu-dark {
-            z-index: 9999 !important;
-            background: rgba(30, 30, 30, 0.98) !important;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.15);
-            position: absolute !important;
-        }
-
-       
-        .glass-card {
-            overflow: visible !important;
-            z-index: 1050 !important;
-            position: relative;
-        }
-
-        .recipe-card-wrapper {
-            z-index: 1 !important;
-            position: relative;
-        }
-        .row {
-            position: relative;
-            z-index: 1;
-        }
-
-        .pagination .page-link:hover {
+        .pagination .page-link:hover, .pagination .active .page-link {
             background-color: #ffc107 !important;
+            border-color: #ffc107 !important;
             color: #000 !important;
         }
     </style>

@@ -12,13 +12,13 @@
     var weightChange = Model.CurrentWeight - startingWeight;
 
     // 2. Dynamic Gauge Calculations
-    double gaugeMin = 40;
-    double gaugeMax = 120;
+    double gaugeMin = 10;
+    double gaugeMax = 50;
     double totalRange = gaugeMax - gaugeMin;
 
-    double blueStop = ((Model.Status.MinNormalWeight - gaugeMin) / totalRange) * 50;
-    double greenStop = ((Model.Status.MaxNormalWeight - gaugeMin) / totalRange) * 50;
-    double yellowStop = greenStop + 3;
+    double blueStop = ((18.5 - gaugeMin) / totalRange) * 50;
+    double greenStop = ((25.0 - gaugeMin) / totalRange) * 50;
+    double yellowStop = ((30.0 - gaugeMin) / totalRange) * 50;
 }
 
 <div class="container mt-4">
@@ -33,11 +33,11 @@
                     <div class="gauge-container mx-auto">
                         <div class="gauge-ring-modern"
                              style="background: conic-gradient(from 270deg,
-                                            #5bc0de 0% @(blueStop)%,
-                                            #5cb85c @(blueStop)% @(greenStop)%,
-                                            #f0ad4e @(greenStop)% @(yellowStop)%,
-                                            #d9534f @(yellowStop)% 50%,
-                                            #1a1a1a 50% 100%);">
+                                                    #5bc0de 0% @(blueStop)%,
+                                                    #5cb85c @(blueStop)% @(greenStop)%,
+                                                    #f0ad4e @(greenStop)% @(yellowStop)%,
+                                                    #d9534f @(yellowStop)% 50%,
+                                                    #1a1a1a 50% 100%);">
 
                             <div class="needle" id="bmiPointer"></div>
 
@@ -50,19 +50,19 @@
                         </div>
                     </div>
 
-                    @* Healthy Norm Info *@
+                    @* Healthy Norm Info & Advice Message *@
                     <div class="mt-4 pt-2 border-top border-secondary border-opacity-25">
                         <p class="text-light mb-1">
-                            Based on your profile, the healthy norm for your height (@Model.Height cm) is:
+                            Based on your height (@Model.Height cm), the healthy norm is:
                         </p>
                         <h5 class="text-success fw-bold">@Model.Status.MinNormalWeight kg - @Model.Status.MaxNormalWeight kg</h5>
-                        <p class="text-secondary small">This range is calculated based on standards for your age and height.</p>
-                    </div>
-                }
-                else
-                {
-                    <div class="alert alert-info bg-dark border-secondary text-light">
-                        Please update your profile height to view BMI analysis.
+
+                        @* The Message from your WeightCalculator.cs *@
+                        <div class="mt-3 p-2 rounded bg-dark bg-opacity-50 border border-info border-opacity-25">
+                            <p class="text-info m-0 small italic">
+                                <i class="bi bi-chat-left-dots me-2"></i>@Model.Status.Message
+                            </p>
+                        </div>
                     </div>
                 }
             </div>
@@ -71,8 +71,6 @@
         @* Compact Stats & Body Fat Column *@
         <div class="col-md-4">
             <div class="d-flex flex-column gap-3 h-100">
-
-                @* Slim Stats Row *@
                 <div class="d-flex gap-2">
                     <div class="glass-card p-2 flex-grow-1 text-center">
                         <h6 class="text-secondary small mb-1" style="font-size: 0.7rem;">CURRENT WEIGHT</h6>
@@ -90,37 +88,64 @@
                 <div class="glass-card p-3 flex-grow-1">
                     <h6 class="text-white mb-3"><i class="bi bi-percent me-2"></i>Body Fat Calculator</h6>
 
-                    <div class="mb-2">
-                        <label class="text-secondary small">Waist (cm)</label>
-                        <input type="number" id="bfWaist" class="form-control form-control-sm bg-dark text-white border-secondary">
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">
+                            <label class="text-secondary small">Age (Years)</label>
+                            <input type="number" id="bfAge" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="Age">
+                        </div>
+                        <div class="col-6">
+                            <label class="text-secondary small">Gender</label>
+                            <select id="bfGender" class="form-select form-select-sm bg-dark text-white border-secondary" onchange="toggleHipField()">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-2">
-                        <label class="text-secondary small">Neck (cm)</label>
-                        <input type="number" id="bfNeck" class="form-control form-control-sm bg-dark text-white border-secondary">
+
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">
+                            <label class="text-secondary small">Waist (cm)</label>
+                            <input type="number" id="bfWaist" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="cm">
+                        </div>
+                        <div class="col-6">
+                            <label class="text-secondary small">Neck (cm)</label>
+                            <input type="number" id="bfNeck" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="cm">
+                        </div>
                     </div>
-                    <div id="hipContainer" class="mb-2" style="display:none;">
+
+                    @* Hips input - hidden by default, shown for females *@
+                    <div id="hipContainer" class="mb-3 d-none">
                         <label class="text-secondary small">Hips (cm)</label>
-                        <input type="number" id="bfHips" class="form-control form-control-sm bg-dark text-white border-secondary">
-                    </div>
-                    <div class="mb-3">
-                        <label class="text-secondary small">Gender</label>
-                        <select id="bfGender" class="form-select form-select-sm bg-dark text-white border-secondary" onchange="toggleHipsSide()">
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                        </select>
+                        <input type="number" id="bfHips" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="cm">
                     </div>
 
-                    <button type="button" class="btn btn-warning btn-sm w-100 fw-bold mb-3" onclick="calculateBF()">Calculate</button>
+                    <button type="button" class="btn btn-warning btn-sm w-100 fw-bold mb-3 shadow-sm" onclick="calculateBF()">
+                        Calculate Body Fat
+                    </button>
 
-                    <div class="text-center p-2 rounded bg-black bg-opacity-25 border border-secondary border-opacity-25">
-                        <span id="bfCategory" class="text-secondary small d-block">ESTIMATED</span>
-                        <h2 id="bfResult" class="text-info m-0">--%</h2>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="text-center p-2 rounded bg-black bg-opacity-25 border border-secondary border-opacity-25">
+                                <span class="text-secondary d-block" style="font-size: 0.6rem;">NAVY METHOD</span>
+                                <h4 id="bfResultNavy" class="text-info m-0" style="font-size: 1.1rem;">--%</h4>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-2 rounded bg-black bg-opacity-25 border border-secondary border-opacity-25">
+                                <span class="text-secondary d-block" style="font-size: 0.6rem;">BMI METHOD</span>
+                                <h4 id="bfResultBMI" class="text-warning m-0" style="font-size: 1.1rem;">--%</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-2">
+                        <span id="bfCategory" class="text-secondary small text-uppercase" style="font-size: 0.65rem;">Result Status</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    @* Trend & History Rows *@
     <div class="row">
         <div class="col-md-4">
             <div class="glass-card p-4 mb-4">
@@ -177,16 +202,14 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             // Gauge Pointer Logic
-            const currentW = parseFloat("@Model.CurrentWeight");
+            const bmiVal = parseFloat("@Model.Status?.BMI".replace(',', '.'));
             const pointer = document.getElementById("bmiPointer");
-            const minW = 40;
-            const maxW = 120;
-
-            let percent = (currentW - minW) / (maxW - minW);
-            percent = Math.max(0, Math.min(1, percent));
-            const angle = -90 + (percent * 180);
-
-            if (pointer) {
+            if (pointer && !isNaN(bmiVal)) {
+                const minB = 10;
+                const maxB = 50;
+                let percent = (bmiVal - minB) / (maxB - minB);
+                percent = Math.max(0, Math.min(1, percent));
+                const angle = -90 + (percent * 180);
                 pointer.style.transform = `translateX(-50%) rotate(${angle}deg)`;
             }
 
@@ -222,56 +245,82 @@
             }
         });
 
+        function toggleHipField() {
+            const gender = document.getElementById("bfGender").value;
+            const hipContainer = document.getElementById("hipContainer");
+            if (gender === "female") {
+                hipContainer.classList.remove("d-none");
+            } else {
+                hipContainer.classList.add("d-none");
+            }
+        }
+
+        // BODY FAT CALCULATION (U.S. NAVY METRIC + BMI METHODS)
+        function calculateBF() {
+            const age = parseInt(document.getElementById("bfAge").value);
+            const waist = parseFloat(document.getElementById("bfWaist").value);
+            const neck = parseFloat(document.getElementById("bfNeck").value);
+            const hips = parseFloat(document.getElementById("bfHips").value);
+            const gender = document.getElementById("bfGender").value;
+
+            const weight = parseFloat("@Model.CurrentWeight".replace(',', '.'));
+            const heightCm = parseFloat("@Model.Height".replace(',', '.'));
+
+            if (!age || !waist || !neck || !weight || !heightCm || (gender === "female" && isNaN(hips))) {
+                alert("Please fill in all measurements. (Hips required for women)");
+                return;
+            }
+
+            // 1. BMI CALCULATION
+            const heightM = heightCm / 100;
+            const bmi = weight / (heightM * heightM);
+
+            // 2. BMI METHOD FORMULAS (Standardized)
+            let bmiResult = 0;
+            if (age >= 18) {
+                bmiResult = (gender === "male")
+                    ? (1.20 * bmi) + (0.23 * age) - 16.2
+                    : (1.20 * bmi) + (0.23 * age) - 5.4;
+            } else {
+                bmiResult = (gender === "male")
+                    ? (1.51 * bmi) - (0.70 * age) - 2.2
+                    : (1.51 * bmi) - (0.70 * age) + 1.4;
+            }
+
+            // 3. UPDATED NAVY METHOD FORMULAS (Metric Units)
+            let navyResult = 0;
+            if (gender === "male") {
+                // BFP = 495 / (1.0324 - 0.19077 * log10(waist - neck) + 0.15456 * log10(height)) - 450
+                let density = 1.0324 - (0.19077 * Math.log10(waist - neck)) + (0.15456 * Math.log10(heightCm));
+                navyResult = (495 / density) - 450;
+            } else {
+                // BFP = 495 / (1.29579 - 0.35004 * log10(waist + hip - neck) + 0.22100 * log10(height)) - 450
+                let density = 1.29579 - (0.35004 * Math.log10(waist + hips - neck)) + (0.22100 * Math.log10(heightCm));
+                navyResult = (495 / density) - 450;
+            }
+
+            // Update UI
+            document.getElementById("bfResultNavy").innerText = Math.max(2, navyResult).toFixed(1) + "%";
+            document.getElementById("bfResultBMI").innerText = Math.max(2, bmiResult).toFixed(1) + "%";
+
+            // Categorization
+            let cat = "Average";
+            if (gender === "male") {
+                if (bmiResult < 14) cat = "Athletes";
+                else if (bmiResult > 25) cat = "Obese";
+            } else {
+                if (bmiResult < 21) cat = "Athletes";
+                else if (bmiResult > 32) cat = "Obese";
+            }
+            document.getElementById("bfCategory").innerText = cat;
+        }
+
         function openDeleteModal(id) {
             const form = document.getElementById('deleteForm');
             if (form) {
                 form.action = '/Weight/DeleteLog/' + id;
-                const modalEl = document.getElementById('deleteModal');
-                const myModal = new bootstrap.Modal(modalEl);
-                myModal.show();
+                new bootstrap.Modal(document.getElementById('deleteModal')).show();
             }
-        }
-
-        // Body Fat Logic
-        function toggleHipsSide() {
-            const gender = document.getElementById("bfGender").value;
-            document.getElementById("hipContainer").style.display = (gender === "female") ? "block" : "none";
-        }
-
-        function calculateBF() {
-            const height = parseFloat("@Model.Height");
-            const waist = parseFloat(document.getElementById("bfWaist").value);
-            const neck = parseFloat(document.getElementById("bfNeck").value);
-            const gender = document.getElementById("bfGender").value;
-            let result = 0;
-
-            if (!height || !waist || !neck) {
-                alert("Please ensure height, waist, and neck are entered.");
-                return;
-            }
-
-            if (gender === "male") {
-                result = 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;
-            } else {
-                const hips = parseFloat(document.getElementById("bfHips").value);
-                if (!hips) { alert("Hips required for female calculation."); return; }
-                result = 495 / (1.29579 - 0.35004 * Math.log10(waist + hips - neck) + 0.22100 * Math.log10(height)) - 450;
-            }
-
-            const finalVal = result.toFixed(1);
-            document.getElementById("bfResult").innerHTML = `${finalVal}%`;
-
-            let cat = "Average";
-            if (gender === "male") {
-                if (result < 6) cat = "Essential Fat";
-                else if (result < 14) cat = "Athlete";
-                else if (result > 25) cat = "Obese";
-            } else {
-                if (result < 14) cat = "Essential Fat";
-                else if (result < 21) cat = "Athlete";
-                else if (result > 32) cat = "Obese";
-            }
-            document.getElementById("bfCategory").innerText = cat;
         }
     </script>
 }
