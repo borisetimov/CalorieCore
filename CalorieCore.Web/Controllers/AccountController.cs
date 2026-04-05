@@ -29,7 +29,6 @@ namespace CalorieCore.Web.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login");
 
-            // Fetch the linked UserAccount to get Height and Gender
             var userAccount = await _context.UserAccounts
                 .FirstOrDefaultAsync(u => u.IdentityUserId == user.Id);
 
@@ -38,9 +37,11 @@ namespace CalorieCore.Web.Controllers
                 Id = user.Id,
                 Username = user.UserName ?? "",
                 Email = user.Email ?? "",
-                // Pulling data from UserAccount if it exists
+                // Pulling all data now, including Age and Activity Level
                 Height = userAccount?.Height ?? 0,
-                Gender = userAccount?.Gender ?? "Male"
+                Gender = userAccount?.Gender ?? "Male",
+                Age = userAccount?.Age ?? 0,
+                ActivityLevel = userAccount?.ActivityLevel ?? "Sedentary"
             };
             return View(model);
         }
@@ -57,8 +58,34 @@ namespace CalorieCore.Web.Controllers
 
             if (userAccount != null)
             {
+                // 1. Update basic info
                 userAccount.Height = model.Height;
                 userAccount.Gender = model.Gender;
+                userAccount.Age = model.Age;
+                userAccount.ActivityLevel = model.ActivityLevel;
+
+                // 2. Update Multiplier based on selection
+                userAccount.ActivityMultiplier = model.ActivityLevel switch
+                {
+                    "Sedentary" => 1.2,
+                    "Lightly Active" => 1.375,
+                    "Moderately Active" => 1.55,
+                    "Very Active" => 1.725,
+                    "Extra Active" => 1.9,
+                    _ => 1.2
+                };
+
+                // 3. Recalculate Calories and Macros
+                // Since we are inside the controller, we can call your calculation logic here
+                var bmr = (10 * userAccount.Weight) + (6.25 * userAccount.Height) - (5 * userAccount.Age);
+                bmr = (userAccount.Gender == "Male") ? bmr + 5 : bmr - 161;
+
+                double tdee = bmr * userAccount.ActivityMultiplier;
+
+                userAccount.DailyCalorieGoal = (int)Math.Round(tdee);
+                userAccount.DailyProteinGoal = (int)((tdee * 0.30) / 4);
+                userAccount.DailyCarbGoal = (int)((tdee * 0.45) / 4);
+                userAccount.DailyFatGoal = (int)((tdee * 0.25) / 9);
 
                 await _context.SaveChangesAsync();
                 TempData["Success"] = "Profile updated successfully!";
@@ -99,6 +126,7 @@ namespace CalorieCore.Web.Controllers
 
             return View(model);
         }
+
 
         [HttpGet]
         public IActionResult Login() => View();

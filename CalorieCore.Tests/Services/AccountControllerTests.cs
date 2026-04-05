@@ -1,4 +1,5 @@
-﻿using CalorieCore.Data.Migrations;
+﻿using CalorieCore.Data; // Verify this matches your ApplicationDbContext namespace
+using CalorieCore.Data.Migrations;
 using CalorieCore.DataModels;
 using CalorieCore.Services;
 using CalorieCore.ViewModels;
@@ -6,34 +7,59 @@ using CalorieCore.Web.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using System;
+using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace CalorieCore.Tests.Controllers
 {
-    public class AccountControllerTests
+    public class AccountControllerTests : IDisposable
     {
         private readonly Mock<IAccountService> _mockAccountService;
         private readonly Mock<UserManager<IdentityUser>> _mockUserManager;
+        private readonly ApplicationDbContext _context;
         private readonly AccountController _controller;
 
         public AccountControllerTests()
         {
             _mockAccountService = new Mock<IAccountService>();
 
-            // Setting up a Mock UserManager is a bit complex, but this standard setup works:
+            // Setup Mock UserManager with required constructor arguments
             var store = new Mock<IUserStore<IdentityUser>>();
-            _mockUserManager = new Mock<UserManager<IdentityUser>>(store.Object, null, null, null, null, null, null, null, null);
+            _mockUserManager = new Mock<UserManager<IdentityUser>>(
+                store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
 
-            _controller = new AccountController(_mockAccountService.Object, _mockUserManager.Object);
+            // Setup In-Memory Database for testing profile updates
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+            _context = new ApplicationDbContext(options);
+
+            // FIX: Pass all three parameters now required by the AccountController
+            _controller = new AccountController(_mockAccountService.Object, _mockUserManager.Object, _context);
+        }
+
+        // Helper method to resolve CS0103: The name 'GetMockUserManager' does not exist
+        private Mock<UserManager<IdentityUser>> GetMockUserManager(IdentityUser user)
+        {
+            var store = new Mock<IUserStore<IdentityUser>>();
+            var mgr = new Mock<UserManager<IdentityUser>>(
+                store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+
+            mgr.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
+            mgr.Setup(x => x.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(user.Id);
+            return mgr;
         }
 
         [Fact]
         public async Task Settings_UserNotLoggedIn_RedirectsToLogin()
         {
-            // Arrange: GetUserAsync returns null
+            // Arrange
             _mockUserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
                             .ReturnsAsync((IdentityUser)null!);
 
@@ -43,6 +69,54 @@ namespace CalorieCore.Tests.Controllers
             // Assert
             var redirect = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Login", redirect.ActionName);
+        }
+
+        [Fact]
+        public async Task UpdateProfile_UpdatesHeightAndGender_ReturnsRedirect()
+        {
+            // 1. Arrange
+            var userId = "user123";
+            var user = new IdentityUser { Id = userId, UserName = "testuser" };
+            var account = new UserAccount { IdentityUserId = userId, Height = 170, Gender = "Male" };
+
+            _context.UserAccounts.Add(account);
+            await _context.SaveChangesAsync();
+
+            // 2. Mock User Identity
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, userId),
+        new Claim(ClaimTypes.Name, "testuser")
+    };
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            // 3. Initialize Controller
+            var controllerWithUser = new AccountController(
+                _mockAccountService.Object,
+                GetMockUserManager(user).Object,
+                _context);
+
+            // FIX: Initialize TempData and HttpContext
+            var tempDataProvider = new Mock<ITempDataProvider>();
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), tempDataProvider.Object);
+
+            controllerWithUser.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+            };
+            controllerWithUser.TempData = tempData; // This prevents the Line 64 NullRef
+
+            var model = new SettingsViewModel { Height = 185.5, Gender = "Female" };
+
+            // 4. Act
+            var result = await controllerWithUser.UpdateProfile(model);
+
+            // 5. Assert
+            var updatedAccount = await _context.UserAccounts.FirstAsync(u => u.IdentityUserId == userId);
+            Assert.Equal(185.5, updatedAccount.Height);
+            Assert.Equal("Female", updatedAccount.Gender);
+            Assert.IsType<RedirectToActionResult>(result);
         }
 
         [Fact]
@@ -119,32 +193,11 @@ namespace CalorieCore.Tests.Controllers
             var redirect = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Landing", redirect.ActionName);
         }
-        [Fact]
-        public async Task UpdateProfile_UpdatesHeightAndGender_ReturnsRedirect()
+
+        public void Dispose()
         {
-            // Arrange
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb")
-                .Options;
-
-            using var context = new ApplicationDbContext(options);
-            var user = new IdentityUser { Id = "user1", UserName = "test" };
-            var account = new UserAccount { IdentityUserId = "user1", Height = 170, Gender = "Male" };
-            context.UserAccounts.Add(account);
-            await context.SaveChangesAsync();
-
-            var controller = new AccountController(null, GetMockUserManager(user).Object, context);
-            var model = new SettingsViewModel { Height = 180, Gender = "Female" };
-
-            // Act
-            var result = await controller.UpdateProfile(model);
-
-            // Assert
-            var updatedAccount = await context.UserAccounts.FirstAsync();
-            Assert.Equal(180, updatedAccount.Height);
-            Assert.Equal("Female", updatedAccount.Gender);
-            var redirect = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Settings", redirect.ActionName);
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
         }
     }
 }

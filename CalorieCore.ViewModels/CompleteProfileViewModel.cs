@@ -11,6 +11,9 @@ public class CompleteProfileViewModel
     [Required, Range(100, 250)]
     public double Height { get; set; }
 
+    [Required]
+    public string ActivityLevel { get; set; } = "Sedentary";
+
     [Required, StringLength(20)]
     public string Goal { get; set; } = "Maintain";
 

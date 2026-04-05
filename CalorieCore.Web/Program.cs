@@ -44,6 +44,7 @@ namespace CalorieCore.Web
             builder.Services.AddScoped<IUserActivityService, UserActivityService>();
             builder.Services.AddScoped<IProfileService, ProfileService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<INutritionService, NutritionService>();
             // This links your Interface to the Implementation
 
             builder.Services.AddControllersWithViews();

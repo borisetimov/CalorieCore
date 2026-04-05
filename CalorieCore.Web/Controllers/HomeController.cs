@@ -53,6 +53,11 @@ namespace CalorieCore.Web.Controllers
             ViewBag.Burned = burned;
             ViewBag.Remaining = remaining;
 
+
+            ViewBag.ProteinGoal = user.DailyProteinGoal;
+            ViewBag.CarbGoal = user.DailyCarbGoal;
+            ViewBag.FatGoal = user.DailyFatGoal;
+
             return View();
         }
 
