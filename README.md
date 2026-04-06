@@ -45,18 +45,18 @@ Whether you're trying to eat healthier or just stay organized with your nutritio
 
 ### **User Dashboard & Weight Analytics**
 *Comprehensive tracking with Chart.js and Navy Body Fat calculation.*
-![Dashboard](Screenshots/dashboard.png)
+![Dashboard](CalorieCore.Web/Screenshots/dashboard.png)
 
 | Weight Tracking | Meal Management |
 |:---:|:---:|
-| ![Weight](Screenshots/weight.png) | ![Meals](Screenshots/meals.png) |
+| ![Weight](CalorieCore.Web/Screenshots/weight.png) | ![Meals](CalorieCore.Web/Screenshots/meals.png) |
 
 | Activity Logging | Recipe Library |
 |:---:|:---:|
-| ![Activity](Screenshots/activity.png) | ![Recipes](Screenshots/recipes.png) |
+| ![Activity](CalorieCore.Web/Screenshots/activity.png) | ![Recipes](CalorieCore.Web/Screenshots/recipes.png) |
 
 ### **User Customization**
-![Settings](Screenshots/settings.png)
+![Settings](CalorieCore.Web/Screenshots/settings.png)
 
 ---
 
