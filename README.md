@@ -35,9 +35,9 @@
 
 ## 📖 About the Project
 
-CalorieCore is a web application designed to help you track your meals, monitor calories, and manage recipes easily. It's simple, interactive, and secure, giving users the ability to log physical activity and maintain a complete personal profile.
+CalorieCore is a robust health-tracking ecosystem designed to bridge the gap between simple calorie counting and advanced physiological metrics. It provides users with secure, private data silos to manage nutrition, physical activity, and weight trends.
 
-Whether you're trying to eat healthier or just stay organized with your nutrition, CalorieCore keeps all your data in one place. This project was built following **SoftUni ASP.NET Fundamentals** requirements, demonstrating MVC architecture, CRUD operations, and responsive design.
+This project was developed for the **SoftUni ASP.NET Advanced Course (April 2026)**. It demonstrates advanced software architecture, including the Service Pattern, Repository concepts, MVC Areas for administrative control, and comprehensive Unit Testing.
 
 ---
 
@@ -163,8 +163,6 @@ CalorieCore/
 * [x] **Data Pagination:** Optimized weight history loading using server-side pagination.
 * [x] **Recipe Management:** Create, edit, and delete personal recipes; browse global recipes.
 * [x] **Meal Logging:** Track intake with name, calories, and date using POST-Redirect-GET.
-* [x] **Recipe Management:** Create, edit, and delete personal recipes; browse global recipes.
-* [x] **Meal Logging:** Track intake with name, calories, and date using POST-Redirect-GET.
 * [x] **Activity Tracking:** Log physical activities and monitor calories burned.
 * [x] **User Identity:** Secure registration and login; private data access only for owners.
 * [x] **Advanced UI:** Glassmorphism design with AJAX-powered modals for deletion.
@@ -228,8 +226,6 @@ Key security settings are enforced via:
 ---
 ## 🔮 **Future Improvements**
 
-* [ ] Admin vs. Standard User roles.
-* [ ] Analytics dashboard with trend charts.
 * [ ] Recipe sharing and rating system.
 * [ ] Mobile-first responsive enhancements.
 
@@ -249,7 +245,7 @@ Project Link: [https://github.com/borisetimov/CalorieCore]()
 
 ---
 
-*Built for the SoftUni ASP.NET Fundamentals course.*
+*Built for the SoftUni ASP.NET Advanced course.*
 
 ```
 
