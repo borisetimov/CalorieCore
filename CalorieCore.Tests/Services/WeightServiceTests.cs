@@ -51,7 +51,6 @@ namespace CalorieCore.Tests.Services
             var service = new WeightService(db);
             var user = await db.UserAccounts.FirstAsync(u => u.IdentityUserId == "user1");
 
-            // Adding logs out of order
             db.WeightLogs.Add(new WeightLog { Weight = 90, DateRecorded = DateTime.Now, UserAccountId = user.Id });
             db.WeightLogs.Add(new WeightLog { Weight = 80, DateRecorded = DateTime.Now.AddDays(-1), UserAccountId = user.Id });
             await db.SaveChangesAsync();

@@ -27,8 +27,6 @@ namespace CalorieCore.Services
         {
             var existingAccount = await _context.UserAccounts
                 .FirstOrDefaultAsync(u => u.IdentityUserId == identityUserId);
-
-            // 1. Map ActivityLevel string to Multiplier
             double multiplier = model.ActivityLevel switch
             {
                 "Sedentary" => 1.2,
@@ -39,15 +37,10 @@ namespace CalorieCore.Services
                 _ => 1.2
             };
 
-            // 2. Calculate daily calories considering activity level
-            // Note: You might need to update your CalorieCalculator.Calculate signature 
-            // to accept the multiplier for better accuracy.
             var dailyCalories = CalorieCalculator.Calculate(
                 model.Weight, model.Height, model.Age, model.Gender, model.Goal
             );
 
-            // If your calculator doesn't handle activity yet, you can adjust it here:
-            // dailyCalories *= multiplier; 
 
             if (existingAccount == null)
             {
@@ -60,8 +53,8 @@ namespace CalorieCore.Services
                     Height = model.Height,
                     Gender = model.Gender,
                     Goal = model.Goal,
-                    ActivityLevel = model.ActivityLevel, // Store the string for display
-                    ActivityMultiplier = multiplier,     // Store the double for math
+                    ActivityLevel = model.ActivityLevel, 
+                    ActivityMultiplier = multiplier,     
                     DailyCalorieGoal = dailyCalories
                 };
                 _context.UserAccounts.Add(existingAccount);
@@ -74,7 +67,7 @@ namespace CalorieCore.Services
                 existingAccount.Gender = model.Gender;
                 existingAccount.Goal = model.Goal;
                 existingAccount.ActivityLevel = model.ActivityLevel;
-                existingAccount.ActivityMultiplier = multiplier; // Update multiplier
+                existingAccount.ActivityMultiplier = multiplier; 
                 existingAccount.DailyCalorieGoal = dailyCalories;
                 existingAccount.IsProfileComplete = true;
             }

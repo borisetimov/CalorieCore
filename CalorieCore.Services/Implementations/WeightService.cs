@@ -68,7 +68,7 @@ namespace CalorieCore.Services
         public async Task<UserAccount?> GetUserAccountWithLogsAsync(string userId)
         {
             return await _context.UserAccounts
-                .Include(u => u.WeightLogs) // Crucial: This loads the logs from the DB
+                .Include(u => u.WeightLogs)
                 .FirstOrDefaultAsync(u => u.IdentityUserId == userId);
         }
     }

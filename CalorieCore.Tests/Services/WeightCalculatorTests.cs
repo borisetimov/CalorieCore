@@ -23,8 +23,6 @@ namespace CalorieCore.Tests
         [Fact]
         public void Analyze_ShouldProduceCorrectColorClasses()
         {
-            // The UI depends on lowercase versions (e.g., "normal", "underweight")
-            // These must match your CSS classes for the gauge to color correctly.
             var underweight = WeightCalculator.Analyze(50, 180, 25);
             var normal = WeightCalculator.Analyze(70, 180, 25);
             var overweight = WeightCalculator.Analyze(95, 180, 25);
@@ -59,7 +57,7 @@ namespace CalorieCore.Tests
         [Fact]
         public void GetAdvice_SeniorsUnderweight_ReturnsSpecialAdvice()
         {
-            // Act: Underweight and over 65
+            // Act
             var result = WeightCalculator.Analyze(50, 180, 70);
 
             // Assert

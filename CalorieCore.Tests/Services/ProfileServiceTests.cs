@@ -1,7 +1,6 @@
 ﻿using CalorieCore.DataModels;
 using CalorieCore.Services;
-using CalorieCore.ViewModels; // Ensure this matches your ViewModel namespace
-using Xunit;
+using CalorieCore.ViewModels; 
 using Microsoft.EntityFrameworkCore;
 
 namespace CalorieCore.Tests.Services

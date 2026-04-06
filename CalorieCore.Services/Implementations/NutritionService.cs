@@ -1,5 +1,5 @@
 ﻿using System;
-using CalorieCore.DataModels; // Adjust based on your actual namespace
+using CalorieCore.DataModels; 
 
 namespace CalorieCore.Services
 {

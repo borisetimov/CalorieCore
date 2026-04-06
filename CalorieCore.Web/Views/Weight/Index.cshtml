@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Weight Progress";
 
-    // 1. Data Preparation for Chart
     var chartLogs = Model.Logs.OrderBy(l => l.DateRecorded).ToList();
     var labels = chartLogs.Select(m => m.DateRecorded.ToString("dd MMM")).ToList();
     var values = chartLogs.Select(m => m.Weight).ToList();
@@ -11,7 +10,6 @@
     var startingWeight = chartLogs.FirstOrDefault()?.Weight ?? 0;
     var weightChange = Model.CurrentWeight - startingWeight;
 
-    // 2. Dynamic Gauge Calculations
     double gaugeMin = 10;
     double gaugeMax = 50;
     double totalRange = gaugeMax - gaugeMin;
@@ -201,7 +199,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Gauge Pointer Logic
             const bmiVal = parseFloat("@Model.Status?.BMI".replace(',', '.'));
             const pointer = document.getElementById("bmiPointer");
             if (pointer && !isNaN(bmiVal)) {
@@ -213,7 +210,6 @@
                 pointer.style.transform = `translateX(-50%) rotate(${angle}deg)`;
             }
 
-            // Chart Logic
             const ctx = document.getElementById('weightChart');
             if (ctx) {
                 new Chart(ctx.getContext('2d'), {

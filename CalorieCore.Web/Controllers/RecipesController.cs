@@ -20,20 +20,17 @@ namespace CalorieCore.Web.Controllers
 
         public async Task<IActionResult> Index(string searchString, int? myPage, int? globalPage)
         {
-            // Consistent page size for full-width gallery
             int pageSize = 12;
             int myPageNum = myPage ?? 1;
             int globalPageNum = globalPage ?? 1;
 
             var (allRecipes, _) = await _recipeService.GetPagedRecipesAsync(CurrentUserId, searchString, 1, 999);
 
-            // My Collection: Owned OR Favorited (For the Sidebar)
             var mySource = allRecipes
                 .Where(r => !r.IsGlobal || r.IsFavorite)
                 .OrderByDescending(r => r.Id)
                 .ToList();
 
-            // Global Discovery: Show everything global (don't exclude favorites)
             var globalSource = allRecipes
                 .Where(r => r.IsGlobal)
                 .OrderBy(r => r.Title)

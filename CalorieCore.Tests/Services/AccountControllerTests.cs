@@ -29,22 +29,18 @@ namespace CalorieCore.Tests.Controllers
         {
             _mockAccountService = new Mock<IAccountService>();
 
-            // Setup Mock UserManager with required constructor arguments
             var store = new Mock<IUserStore<IdentityUser>>();
             _mockUserManager = new Mock<UserManager<IdentityUser>>(
                 store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
 
-            // Setup In-Memory Database for testing profile updates
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
             _context = new ApplicationDbContext(options);
 
-            // FIX: Pass all three parameters now required by the AccountController
             _controller = new AccountController(_mockAccountService.Object, _mockUserManager.Object, _context);
         }
 
-        // Helper method to resolve CS0103: The name 'GetMockUserManager' does not exist
         private Mock<UserManager<IdentityUser>> GetMockUserManager(IdentityUser user)
         {
             var store = new Mock<IUserStore<IdentityUser>>();
@@ -74,7 +70,7 @@ namespace CalorieCore.Tests.Controllers
         [Fact]
         public async Task UpdateProfile_UpdatesHeightAndGender_ReturnsRedirect()
         {
-            // 1. Arrange
+            // Arrange
             var userId = "user123";
             var user = new IdentityUser { Id = userId, UserName = "testuser" };
             var account = new UserAccount { IdentityUserId = userId, Height = 170, Gender = "Male" };
@@ -82,7 +78,6 @@ namespace CalorieCore.Tests.Controllers
             _context.UserAccounts.Add(account);
             await _context.SaveChangesAsync();
 
-            // 2. Mock User Identity
             var claims = new List<Claim>
     {
         new Claim(ClaimTypes.NameIdentifier, userId),
@@ -91,13 +86,11 @@ namespace CalorieCore.Tests.Controllers
             var identity = new ClaimsIdentity(claims, "TestAuthType");
             var claimsPrincipal = new ClaimsPrincipal(identity);
 
-            // 3. Initialize Controller
             var controllerWithUser = new AccountController(
                 _mockAccountService.Object,
                 GetMockUserManager(user).Object,
                 _context);
 
-            // FIX: Initialize TempData and HttpContext
             var tempDataProvider = new Mock<ITempDataProvider>();
             var tempData = new TempDataDictionary(new DefaultHttpContext(), tempDataProvider.Object);
 
@@ -105,14 +98,14 @@ namespace CalorieCore.Tests.Controllers
             {
                 HttpContext = new DefaultHttpContext { User = claimsPrincipal }
             };
-            controllerWithUser.TempData = tempData; // This prevents the Line 64 NullRef
+            controllerWithUser.TempData = tempData; 
 
             var model = new SettingsViewModel { Height = 185.5, Gender = "Female" };
 
-            // 4. Act
+            // Act
             var result = await controllerWithUser.UpdateProfile(model);
 
-            // 5. Assert
+            // Assert
             var updatedAccount = await _context.UserAccounts.FirstAsync(u => u.IdentityUserId == userId);
             Assert.Equal(185.5, updatedAccount.Height);
             Assert.Equal("Female", updatedAccount.Gender);

@@ -1,4 +1,4 @@
-﻿using CalorieCore.Data; // Ensure this matches your actual namespace for ApplicationDbContext
+﻿using CalorieCore.Data; 
 using CalorieCore.Data.Migrations;
 using CalorieCore.DataModels;
 using CalorieCore.Services;
@@ -13,12 +13,12 @@ public class CompleteProfileController : Controller
 {
     private readonly IProfileService _profileService;
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly ApplicationDbContext _context; // Added to fix CS0103
+    private readonly ApplicationDbContext _context;
 
     public CompleteProfileController(
         IProfileService profileService,
         UserManager<IdentityUser> userManager,
-        ApplicationDbContext context) // Inject context here
+        ApplicationDbContext context) 
     {
         _profileService = profileService;
         _userManager = userManager;
@@ -47,7 +47,6 @@ public class CompleteProfileController : Controller
 
         var identityUserId = _userManager.GetUserId(User);
 
-        // Try to find the account, or create a new one if it's missing
         var userAccount = await _context.UserAccounts
             .FirstOrDefaultAsync(u => u.IdentityUserId == identityUserId);
 
@@ -57,14 +56,12 @@ public class CompleteProfileController : Controller
             _context.UserAccounts.Add(userAccount);
         }
 
-        // 1. Map physical data
         userAccount.Age = model.Age;
         userAccount.Height = model.Height;
         userAccount.Weight = model.Weight;
         userAccount.Gender = model.Gender;
         userAccount.ActivityLevel = model.ActivityLevel;
 
-        // 2. Set Multiplier based on ActivityLevel
         userAccount.ActivityMultiplier = model.ActivityLevel switch
         {
             "Sedentary" => 1.2,
@@ -75,12 +72,10 @@ public class CompleteProfileController : Controller
             _ => 1.2
         };
 
-        // 3. Calculate Base TDEE
         var bmr = (10 * userAccount.Weight) + (6.25 * userAccount.Height) - (5 * userAccount.Age);
         bmr = (userAccount.Gender == "Male") ? bmr + 5 : bmr - 161;
         double tdee = bmr * userAccount.ActivityMultiplier;
 
-        // 4. Adjust TDEE based on the Goal dropdown
         double targetCalories = model.Goal switch
         {
             "Lose" => tdee - 500,
@@ -88,7 +83,6 @@ public class CompleteProfileController : Controller
             _ => tdee
         };
 
-        // 5. Set Macros
         userAccount.DailyCalorieGoal = (int)Math.Round(targetCalories);
         userAccount.DailyProteinGoal = (int)((targetCalories * 0.30) / 4);
         userAccount.DailyCarbGoal = (int)((targetCalories * 0.45) / 4);
@@ -96,7 +90,6 @@ public class CompleteProfileController : Controller
         userAccount.IsProfileComplete = true;
         await _context.SaveChangesAsync();
 
-        // Now HomeController.Index will find the user and show the Dashboard!
         return RedirectToAction("Index", "Home");
     }
 }

@@ -1,6 +1,6 @@
 ﻿using CalorieCore.Data;
 using CalorieCore.Data.Migrations;
-using CalorieCore.DataModels; // Add this to access UserAccount
+using CalorieCore.DataModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 

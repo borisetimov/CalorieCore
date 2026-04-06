@@ -67,7 +67,6 @@ namespace CalorieCore.Tests.Services
             db.Meals.Add(meal);
             await db.SaveChangesAsync();
 
-            // user1 (from TestBase) tries to access it
             var result = await service.GetMealByIdAsync(meal.Id, "user1");
 
             Assert.Null(result);
@@ -79,15 +78,12 @@ namespace CalorieCore.Tests.Services
             var db = GetDbContext();
             var service = new MealService(db);
 
-            // Use Recipe ID 1 from your 52 seeded recipes
             var result = await service.AddMealFromRecipeAsync(1, "user1");
 
-            // Search for the specific title seeded in your DB
             var meal = await db.Meals.FirstOrDefaultAsync(m => m.Name == "Grilled Chicken Salad");
 
             Assert.True(result);
             Assert.NotNull(meal);
-            // Verify it copied the correct calories from the seed data
             Assert.Equal(350, meal.Calories);
         }
     }

@@ -1,6 +1,6 @@
 ﻿using CalorieCore.ViewModels;
 using CalorieCore.Services;
-using CalorieCore.Data.Migrations; // Ensure this points to your ApplicationDbContext location
+using CalorieCore.Data.Migrations; 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +11,7 @@ namespace CalorieCore.Web.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly ApplicationDbContext _context; // Added DB context
+        private readonly ApplicationDbContext _context;
 
         public AccountController(
             IAccountService accountService,
@@ -37,7 +37,6 @@ namespace CalorieCore.Web.Controllers
                 Id = user.Id,
                 Username = user.UserName ?? "",
                 Email = user.Email ?? "",
-                // Pulling all data now, including Age and Activity Level
                 Height = userAccount?.Height ?? 0,
                 Gender = userAccount?.Gender ?? "Male",
                 Age = userAccount?.Age ?? 0,
@@ -58,13 +57,11 @@ namespace CalorieCore.Web.Controllers
 
             if (userAccount != null)
             {
-                // 1. Update basic info
                 userAccount.Height = model.Height;
                 userAccount.Gender = model.Gender;
                 userAccount.Age = model.Age;
                 userAccount.ActivityLevel = model.ActivityLevel;
 
-                // 2. Update Multiplier based on selection
                 userAccount.ActivityMultiplier = model.ActivityLevel switch
                 {
                     "Sedentary" => 1.2,
@@ -75,8 +72,6 @@ namespace CalorieCore.Web.Controllers
                     _ => 1.2
                 };
 
-                // 3. Recalculate Calories and Macros
-                // Since we are inside the controller, we can call your calculation logic here
                 var bmr = (10 * userAccount.Weight) + (6.25 * userAccount.Height) - (5 * userAccount.Age);
                 bmr = (userAccount.Gender == "Male") ? bmr + 5 : bmr - 161;
 

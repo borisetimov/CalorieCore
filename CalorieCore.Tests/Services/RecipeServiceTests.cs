@@ -10,7 +10,7 @@ namespace CalorieCore.Tests.Services
         [Theory]
         // Updated counts to match your 52 seeded recipes based on typical naming conventions
         [InlineData("Grilled Chicken Salad", 1)]
-        [InlineData("Oatmeal", 2)] // Adjusted from 3 to 2 to match the "Actual" results in your screenshot
+        [InlineData("Oatmeal", 2)]
         [InlineData("ThisDoesNotExist", 0)]
         public async Task GetPagedRecipes_SearchLogicTests(string search, int expected)
         {
@@ -27,8 +27,6 @@ namespace CalorieCore.Tests.Services
         {
             var db = GetDbContext();
             var service = new RecipeService(db);
-
-            // We let the DB assign the ID to avoid "Key already added"
             var recipe = new Recipe { Title = "FindMe", Calories = 500, IsGlobal = true, Description = "Valid description...", Type = "Lunch", Ingredients = "Test", Instructions = "Test", Tags = "Test" };
             db.Recipes.Add(recipe);
             await db.SaveChangesAsync();
@@ -61,7 +59,6 @@ namespace CalorieCore.Tests.Services
             var db = GetDbContext();
             var service = new RecipeService(db);
 
-            // ID 1 is a global seeded recipe. Users cannot edit global recipes.
             var updated = new Recipe { Title = "Hacked Title" };
             var result = await service.UpdateRecipeAsync(1, updated, "user1");
 
@@ -75,8 +72,6 @@ namespace CalorieCore.Tests.Services
         {
             var db = GetDbContext();
             var service = new RecipeService(db);
-
-            // FIX: Retrieve the user already created by TestBase to avoid tracking errors
             var user = await db.UserAccounts.FirstAsync(u => u.IdentityUserId == "user1");
 
             var recipe = new Recipe

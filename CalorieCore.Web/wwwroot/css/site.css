@@ -238,7 +238,6 @@ body {
     width: 300px;
     height: 300px;
     border-radius: 50%;
-    /* Colors now perfectly mapped to the 180-degree top arc */
     #5cb85c 12.5% 35%, /* Normal (Green) */
     #f0ad4e 35% 40%, /* Transition (Yellow) */
     #d9534f 40% 50%, /* Overweight (Red) */
@@ -270,23 +269,20 @@ body {
 .needle {
     position: absolute;
     width: 3px;
-    height: 120px; /* Adjust height so it doesn't poke out of the ring */
+    height: 120px;
     background: #fff;
-    /* Position the bottom of the needle at the center of the 300x300 circle */
     bottom: 50%;
     left: 50%;
-    /* This is the secret: rotate around the bottom center */
     transform-origin: bottom center;
     z-index: 5;
     transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    /* Initial state: pointing to the far left (Blue) */
     transform: translateX(-50%) rotate(-90deg);
 }
 
     .needle::after {
         content: '';
         position: absolute;
-        bottom: -7px; /* Center the dot on the pivot point */
+        bottom: -7px;
         left: 50%;
         transform: translateX(-50%);
         width: 14px;

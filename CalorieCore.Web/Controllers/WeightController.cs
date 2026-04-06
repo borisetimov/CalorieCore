@@ -1,4 +1,4 @@
-﻿using CalorieCore.Data; // Ensure this is correct for your ApplicationDbContext
+﻿using CalorieCore.Data; 
 using CalorieCore.Data.Migrations;
 using CalorieCore.Services;
 using CalorieCore.Web.Controllers;
@@ -14,7 +14,7 @@ namespace CalorieCore.Web.Controllers
     public class WeightController : Controller
     {
         private readonly IWeightService _weightService;
-        private readonly ApplicationDbContext _context; // Added to update UserAccount
+        private readonly ApplicationDbContext _context; 
 
         public WeightController(IWeightService weightService, ApplicationDbContext context)
         {
@@ -56,24 +56,19 @@ namespace CalorieCore.Web.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // 1. Log the history record via service
             await _weightService.LogWeightAsync(userId, weight);
 
-            // 2. Update the UserAccount and Recalculate Macros
             var userAccount = await _context.UserAccounts
                 .FirstOrDefaultAsync(u => u.IdentityUserId == userId);
 
             if (userAccount != null)
             {
-                // Update current weight
                 userAccount.Weight = weight;
 
-                // Re-calculate TDEE with new weight
                 var bmr = (10 * userAccount.Weight) + (6.25 * userAccount.Height) - (5 * userAccount.Age);
                 bmr = (userAccount.Gender == "Male") ? bmr + 5 : bmr - 161;
                 double tdee = bmr * userAccount.ActivityMultiplier;
 
-                // Adjust for the user's goal (saved during CompleteProfile)
                 double targetCalories = userAccount.Goal switch
                 {
                     "Lose" => tdee - 500,
@@ -81,7 +76,6 @@ namespace CalorieCore.Web.Controllers
                     _ => tdee
                 };
 
-                // Save new targets to database
                 userAccount.DailyCalorieGoal = (int)Math.Round(targetCalories);
                 userAccount.DailyProteinGoal = (int)((targetCalories * 0.30) / 4);
                 userAccount.DailyCarbGoal = (int)((targetCalories * 0.45) / 4);
@@ -101,7 +95,6 @@ namespace CalorieCore.Web.Controllers
 
             if (!success) return Unauthorized();
 
-            // Optional: You could also recalculate here if deleting the latest log changes current weight
             return RedirectToAction(nameof(Index));
         }
     }
