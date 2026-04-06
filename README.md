@@ -41,10 +41,22 @@ Whether you're trying to eat healthier or just stay organized with your nutritio
 
 ---
 
-### 📸 Preview
-| Weight Analytics & Chart | Admin Dashboard |
-|---|---|
-| ![Weight Page](Screenshots/weight_page.png) | ![Admin Area](Screenshots/admin_dashboard.png) |
+## 📸 Application Gallery
+
+### **User Dashboard & Weight Analytics**
+*Comprehensive tracking with Chart.js and Navy Body Fat calculation.*
+![Dashboard](Screenshots/dashboard.png)
+
+| Weight Tracking | Meal Management |
+|:---:|:---:|
+| ![Weight](Screenshots/weight.png) | ![Meals](Screenshots/meals.png) |
+
+| Activity Logging | Recipe Library |
+|:---:|:---:|
+| ![Activity](Screenshots/activity.png) | ![Recipes](Screenshots/recipes.png) |
+
+### **User Customization**
+![Settings](Screenshots/settings.png)
 
 ---
 
