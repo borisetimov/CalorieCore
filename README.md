@@ -41,6 +41,13 @@ Whether you're trying to eat healthier or just stay organized with your nutritio
 
 ---
 
+### 📸 Preview
+| Weight Analytics & Chart | Admin Dashboard |
+|---|---|
+| ![Weight Page](Screenshots/weight_page.png) | ![Admin Area](Screenshots/admin_dashboard.png) |
+
+---
+
 ## 🛠️ **Technologies Used**
 
 | Technology             | Version | Purpose                           |
@@ -135,8 +142,15 @@ CalorieCore/
 
 ---
 
-## ✨ **Features**
+## ✨ **Advanced Features**
 
+* [x] **Advanced Weight Analytics:** BMI calculation and **U.S. Navy Body Fat % formula** integration.
+* [x] **Interactive Data Visualization:** Dynamic progress tracking (last 5 entries).
+* [x] **Administrative Area:** Dedicated **Admin Dashboard** for statistics and user management.
+* [x] **Role-Based Access Control:** Distinct permissions for `User` and `Administrator` roles.
+* [x] **Data Pagination:** Optimized weight history loading using server-side pagination.
+* [x] **Recipe Management:** Create, edit, and delete personal recipes; browse global recipes.
+* [x] **Meal Logging:** Track intake with name, calories, and date using POST-Redirect-GET.
 * [x] **Recipe Management:** Create, edit, and delete personal recipes; browse global recipes.
 * [x] **Meal Logging:** Track intake with name, calories, and date using POST-Redirect-GET.
 * [x] **Activity Tracking:** Log physical activities and monitor calories burned.
@@ -146,6 +160,15 @@ CalorieCore/
 
 ---
 
+## 🧪 **Testing & Quality Assurance**
+
+The project implements a robust testing suite using **xUnit** to ensure business logic reliability.
+- **Service Layer Testing:** Unit tests for `WeightService` covering CRUD operations and user data isolation.
+- **Logic Testing:** `WeightCalculatorTests` verify BMI accuracy, healthy weight ranges, and age-specific advice.
+- **Edge Case Coverage:** Tests for invalid measurements (zero height, negative weight) and unauthorized data access attempts.
+- **Target Coverage:** Successfully achieved >65% business logic coverage across core services.
+
+---
 ## 💻 **Usage**
 
 1. **Register / Log In:** Start by creating an account to access the dashboard.
@@ -184,6 +207,13 @@ Key security settings are enforced via:
 
 ---
 
+## 🧠 **Design Decisions & Architecture**
+
+- **Hybrid Calculation Logic:** The **BMI** logic is handled on the **Server-Side (C#)** for data integrity and reporting. However, the **Navy Body Fat Calculator** was implemented on the **Client-Side (JavaScript)** to provide a seamless, real-time user experience without unnecessary server round-trips.
+- **MVC Areas:** Used the `Admin` Area to strictly separate management logic from the user-facing application, adhering to the principle of **Strong Cohesion**.
+- **Service Pattern:** Business logic is abstracted into a dedicated Service Layer (`CalorieCore.Services`) to keep Controllers thin and the code highly testable.
+- 
+---
 ## 🔮 **Future Improvements**
 
 * [ ] Admin vs. Standard User roles.
